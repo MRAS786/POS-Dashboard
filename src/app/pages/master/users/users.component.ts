@@ -165,7 +165,6 @@ export class UsersComponent implements OnInit {
   ondeSelect(items: any) {
     this.assignLocations.locationList.splice(this.assignLocations.locationList.findIndex(ele => ele.locationID == items.locationID), 1);
   }
-
   assignLocation(){
     this.assignLocations.locationList = this.selectedLocations;
     this.API.PostData(this.config.ASSIGN_LOCATIONS, this.assignLocations).subscribe({

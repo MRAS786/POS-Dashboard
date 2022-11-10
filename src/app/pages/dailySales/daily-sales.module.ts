@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataTablesModule } from 'angular-datatables';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { DailySalesComponent } from './daily-sales.component';
+import { ChartsModule } from 'ng2-charts';
 export const routes: Routes = [
-  { path: '', component: DashboardComponent, pathMatch: 'full' }
+  { path: '', component: DailySalesComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
@@ -16,11 +17,12 @@ export const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes),
     DataTablesModule,
-    NgMultiSelectDropDownModule.forRoot(),    
+    NgMultiSelectDropDownModule.forRoot(),   
+    ChartsModule 
   ],
   declarations: [
-    DashboardComponent
+    DailySalesComponent
   ]
 })
 
-export class DashboardModule { }
+export class DailySalesModule { }

@@ -5,7 +5,7 @@ export class locationList  {
 
 export class assignLocations {
     userID : number;
-    locationList : locationList [];;
+    locationList : locationList [];
     constructor() {
         this.locationList  = [];
     }

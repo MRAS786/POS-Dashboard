@@ -12,6 +12,7 @@ export const routes: Routes = [
         children: [
             { path: 'index', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule), data: { breadcrumb: 'Dashboard' } },
+            { path: 'dailysales', loadChildren: () => import('./dailySales/daily-sales.module').then(m => m.DailySalesModule), data: { breadcrumb: 'Daily Sales' } },
             { path: 'master', loadChildren: () => import('./master/master.module').then(m => m.MasterModule), data: { breadcrumb: 'Master'} },
         ]
     }

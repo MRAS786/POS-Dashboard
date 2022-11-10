@@ -1,0 +1,83 @@
+<div class="container-fluid p-0">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form [formGroup]="searchForm" role="form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Locations</label>
+                                    <ng-multiselect-dropdown [placeholder]="'Select Locations'"
+                                        [data]="getLocationsList" [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="selectedLocations" [settings]="dropdownSettings"
+                                        (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)"
+                                        (onDeSelect)="ondeSelect($event)">
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Date From</label>
+                                    <input type="date" class="form-control" formControlName="mFromDate">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Date To</label>
+                                    <input type="date" class="form-control" formControlName="mToDate">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-right">
+                    <button type="button" class="btn btn-success mr-2" (click)="searchSales()"><i class="fa fa-spinner"></i>
+                        Load Data</button>
+
+                    <button type="button" class="btn btn-warning" (click)="resetForm()"><i class="fa fa-refresh"></i>
+                        Clear Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas [height]="100" baseChart [datasets]="barChartDataNaturewise"
+                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                        [legend]="barChartLegend" [chartType]="barChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                            class="table table-hover table-striped dt-responsive table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Sr.</th>
+                                    <th>User name</th>
+                                    <th>Login name</th>
+                            </thead>
+                            <tbody>
+                                <!-- <tr *ngFor="let p of getEmployeeList let i=index;">
+                                    <td class="text-center">{{i+1}}</td>
+                                
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
