@@ -1,0 +1,56 @@
+.login-container {
+    position: absolute;
+
+    .card {
+        .card-header {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            margin-top: -40px;
+            border-radius: 50%;
+            font-size: 36px;
+        }
+    }
+}
+
+.login-container {
+    background-repeat: no-repeat;
+    // background-image: url(../../../assets/img/bg/bg-assets.jpg);
+    background-size: cover;
+    background-color: #f3f3f4;
+}
+
+.card-sttng {
+    background-color: #000 !important;
+}
+
+.p_labels {
+    color: #fff;
+}
+
+.app.combined .login-container .card .card-header,
+.app.combined .register-container .card .card-header,
+.app.combined .error-container .card .card-header {
+    background-color: #c75336 !important;
+    border: 2px solid #000 !important;
+}
+.app.dark .login-container .card .card-header, .app.dark .register-container .card .card-header, .app.dark .error-container .card .card-header {
+    background-color: #c75336 !important;
+}
+.btn-block {
+    background-color: #c75336 !important;
+}
+
+input:focus {
+    border-color: #445963 !important;
+}
+
+::placeholder {
+    color: #808080;
+    font-style: italic;
+}
+.login-container .card .card-header {
+    width: auto !important;
+    height: 80px;
+    border-radius: 0% !important;
+}

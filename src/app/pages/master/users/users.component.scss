@@ -1,0 +1,37 @@
+:host ::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+    max-width: 275px !important;
+}
+
+:host ::ng-deep .buttons-copy {
+    background-color: #008CBA !important;
+    color: #ffffff;
+}
+
+:host ::ng-deep .buttons-csv {
+    background-color: #f44336 !important;
+    color: #ffffff;
+}
+
+:host ::ng-deep .buttons-excel {
+    background-color: #555555 !important;
+    color: #ffffff;
+}
+
+:host ::ng-deep .buttons-print {
+    background-color: #FF8C00 !important;
+    color: #ffffff;
+}
+
+:host ::ng-deep .dataTables_info {
+    color: #1E90FF;
+}
+
+:host ::ng-deep .dataTables_paginate,
+.paging_full_numbers {
+    color: #1E90FF;
+}
+
+:host ::ng-deep .dataTables_length {
+    margin-left: 35px;
+    color: #1E90FF;
+}

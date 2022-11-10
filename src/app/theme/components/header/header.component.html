@@ -1,0 +1,64 @@
+ <nav class="navbar box-shadow app-header" [class.fixed-top]="settings.theme.navbarIsFixed" [class.logo-visible]="showInfoContent">
+    <div class="d-flex flex-column w-100">      
+        <div class="d-flex justify-content-start align-items-center top-navbar">                  
+            
+            <a class="logo" (click)="closeSubMenus()">
+                <h2 class="fnt-sttng" style="color: #fff;">C<span style="font-size: 25px;color: #c75336;">K</span></h2>
+            </a>
+
+            <span class="navbar-text menu-icon transition ml-3 mr-3" [ngClass]="{'open': settings.theme.showMenu}"
+                (click)="settings.theme.showMenu = !settings.theme.showMenu">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </span>
+
+
+            <div class="top-rigth-icons ml-auto"> 
+                <!-- <span class="d-none d-sm-inline-block">
+                    <app-flags-menu></app-flags-menu>
+                </span>  -->
+                <span class="hidden-xs-down">
+                    <app-user-menu></app-user-menu>
+                </span> 
+                <span class="pl-2 pr-2">
+                    <a (click)="openLogoutModal(logout)">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    </a>                   
+                </span> 
+            </div> 
+
+        </div>
+
+        <div class="horizontal-menu-outer" *ngIf="settings.theme.menu == 'horizontal'">
+                   
+            <app-horizontal-menu *ngIf="showHorizontalMenu"  [menuItems]="menuItems"></app-horizontal-menu>        
+            <app-vertical-menu *ngIf="!showHorizontalMenu"  [menuItems]="menuItems"></app-vertical-menu>
+
+        </div>
+
+
+
+    </div>
+</nav>
+
+<!--Logout Confirmation Model-->
+<ng-template #logout let-modal>
+    <div class="modal-header modal_head">
+        <h5 class="modal-title">Confirmation</h5>
+        <button type="button" class="close cross" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none">
+            <span aria-hidden="true" class="whitee">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body m-2">
+        <p style="margin-bottom: 0; font-size: 16px;">Are you sure you want to logout?</p>
+    </div>
+    <div class="modal-footer text-center">
+        <button class="btn btn-sm btn-success" (click)="onClickLogout()">Confirm</button>
+        <button class="btn btn-sm btn-danger" (click)="modal.close('Close click')">
+            Cancel
+        </button>
+    </div>
+</ng-template>

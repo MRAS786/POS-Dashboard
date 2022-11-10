@@ -1,0 +1,149 @@
+<div class="container-fluid p-0">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                    class="table table-hover table-striped dt-responsive table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Sr.</th>
+                            <th>Category Name</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of getCategoryList let i=index;">
+                            <td class="text-center">{{i+1}}</td>
+                            <td>{{p.categoryName | uppercase}}</td>
+                            <td class="text-center">
+                                <i (click)="editCategory(addCategories,p)" data-toggle="tooltip" data-placement="bottom"
+                                    title="Edit Category" tabindex="0" class="fa fa-pencil fa_edit"></i>
+                                <i (click)="addSubCategory(addSubCategories,p)" data-toggle="tooltip"
+                                    data-placement="bottom" title="Add Sub Category" tabindex="0"
+                                    class="fa fa-plus fa_check"></i>
+                                <i (click)="viewSubCategory(viewSubCategories,p)" data-toggle="tooltip"
+                                    data-placement="bottom" title="View Sub Category" tabindex="0"
+                                    class="fa fa-eye fa_eye"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Add Button-->
+<button class="bttn ng-star-inserted" (click)="openAddModal(addCategories)" tabindex="0"><i class="fa fa-plus"
+        style="margin-left:1px"></i></button>
+
+<!--Add Category Pop up -->
+<ng-template #addCategories let-modal>
+    <div class="modal-header modal_head">
+        <h5 class="modal-title" *ngIf="!onEditShowHide">Add Category</h5>
+        <h5 class="modal-title" *ngIf="onEditShowHide">Update Category</h5>
+        <button type="button" class="close cross" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none">
+            <span aria-hidden="true" class="whitee">&times;</span>
+        </button>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="categoryForm" role="form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Category Name</label><span class="imp">*</span>
+                        <input type="text" placeholder="Enter category name..." formControlName="categoryName"
+                            class="form-control validation-field">
+                        <small class="text-danger"
+                            *ngIf="categoryForm.controls.categoryName.touched && categoryForm.controls.categoryName.hasError('required')">Required</small>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-right">
+        <button class="btn btn-sm btn-success pl-3 pr-3 mr-2" [disabled]="!categoryForm.valid" *ngIf="!onEditShowHide"
+            (click)="saveCategory()">Save</button>
+        <button class="btn btn-sm btn-success mr-2" [disabled]="!categoryForm.valid" *ngIf="onEditShowHide"
+            (click)="saveCategory()">Update</button>
+        <button class="btn btn-sm btn-danger" (click)="modal.close('Close click')">
+            Cancel
+        </button>
+    </div>
+</ng-template>
+
+<!--Add SubCategory Pop up -->
+<ng-template #addSubCategories let-modal>
+    <div class="modal-header modal_head">
+        <h5 class="modal-title" *ngIf="!onEditShowHide">Add Sub Category</h5>
+        <h5 class="modal-title" *ngIf="onEditShowHide">Update Sub Category</h5>
+        <button type="button" class="close cross" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none">
+            <span aria-hidden="true" class="whitee">&times;</span>
+        </button>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="subcategoryForm" role="form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Sub Category Name</label><span class="imp">*</span>
+                        <input type="text" placeholder="Enter sub category name..." formControlName="subcatName"
+                            class="form-control validation-field">
+                        <small class="text-danger"
+                            *ngIf="subcategoryForm.controls.subcatName.touched && subcategoryForm.controls.subcatName.hasError('required')">Required</small>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-right">
+        <button class="btn btn-sm btn-success pl-3 pr-3 mr-2" [disabled]="!subcategoryForm.valid" *ngIf="!onEditShowHide"
+            (click)="saveSubCategory()">Save</button>
+        <button class="btn btn-sm btn-success mr-2" [disabled]="!subcategoryForm.valid" *ngIf="onEditShowHide"
+            (click)="saveSubCategory()">Update</button>
+        <button class="btn btn-sm btn-danger" (click)="modal.close('Close click')">
+            Cancel
+        </button>
+    </div>
+</ng-template>
+
+<!--Add SubCategory Pop up -->
+<ng-template #viewSubCategories let-modal>
+    <div class="modal-header modal_head">
+        <h5 class="modal-title" *ngIf="!onEditShowHide">Sub Categories</h5>
+        <button type="button" class="close cross" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none">
+            <span aria-hidden="true" class="whitee">&times;</span>
+        </button>
+    </div>
+    <div class="card-body">
+        <p>Main Category: <b>{{mainCategory}}</b></p>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-bordered" width="100%">
+                <thead>
+                    <tr>
+                        <th class="text-center">Sr.</th>
+                        <th>Sub Categories</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <td class="text-center" *ngIf="getsubCategories.length == []" colspan="8">No Records Found</td>
+                    <tr *ngFor="let p of getsubCategories let i=index;">
+                        <td class="text-center">{{i+1}}</td>
+                        <td>{{p.subcatName | uppercase}}</td>
+                        <td class="text-center">
+                            <i (click)="onEditSubCategory(addSubCategories,p)" data-toggle="tooltip"
+                                data-placement="bottom" title="Edit Sub Category" tabindex="0"
+                                class="fa fa-pencil fa_edit "></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-right">
+
+    </div>
+</ng-template>
