@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.InitializeForm();
-    this.getLocations();
+    this.getAssignedLocations();
   }
   InitializeForm() {
     this.searchForm = this.fb.group({
@@ -94,6 +94,21 @@ export class DashboardComponent implements OnInit {
           if (data.isSaved == true) {
          
           }
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+
+  getAssignedLocations(){
+    this.API.getdata(this.config.GET_ASSIGNED_LOCATIONS).subscribe({
+      next: (data) => {
+        if (data != null) {
+            this.getLocationsList = data;
         }
       },
       error: (error) => {

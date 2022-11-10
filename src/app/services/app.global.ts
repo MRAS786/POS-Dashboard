@@ -13,4 +13,5 @@ export class AppGlobal {
     public readonly GET_SUB_CATEGORY_BY_ID = "/Master/getSubCategory?categoryID=";
 
     public readonly GET_SALE_DATE_WISE = "/Master/getsaleDateWise";
+    public readonly GET_ASSIGNED_LOCATIONS = "/Master/getAssignedLocations";
 }
