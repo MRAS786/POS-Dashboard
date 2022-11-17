@@ -7,7 +7,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Locations</label>
+                                    <label>Locations</label><span class="imp">*</span>
                                     <ng-multiselect-dropdown [placeholder]="'Select Locations'"
                                         [data]="getLocationsList" [ngModelOptions]="{standalone: true}"
                                         [(ngModel)]="selectedLocations" [settings]="dropdownSettings"
@@ -18,13 +18,13 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Date From</label>
+                                    <label>Date From</label><span class="imp">*</span>
                                     <input type="date" class="form-control" formControlName="mFromDate">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Date To</label>
+                                    <label>Date To</label><span class="imp">*</span>
                                     <input type="date" class="form-control" formControlName="mToDate">
                                 </div>
                             </div>
@@ -32,21 +32,21 @@
                     </form>
                 </div>
                 <div class="card-footer text-right">
-                    <button type="button" class="btn btn-success mr-2" (click)="searchSales()"><i class="fa fa-spinner"></i>
+                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i class="fa fa-spinner"></i>
                         Load Data</button>
 
-                    <button type="button" class="btn btn-warning" (click)="resetForm()"><i class="fa fa-refresh"></i>
+                    <button class="btn btn-warning" (click)="resetForm()"><i class="fa fa-refresh"></i>
                         Clear Data</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-4">
+    <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <canvas [height]="100" baseChart [datasets]="barChartDataNaturewise"
+                    <canvas [height]="80" baseChart [datasets]="barChartDataNaturewise"
                         [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
                         [legend]="barChartLegend" [chartType]="barChartType">
                     </canvas>
@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <div class="row mt-4">
+    <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -65,14 +65,23 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">Sr.</th>
-                                    <th>User name</th>
-                                    <th>Login name</th>
+                                    <th class="text-center">Invoice Number</th>
+                                    <th class="text-center">No. of Persons</th>
+                                    <th class="text-center">Value</th>
+                                    <th class="text-center">Discount Amount</th>
+                                    <th class="text-center">Sale Tax</th>
+                                    <th class="text-center">Total Value</th>
                             </thead>
                             <tbody>
-                                <!-- <tr *ngFor="let p of getEmployeeList let i=index;">
+                                <tr *ngFor="let p of reportListDateWise let i=index;">
                                     <td class="text-center">{{i+1}}</td>
-                                
-                                </tr> -->
+                                    <td class="text-center styl-new" (click)="getInvoiceDetail(invoiceDetails, p.invoiceno)" title="View Invoice Detail">{{p.invoiceno }}</td>
+                                    <td class="text-center">{{p.Persons}}</td>
+                                    <td class="text-center">{{p.Value}}</td>
+                                    <td class="text-center">{{p.DisAmount}}</td>
+                                    <td class="text-center">{{p.StAmt}}</td>
+                                    <td class="text-center">{{p.TotSale}}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -81,3 +90,73 @@
         </div>
     </div>
 </div>
+
+
+<!--Invice Details Pop up -->
+<ng-template #invoiceDetails let-modal>
+    <div class="modal-header modal_head">
+        <h5 class="modal-title">Invoice Detail</h5>
+        <button type="button" class="close cross" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none">
+            <span aria-hidden="true" class="whitee">&times;</span>
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="text-right">
+            <button class="btn-dark p-2" [useExistingCss]="true" printSectionId="printInvoiceDetail" ngxPrint><i
+                class="fa fa-print mr-1"></i> Print</button>
+        </div>
+        <div class="table-responsive" id="printInvoiceDetail">
+            <table class="table table-hover table-striped dt-responsive table-bordered" cellspacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <th colspan="4">Invoice Number : {{invoiceNumber}} </th>
+                  </tr>
+                  <tr>
+                    <th>Sr.</th>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Discount</th>
+                    <th>Tax %</th>
+                    <th>Tax Amt</th>
+                    <th>Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let p of invoiceDetailResponse let ndx = index">
+                    <td>{{ ndx + 1 }}</td>
+                    <td>{{p.Pname}}</td>
+                    <td style="text-align:right">{{p.qty}}</td>
+                    <td style="text-align:right">{{p.sellprice}}</td>
+                    <td style="text-align:right">{{p.qty * p.sellprice}}</td>
+                    <td style="text-align:right">{{p.DisAmt}}</td>
+                    <td style="text-align:right">{{p.stax}}</td>
+                    <td style="text-align:right">{{p.StAmt}}</td>
+                    <td style="text-align:right">{{p.qty * p.sellprice + p.StAmt}}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                      <th></th>
+                      <th>Total</th>
+                      <th  style="text-align:right">{{Quantity}}</th>
+                      <th></th>
+                      <th style="text-align:right">{{Amount}}</th>
+                      <th></th>
+                      <th ></th>
+                      <th  style="text-align:right">{{taxAmt}}</th>
+                      <th  style="text-align:right">{{TotalAmt}}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="4">Discout on Invoice : {{disAmount}}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="4">Net Amount : {{netAmount}}</th>
+                  </tr>
+              </tfoot>
+            </table>
+        </div>
+    </div>
+</ng-template>

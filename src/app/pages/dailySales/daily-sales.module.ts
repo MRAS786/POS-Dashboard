@@ -6,6 +6,8 @@ import { DataTablesModule } from 'angular-datatables';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DailySalesComponent } from './daily-sales.component';
 import { ChartsModule } from 'ng2-charts';
+import {NgxPrintModule} from 'ngx-print';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 export const routes: Routes = [
   { path: '', component: DailySalesComponent, pathMatch: 'full' }
 ];
@@ -18,7 +20,9 @@ export const routes: Routes = [
     RouterModule.forChild(routes),
     DataTablesModule,
     NgMultiSelectDropDownModule.forRoot(),   
-    ChartsModule 
+    ChartsModule,
+    NgxPrintModule,
+    NgxExtendedPdfViewerModule
   ],
   declarations: [
     DailySalesComponent

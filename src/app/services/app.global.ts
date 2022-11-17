@@ -15,4 +15,5 @@ export class AppGlobal {
     public readonly GET_SALE_DATE_WISE = "/Master/getsaleDateWise";
     public readonly GET_ASSIGNED_LOCATIONS = "/Master/getAssignedLocations";
     public readonly GET_DATE_WISE_DETAILS = "/Master/getsaleDateWiseDetail";
+    public readonly GET_RECIPT_DETAILS_INVOICE = "/Master/getReciptDetail";
 }

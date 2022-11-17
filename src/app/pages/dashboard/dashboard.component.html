@@ -3,75 +3,100 @@
         <div class="col-md-12">
             <div id="accordion-1" role="tablist" aria-multiselectable="true">
                 <div class="card" *ngFor="let loc of getLocationsList">
-                    <div role="tab" id="headingOne" class="bg-primary">
-                        <h5 class="p-2"><a data-toggle="collapse" href="#collapseOne" aria-expanded="true"
-                                aria-controls="collapseOne" style="color: #fff;">{{loc.locationName}}</a></h5>
+                    <div role="tab" id="headingOne" class="bg-new">
+                        <h6 class="p-2 mb-0"><a data-toggle="collapse" href="#collapseOne" aria-expanded="true"
+                                aria-controls="collapseOne" style="color: #fff;">{{loc.locationName}}</a></h6>
                     </div>
                     <div id="collapseOne" data-parent="#accordion-1" role="tabpanel" aria-labelledby="headingOne"
                         class="collapse show">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col">
+                                <div class="col-md-6">
                                     <div class="card">
-                                        <div class="card-header text-center p-1 bg-dark">
-                                            <h6 class="mb-0 new-sttng">Today Sales</h6>
+                                        <div class="card-header p-2">
+                                            <h6 class="mb-0">Today</h6>
                                         </div>
-                                        <div class="card-body text-center p-2">
-                                            <h2>50</h2>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="card">
+                                                        <div class="card-header text-center p-1 bg-dark">
+                                                            <h6 class="mb-0 new-sttng">Sales</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>50</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="card">
+                                                        <div class="card-header text-center p-1 bg-dark">
+                                                            <h6 class="mb-0 new-sttng">Orders</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>50</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="card">
+                                                        <div class="card-header text-center p-1 bg-dark">
+                                                            <h6 class="mb-0 new-sttng">Visitors</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>50</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col-md-6">
                                     <div class="card">
-                                        <div class="card-header text-center p-1 bg-danger">
-                                            <h6 class="mb-0 new-sttng">Today Orders</h6>
+                                        <div class="card-header p-2">
+                                            <h6 class="mb-0">Monthly</h6>
                                         </div>
-                                        <div class="card-body text-center p-2">
-                                            <h2>500</h2>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="card">
+                                                        <div class="card-header text-center p-1 bg-success">
+                                                            <h6 class="mb-0 new-sttng">Sales</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>50</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="card">
+                                                        <div class="card-header text-center p-1 bg-success">
+                                                            <h6 class="mb-0 new-sttng">Orders</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>50</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="card">
+                                                        <div class="card-header text-center p-1 bg-success">
+                                                            <h6 class="mb-0 new-sttng">Visitors</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>50</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card">
-                                        <div class="card-header text-center p-1 bg-success">
-                                            <h6 class="mb-0 new-sttng">Today Visitors</h6>
-                                        </div>
-                                        <div class="card-body text-center p-2">
-                                            <h2>60</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card">
-                                        <div class="card-header text-center p-1 bg-warning">
-                                            <h6 class="mb-0 new-sttng">Monthly Sale</h6>
-                                        </div>
-                                        <div class="card-body text-center p-2">
-                                            <h2>1000</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card">
-                                        <div class="card-header text-center p-1 bg-secondary">
-                                            <h6 class="mb-0 new-sttng">Monthly Orders</h6>
-                                        </div>
-                                        <div class="card-body text-center p-2">
-                                            <h2>2000</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card">
-                                        <div class="card-header text-center p-1 bg-info">
-                                            <h6 class="mb-0 new-sttng">Monthly Visitors</h6>
-                                        </div>
-                                        <div class="card-body text-center p-2">
-                                            <h2>5000</h2>
-                                        </div>
+                                      
                                     </div>
                                 </div>
                             </div>
+                           
                         </div>
                     </div>
                 </div>

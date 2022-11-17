@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppGlobal } from 'src/app/services/app.global';
 import { GvarService } from 'src/app/services/gvar.service';
 import { ApiService } from 'src/app/services/api.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { grandSaleRequestModel } from '../dashboard/dashboard.model';
 import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
@@ -21,6 +21,15 @@ import { Subject } from 'rxjs';
   styleUrls: ['./daily-sales.component.scss']
 })
 export class DailySalesComponent implements OnInit {
+  netAmount:number;
+  Quantity:number;
+  TaxAmt:number;
+  disAmount:number;
+  TotalAmt:number;
+  Amount:number;
+  taxAmt:number;
+  invoiceNumber:string;
+  modalRef: NgbModalRef;
   @ViewChildren(DataTableDirective)
   datatableElement: QueryList<DataTableDirective>;
   dtOptions: any = {};
@@ -30,10 +39,13 @@ export class DailySalesComponent implements OnInit {
   accessToken: any;
   UserId: any;
   searchForm: FormGroup;
+  hideShowDiv: boolean = false;
   dropdownSettings: IDropdownSettings = {};
   grandSaleRequestModel: grandSaleRequestModel;
   getLocationsList: any = [];
   selectedLocations:any = [];
+  invoiceDetailResponse: any = [];
+  reportListDateWise: any = [];
   reportList: any = [];
   complaintCount = [];
   public barChartType: ChartType = 'bar';
@@ -96,16 +108,25 @@ export class DailySalesComponent implements OnInit {
     this.selectedLocations = [];
     this.reportList = [];
     this.complaintCount = [];
+    this.reportListDateWise = [];
+    this.invoiceDetailResponse = [];
   }
 
   ngOnInit() {
     this.InitializeForm();
     this.getAssignedLocations();
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      processing: true,
+      dom: 'Blfrtip',
+      buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+    };
   }
   InitializeForm() {
     this.searchForm = this.fb.group({
-      mFromDate: [],
-      mToDate: [''],
+      mFromDate: ['', Validators.compose([Validators.required])],
+      mToDate: ['', Validators.compose([Validators.required])],
     });
   }
   onItemSelect(item: any) {
@@ -125,6 +146,7 @@ export class DailySalesComponent implements OnInit {
     this.API.PostData(this.config.GET_SALE_DATE_WISE , this.grandSaleRequestModel).subscribe({
       next: (data) => {
         if (data != null) {
+          this.hideShowDiv = true;
           this.reportList = data;
           this.complaintCount =  this.reportList.map((item) => {
             return item.totalSale;
@@ -149,7 +171,11 @@ export class DailySalesComponent implements OnInit {
     this.API.PostData(this.config.GET_DATE_WISE_DETAILS , this.grandSaleRequestModel).subscribe({
       next: (data) => {
         if (data != null) {
-          
+          this.destroyDT(0, true).then((destroyed) => {
+            this.hideShowDiv = true;
+            this.reportListDateWise = data;
+            this.dtTrigger.next(0);
+          });
         }
       },
       error: (error) => {
@@ -174,11 +200,36 @@ export class DailySalesComponent implements OnInit {
       }
     });
   }
-  
+
   resetForm(){
     this.searchForm.reset();
+    this.hideShowDiv = false;
   }
 
+  getInvoiceDetail(content, invoiceno){
+    this.modalRef = this.modalService.open(content, { centered: false, size: 'lg' });
+    this.API.getdata(this.config.GET_RECIPT_DETAILS_INVOICE + invoiceno).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.invoiceNumber = invoiceno;
+          this.invoiceDetailResponse = data;
+          this.Quantity = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty, 0);
+          var sellprice = this.invoiceDetailResponse.reduce((sum, current) => sum + current.sellprice, 0);
+          var StAmt = this.invoiceDetailResponse.reduce((sum, current) => sum + current.StAmt, 0);
+          this.disAmount=this.invoiceDetailResponse[0].DisAmount;
+          this.taxAmt=StAmt;
+          this.Amount = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty * current.sellprice, 0);
+          this.TotalAmt = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty * current.sellprice + current.StAmt, 0);
+          this.netAmount=this.TotalAmt-this.disAmount;
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
 
   destroyDT = (tableIndex, clearData): Promise<boolean> => {
     return new Promise((resolve) => {
