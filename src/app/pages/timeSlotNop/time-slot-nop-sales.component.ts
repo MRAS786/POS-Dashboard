@@ -47,9 +47,9 @@ export class TimeslotNOPComponent implements OnInit {
   selectedLocations:any = [];
   invoiceDetailResponse: any = [];
   reportListDateWise: any = [];
-  reportList: any = [];
+  hourlyResponseNOP: any = [];
   complaintCount = [];
-
+  grandTotal: number = 0;
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
   public barChartLegend = false;
@@ -109,7 +109,7 @@ export class TimeslotNOPComponent implements OnInit {
     this.grandSaleRequestModel = new grandSaleRequestModel();
     this.getLocationsList = [];
     this.selectedLocations = [];
-    this.reportList = [];
+    this.hourlyResponseNOP = [];
     this.complaintCount = [];
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
@@ -150,35 +150,13 @@ export class TimeslotNOPComponent implements OnInit {
       next: (data) => {
         if (data != null) {
           this.hideShowDiv = true;
-          this.reportList = data;
-          this.complaintCount =  this.reportList.map((item) => {
-            return item.NOP;
-          });
-          this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
-        
-          var complaintDept = [];
-          complaintDept =  this.reportList.map((item) => {
-            return item.TimeSlot;
-          });
-          this.barChartLabelsNaturewise = complaintDept;
-        }
-      },
-      error: (error) => {
-        if (error.error != undefined) {
-          this.toastr.error(error.error.Message, 'Error');
-        }
-      }
-    });
-
-
-    this.API.PostData(this.config.GET_DATE_WISE_DETAILS , this.grandSaleRequestModel).subscribe({
-      next: (data) => {
-        if (data != null) {
+          this.hourlyResponseNOP = data;
           this.destroyDT(0, true).then((destroyed) => {
-            this.hideShowDiv = true;
-            this.reportListDateWise = data;
+            
             this.dtTrigger.next(0);
           });
+          this.getBarChartHorizental();
+        
         }
       },
       error: (error) => {
@@ -187,6 +165,7 @@ export class TimeslotNOPComponent implements OnInit {
         }
       }
     });
+
   }
 
   getAssignedLocations(){
@@ -209,31 +188,21 @@ export class TimeslotNOPComponent implements OnInit {
     this.hideShowDiv = false;
   }
 
-  getInvoiceDetail(content, invoiceno){
-    this.modalRef = this.modalService.open(content, { centered: false, size: 'lg' });
-    this.API.getdata(this.config.GET_RECIPT_DETAILS_INVOICE + invoiceno).subscribe({
-      next: (data) => {
-        if (data != null) {
-          this.invoiceNumber = invoiceno;
-          this.invoiceDetailResponse = data;
-          this.Quantity = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty, 0);
-          var sellprice = this.invoiceDetailResponse.reduce((sum, current) => sum + current.sellprice, 0);
-          var StAmt = this.invoiceDetailResponse.reduce((sum, current) => sum + current.StAmt, 0);
-          this.disAmount=this.invoiceDetailResponse[0].DisAmount;
-          this.taxAmt=StAmt;
-          this.Amount = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty * current.sellprice, 0);
-          this.TotalAmt = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty * current.sellprice + current.StAmt, 0);
-          this.netAmount=this.TotalAmt-this.disAmount;
-        }
-      },
-      error: (error) => {
-        if (error.error != undefined) {
-          this.toastr.error(error.error.Message, 'Error');
-        }
-      }
+  getBarChartHorizental() {
+    this.grandTotal = 0;
+    this.hourlyResponseNOP.forEach(e => {
+      this.grandTotal = this.grandTotal + e.NOP;
     });
+    this.complaintCount = this.hourlyResponseNOP.map((item) => {
+      return item.NOP;
+    });
+    this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
+    var complaintDept = [];
+    complaintDept = this.hourlyResponseNOP.map((item) => {
+      return item.TimeSlot;
+    });
+    this.barChartLabelsNaturewise = complaintDept;
   }
-
   destroyDT = (tableIndex, clearData): Promise<boolean> => {
     return new Promise((resolve) => {
       this.datatableElement.forEach((dtElement: DataTableDirective, index) => {
