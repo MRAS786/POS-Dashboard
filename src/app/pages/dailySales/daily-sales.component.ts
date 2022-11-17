@@ -15,6 +15,7 @@ import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { MultiDataSet, Label, Color, SingleDataSet } from 'ng2-charts';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-daily-sales',
   templateUrl: './daily-sales.component.html',
@@ -48,6 +49,7 @@ export class DailySalesComponent implements OnInit {
   reportListDateWise: any = [];
   reportList: any = [];
   complaintCount = [];
+
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
   public barChartLegend = false;
@@ -91,6 +93,7 @@ export class DailySalesComponent implements OnInit {
     private config: AppGlobal,
     private GV: GvarService,
     private API: ApiService,
+    private datepipe: DatePipe,
     private modalService: NgbModal) {
       this.dropdownSettings = {
         singleSelection: false,
@@ -155,7 +158,8 @@ export class DailySalesComponent implements OnInit {
         
           var complaintDept = [];
           complaintDept =  this.reportList.map((item) => {
-            return item.saleDate;
+            let newDate = this.datepipe.transform(item.saleDate, 'dd/MM/yyyy')
+            return newDate;
           });
           this.barChartLabelsNaturewise = complaintDept;
         }

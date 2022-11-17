@@ -1,6 +1,6 @@
 import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { routing } from './pages.routing';
-import { CommonModule} from '@angular/common';
+import { CommonModule, DatePipe} from '@angular/common';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
@@ -15,6 +15,6 @@ import { FormsModule, ReactiveFormsModule} from '@angular/forms';
     declarations: [
     
   ],
-    providers: [],
+    providers: [DatePipe],
   })
   export class PagesModule { }
