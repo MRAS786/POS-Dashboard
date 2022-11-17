@@ -66,13 +66,13 @@
                                 <tr>
                                     <th class="text-center">Sr.</th>
                                     <th>Time Slot</th>
-                                    <th>Sale Amount</th>
+                                    <th>No. of Persons</th>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let p of reportList let ndx=index;">
                                     <td class="text-center">{{ndx+1}}</td>
-                                    <td>{{p.TimeSlot }}</td>
-                                    <td>{{p.Amt| number}}</td>
+                                    <td>{{p.TimeSlot}}</td>
+                                    <td>{{p.NOP}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -82,3 +82,4 @@
         </div>
     </div>
 </div>
+

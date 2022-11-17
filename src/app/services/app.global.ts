@@ -19,4 +19,5 @@ export class AppGlobal {
 
     public readonly GET_FOOD_WISE_REPORT = "/Master/getFoodWiseReport";
     public readonly GET_HOURY_WISE_REPORT = "/Master/gethoulyData";
+    public readonly GET_HOURY_NOP_WISE_REPORT = "/Master/gethoulyDataNOP";
 }
