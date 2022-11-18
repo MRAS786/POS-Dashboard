@@ -32,6 +32,7 @@ export class FoodSalesComponent implements OnInit {
   invoiceNumber:string;
   modalRef: NgbModalRef;
   @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
   datatableElement: QueryList<DataTableDirective>;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
@@ -49,6 +50,7 @@ export class FoodSalesComponent implements OnInit {
   reportListDateWise: any = [];
   foodwiseResponseModel: any = [];
   complaintCount = [];
+  listAllData = [];
   grandTotal:number=0;
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
@@ -86,6 +88,7 @@ export class FoodSalesComponent implements OnInit {
       }]
     }
   };
+  
   constructor(
     private domSanitizer: DomSanitizer,
     private toastr: ToastrService,
@@ -113,6 +116,7 @@ export class FoodSalesComponent implements OnInit {
     this.complaintCount = [];
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
+    this.listAllData = [];
   }
 
   ngOnInit() {
@@ -125,6 +129,14 @@ export class FoodSalesComponent implements OnInit {
       dom: 'Blfrtip',
       buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
     };
+  }
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(0);
+  }
+
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
   }
   InitializeForm() {
     this.searchForm = this.fb.group({
@@ -143,6 +155,7 @@ export class FoodSalesComponent implements OnInit {
   }
 
   searchSales(){
+    this.listAllData = [];
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
@@ -152,6 +165,9 @@ export class FoodSalesComponent implements OnInit {
           this.hideShowDiv = true;
           this.foodwiseResponseModel = data;
           this.getBarChartHorizental();
+        
+          this.listAllData =  data;
+          this.rerender(); 
         }
       },
       error: (error) => {
@@ -200,72 +216,16 @@ export class FoodSalesComponent implements OnInit {
     this.barChartLabelsNaturewise = complaintDept;
   }
 
-  destroyDT = (tableIndex, clearData): Promise<boolean> => {
-    return new Promise((resolve) => {
-      this.datatableElement.forEach((dtElement: DataTableDirective, index) => {
-        if (index == tableIndex) {
-          if (dtElement.dtInstance) {
-            if (tableIndex == 0) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-            }
-            else if (tableIndex == 1) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-            } else if (tableIndex == 2) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-            }
-            else if (tableIndex == 3) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-
-            }
-            else if (tableIndex == 4) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-            }
-            else if (tableIndex == 5) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-
-            }
-          }
-          else {
-            resolve(true);
-          }
-        }
-      });
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
     });
-  };
+    setTimeout(() => {
+      this.dtTrigger.next(0);
+    });
+
+  }
 }

@@ -3,7 +3,7 @@ $icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap";
 // $fa-font-path : "../node_modules/font-awesome/fonts";
 // @import "../node_modules/font-awesome/scss/font-awesome";
 @import "../node_modules/font-awesome/css/font-awesome.css";
-@import 'material-icons/iconfont/material-icons.scss';
+
 @font-face {
     font-family: 'MoonHouse';
     src: url('./assets/fonts/moonhouse.eot');
@@ -317,14 +317,15 @@ $icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap";
 }
 .btn-success, .btn-success.disabled, .btn-success:disabled {
   color: #fff;
-  background-color: #003c71;
-  border-color: #003c71;
+  background-color: #c75336 !important;
+  border-color: #c75336 !important;
 }
 .btn-success:hover {
   color: #fff;
-  background-color: #003c71;
-  border-color: #003c71;
+  background-color: #c75336 !important;
+  border-color: #c75336 !important;
 }
+
 ::placeholder {
   color: #808080;
   font-style: italic;
@@ -479,4 +480,5 @@ $icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap";
   background-color: #c75336 !important;
   color: #fff;
 }
+
 

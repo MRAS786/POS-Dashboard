@@ -35,7 +35,7 @@
                     <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i class="fa fa-spinner"></i>
                         Load Data</button>
 
-                    <button class="btn btn-warning" (click)="resetForm()"><i class="fa fa-refresh"></i>
+                    <button class="btn btn-dark" (click)="resetForm()"><i class="fa fa-refresh"></i>
                         Clear Data</button>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                            class="table table-hover table-striped dt-responsive table-bordered" width="100%">
+                            class="table table-hover table-striped table-bordered" width="100%">
                             <thead>
                                 <tr>
                                     <th class="text-center">Sr.</th>
@@ -69,7 +69,7 @@
                                     <th>Sale</th>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let p of foodwiseResponseModel let ndx=index;">
+                                <tr *ngFor="let p of listAllData let ndx=index;">
                                     <td class="text-center">{{ndx+1}}</td>
                                     <td>{{p.Mname }}</td>
                                     <td>{{p.SAmt | number}}</td>

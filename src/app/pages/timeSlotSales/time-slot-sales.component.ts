@@ -32,6 +32,7 @@ export class TimeslotSalesComponent implements OnInit {
   invoiceNumber:string;
   modalRef: NgbModalRef;
   @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
   datatableElement: QueryList<DataTableDirective>;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
@@ -49,6 +50,7 @@ export class TimeslotSalesComponent implements OnInit {
   reportListDateWise: any = [];
   hourlyResponse: any = [];
   complaintCount = [];
+  listAllData = [];
   grandTotal: number = 0;
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
@@ -113,8 +115,16 @@ export class TimeslotSalesComponent implements OnInit {
     this.complaintCount = [];
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
+    this.listAllData = [];
+  }
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(0);
   }
 
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
   ngOnInit() {
     this.InitializeForm();
     this.getAssignedLocations();
@@ -152,6 +162,9 @@ export class TimeslotSalesComponent implements OnInit {
           this.hideShowDiv = true;
           this.hourlyResponse = data;
           this.getBarChartHorizental();
+
+          this.listAllData =  data;
+          this.rerender(); 
         }
       },
       error: (error) => {
@@ -198,72 +211,16 @@ export class TimeslotSalesComponent implements OnInit {
     });
     this.barChartLabelsNaturewise = complaintDept;
   }
-  destroyDT = (tableIndex, clearData): Promise<boolean> => {
-    return new Promise((resolve) => {
-      this.datatableElement.forEach((dtElement: DataTableDirective, index) => {
-        if (index == tableIndex) {
-          if (dtElement.dtInstance) {
-            if (tableIndex == 0) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-            }
-            else if (tableIndex == 1) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-            } else if (tableIndex == 2) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-            }
-            else if (tableIndex == 3) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-
-            }
-            else if (tableIndex == 4) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-            }
-            else if (tableIndex == 5) {
-              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                if (clearData) {
-                  dtInstance.clear();
-                }
-                dtInstance.destroy();
-                resolve(true);
-              });
-
-            }
-          }
-          else {
-            resolve(true);
-          }
-        }
-      });
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
     });
-  };
+    setTimeout(() => {
+      this.dtTrigger.next(0);
+    });
+
+  }
 }

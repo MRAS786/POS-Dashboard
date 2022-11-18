@@ -159,7 +159,7 @@ export class DailySalesComponent implements OnInit {
           var complaintDept = [];
           complaintDept =  this.reportList.map((item) => {
             let newDate = this.datepipe.transform(item.saleDate, 'dd/MM/yyyy')
-            return newDate;
+            return item.saleDate;
           });
           this.barChartLabelsNaturewise = complaintDept;
         }
