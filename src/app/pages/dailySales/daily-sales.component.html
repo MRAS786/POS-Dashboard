@@ -112,7 +112,7 @@
                   <tr>
                     <th colspan="4">Invoice Number : {{invoiceNumber}} </th>
                   </tr>
-                  <tr>
+                  <tr class="d-bg">
                     <th>Sr.</th>
                     <th>Item</th>
                     <th>Quantity</th>
@@ -138,7 +138,7 @@
                   </tr>
                 </tbody>
                 <tfoot>
-                  <tr>
+                  <tr class="d-bg">
                       <th></th>
                       <th>Total</th>
                       <th  style="text-align:right">{{Quantity}}</th>
@@ -150,10 +150,12 @@
                       <th  style="text-align:right">{{TotalAmt}}</th>
                   </tr>
                   <tr>
-                    <th colspan="4">Discout on Invoice : {{disAmount}}</th>
+                    <th colspan="6"></th>
+                    <th colspan="4" class="d-bg">Discout on Invoice : {{disAmount}}</th>
                   </tr>
                   <tr>
-                    <th colspan="4">Net Amount : {{netAmount}}</th>
+                    <th colspan="6"></th>
+                    <th colspan="4" class="d-bg">Net Amount : {{netAmount}}</th>
                   </tr>
               </tfoot>
             </table>

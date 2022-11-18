@@ -125,12 +125,23 @@ export class DailySalesComponent implements OnInit {
       dom: 'Blfrtip',
       buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
     };
+    this.searchForm.get('mFromDate').patchValue(this.formatDate(new Date()));
+    this.searchForm.get('mToDate').patchValue(this.formatDate(new Date()));
   }
   InitializeForm() {
     this.searchForm = this.fb.group({
       mFromDate: ['', Validators.compose([Validators.required])],
       mToDate: ['', Validators.compose([Validators.required])],
     });
+  }
+  private formatDate(date) {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
   }
   onItemSelect(item: any) {
     this.grandSaleRequestModel.locationList.push(item);
@@ -154,8 +165,8 @@ export class DailySalesComponent implements OnInit {
           this.complaintCount =  this.reportList.map((item) => {
             return item.totalSale;
           });
-          this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
-        
+          // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
+          this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#28196D', fill: false }];
           var complaintDept = [];
           complaintDept =  this.reportList.map((item) => {
             let newDate = this.datepipe.transform(item.saleDate, 'dd/MM/yyyy')
