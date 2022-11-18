@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getAssignedLocations(){
-    this.API.getdata(this.config.GET_ASSIGNED_LOCATIONS).subscribe({
+    this.API.getdata(this.config.GET_DASHBOARD_DATA).subscribe({
       next: (data) => {
         if (data != null) {
             this.getLocationsList = data;
