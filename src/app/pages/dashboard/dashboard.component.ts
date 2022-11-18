@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
     private API: ApiService,
     private modalService: NgbModal) {
     this.accessToken = localStorage.getItem('access_token');
-    this.UserId = localStorage.getItem('UserId');
+    this.UserId = localStorage.getItem('userID');
     this.grandSaleRequestModel = new grandSaleRequestModel();
     this.getLocationsList = [];
     this.selectedLocations = [];
@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getAssignedLocations(){
-    this.API.getdata(this.config.GET_DASHBOARD_DATA).subscribe({
+    this.API.getdata(this.config.GET_DASHBOARD_DATA + this.UserId).subscribe({
       next: (data) => {
         if (data != null) {
             this.getLocationsList = data;

@@ -77,13 +77,9 @@ export class LoginComponent implements OnInit {
         this.TokenRequestModel.Password = this.loginForm.get('password').value;
         this.API.LoginUser(this.config.TOKEN_AUTH, this.TokenRequestModel).subscribe({
             next: (data) => {
-                localStorage.setItem('access_token', data.token);
-                localStorage.setItem('roles', data.roles);
-                localStorage.setItem('name', data.name);
-                localStorage.setItem('userID', data.userID);
-                localStorage.setItem('StationName', data.StationName);
-                localStorage.setItem('isDefault', data.isDefault);
-                sessionStorage.setItem('loggedinUser', data.UserId);
+                localStorage.setItem('access_token', data.Access_Token);
+                localStorage.setItem('name', data.UserName);
+                localStorage.setItem('userID', data.UserId);
                 this.toastr.success('Login Successfully ', 'Success');
                 this.router.navigate(['/view/index']);
             },

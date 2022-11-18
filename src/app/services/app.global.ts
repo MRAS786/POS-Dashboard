@@ -21,5 +21,5 @@ export class AppGlobal {
     public readonly GET_HOURY_WISE_REPORT = "/Master/gethoulyData";
     public readonly GET_HOURY_NOP_WISE_REPORT = "/Master/gethoulyDataNOP";
 
-    public readonly GET_DASHBOARD_DATA = "/Master/getdashboardData";
+    public readonly GET_DASHBOARD_DATA = "/Master/getdashboardData?userid=";
 }
