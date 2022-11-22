@@ -18,11 +18,11 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
 @Component({
-  selector: 'time-slot-nop-sales',
-  templateUrl: './time-slot-nop-sales.component.html',
-  styleUrls: ['./time-slot-nop-sales.component.scss']
+  selector: 'items-report',
+  templateUrl: './items-report.component.html',
+  styleUrls: ['./items-report.component.scss']
 })
-export class TimeslotNOPComponent implements OnInit {
+export class ItemsReportComponent implements OnInit {
   netAmount:number;
   Quantity:number;
   TaxAmt:number;
@@ -49,7 +49,6 @@ export class TimeslotNOPComponent implements OnInit {
   selectedLocations:any = [];
   invoiceDetailResponse: any = [];
   reportListDateWise: any = [];
-  hourlyResponseNOP: any = [];
   complaintCount = [];
   listAllData = [];
   grandTotal: number = 0;
@@ -122,7 +121,7 @@ export class TimeslotNOPComponent implements OnInit {
     this.grandSaleRequestModel = new grandSaleRequestModel();
     this.getLocationsList = [];
     this.selectedLocations = [];
-    this.hourlyResponseNOP = [];
+    this.invoiceDetailResponse = [];
     this.complaintCount = [];
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
@@ -178,11 +177,11 @@ export class TimeslotNOPComponent implements OnInit {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
-    this.API.PostData(this.config.GET_HOURY_NOP_WISE_REPORT , this.grandSaleRequestModel).subscribe({
+    this.API.PostData(this.config.ITEM_WISE_REPORT , this.grandSaleRequestModel).subscribe({
       next: (data) => {
         if (data != null) {
           this.hideShowDiv = true;
-          this.hourlyResponseNOP = data;
+          this.invoiceDetailResponse = data;
           this.getBarChartHorizental();
         
           this.listAllData =  data;
@@ -220,16 +219,16 @@ export class TimeslotNOPComponent implements OnInit {
 
   getBarChartHorizental() {
     this.grandTotal = 0;
-    this.hourlyResponseNOP.forEach(e => {
+    this.invoiceDetailResponse.forEach(e => {
       this.grandTotal = this.grandTotal + e.NOP;
     });
-    this.complaintCount = this.hourlyResponseNOP.map((item) => {
+    this.complaintCount = this.invoiceDetailResponse.map((item) => {
       return item.NOP;
     });
     // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
     this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
     var complaintDept = [];
-    complaintDept = this.hourlyResponseNOP.map((item) => {
+    complaintDept = this.invoiceDetailResponse.map((item) => {
       return item.TimeSlot;
     });
     this.barChartLabelsNaturewise = complaintDept;

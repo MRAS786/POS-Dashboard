@@ -22,4 +22,6 @@ export class AppGlobal {
     public readonly GET_HOURY_NOP_WISE_REPORT = "/Master/gethoulyDataNOP";
 
     public readonly GET_DASHBOARD_DATA = "/Master/getdashboardData?userid=";
+
+    public readonly ITEM_WISE_REPORT = "/Master/itemwiseReport";
 }

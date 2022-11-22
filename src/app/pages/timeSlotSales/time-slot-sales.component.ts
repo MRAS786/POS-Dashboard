@@ -13,6 +13,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { grandSaleRequestModel } from '../dashboard/dashboard.model';
 import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { MultiDataSet, Label, Color, SingleDataSet } from 'ng2-charts';
+import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
@@ -57,6 +58,7 @@ export class TimeslotSalesComponent implements OnInit {
   public barChartLegend = false;
   public barChartPlugins = [];
   public barChartLabelsNaturewise: Label[];
+  pieChartPlugins = [pluginDataLabels];
   public barChartDataNaturewise: ChartDataSets[] = [
     { data: [12, 68, 6] }
   ];
@@ -70,6 +72,15 @@ export class TimeslotSalesComponent implements OnInit {
           });
         }
       }
+    },
+    plugins: {
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+        color: 'black',
+        padding: 0
+      },
+   
     },
     scales: {
       xAxes: [{
@@ -130,7 +141,7 @@ export class TimeslotSalesComponent implements OnInit {
     this.getAssignedLocations();
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 25,
       processing: true,
       dom: 'Blfrtip',
       buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
@@ -216,7 +227,7 @@ export class TimeslotSalesComponent implements OnInit {
       return item.Amt;
     });
     // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
-    this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#28196D', fill: false }];
+    this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
     var complaintDept = [];
     complaintDept = this.hourlyResponse.map((item) => {
       return item.TimeSlot;

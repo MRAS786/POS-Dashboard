@@ -42,7 +42,7 @@
         </div>
     </div>
 
-    <div class="row mt-4" *ngIf="hideShowDiv">
+    <!-- <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
@@ -61,24 +61,32 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                            class="table table-hover table-striped table-bordered" width="100%">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Sr.</th>
-                                    <th>Category</th>
-                                    <th class="text-right">Sale</th>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let p of listAllData let ndx=index;">
-                                    <td class="text-center">{{ndx+1}}</td>
-                                    <td>{{p.Mname }}</td>
-                                    <td class="text-right">{{p.SAmt | number}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        class="table table-hover table-striped dt-responsive table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                          <tr>
+                            <th>Sr.</th>
+                            <th>Item Code</th>
+                            <th>Item Description</th>
+                            <th>Qty</th>
+                            <th>Amount</th>
+                            <th>Avg. Rate</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let p of invoiceDetailResponse let ndx=index;">
+                            <td>{{ndx+1}}</td>
+                            <td>{{p.itemcode}}</td>
+                            <td>{{p.SName}}</td>
+                            <td>{{p.qty}}</td>
+                            <td>{{p.qty * p.sellprice}}</td>
+                            <td>{{p.sellprice}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+

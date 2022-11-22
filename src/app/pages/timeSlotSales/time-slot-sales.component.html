@@ -66,13 +66,13 @@
                                 <tr>
                                     <th class="text-center">Sr.</th>
                                     <th>Time Slot</th>
-                                    <th>Sale Amount</th>
+                                    <th class="text-right">Sale Amount</th>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let p of listAllData let ndx=index;">
                                     <td class="text-center">{{ndx+1}}</td>
                                     <td>{{p.TimeSlot }}</td>
-                                    <td>{{p.Amt| number}}</td>
+                                    <td class="text-right">{{p.Amt| number}}</td>
                                 </tr>
                             </tbody>
                         </table>

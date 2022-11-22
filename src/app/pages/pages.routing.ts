@@ -16,6 +16,7 @@ export const routes: Routes = [
             { path: 'foodsales', loadChildren: () => import('./foodWiseSales/food-sales.module').then(m => m.FoodSalesModule), data: { breadcrumb: 'Category Wise Report' } },
             { path: 'timeslotsales', loadChildren: () => import('./timeSlotSales/time-slot-sales.module').then(m => m.TimeSlotSalesModule), data: { breadcrumb: 'Hourly Report' } },
             { path: 'timeslotnopsales', loadChildren: () => import('./timeSlotNop/time-slot-nop-sales.module').then(m => m.TimeSlotNOPSalesModule), data: { breadcrumb: 'Hourly Report NOP' } },
+            { path: 'itemsreport', loadChildren: () => import('./itemsReport/items-report.module').then(m => m.ItemsReportModule), data: { breadcrumb: 'Items Report' } },
             { path: 'master', loadChildren: () => import('./master/master.module').then(m => m.MasterModule), data: { breadcrumb: 'Master'} },
         ]
     }

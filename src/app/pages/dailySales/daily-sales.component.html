@@ -77,10 +77,10 @@
                                     <td class="text-center">{{i+1}}</td>
                                     <td class="text-center styl-new" (click)="getInvoiceDetail(invoiceDetails, p.invoiceno)" title="View Invoice Detail">{{p.invoiceno }}</td>
                                     <td class="text-center">{{p.Persons}}</td>
-                                    <td class="text-center">{{p.Value}}</td>
-                                    <td class="text-center">{{p.DisAmount}}</td>
-                                    <td class="text-center">{{p.StAmt}}</td>
-                                    <td class="text-center">{{p.TotSale}}</td>
+                                    <td class="text-center">{{p.Value | number}}</td>
+                                    <td class="text-center">{{p.DisAmount | number}}</td>
+                                    <td class="text-center">{{p.StAmt | number}}</td>
+                                    <td class="text-center">{{p.TotSale | number}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -109,7 +109,7 @@
         <div class="table-responsive" id="printInvoiceDetail">
             <table class="table table-hover table-striped dt-responsive table-bordered" cellspacing="0" width="100%">
                 <thead>
-                  <tr>
+                  <tr class="d-bg">
                     <th colspan="4">Invoice Number : {{invoiceNumber}} </th>
                   </tr>
                   <tr class="d-bg">
@@ -129,11 +129,11 @@
                     <td>{{ ndx + 1 }}</td>
                     <td>{{p.Pname}}</td>
                     <td style="text-align:right">{{p.qty}}</td>
-                    <td style="text-align:right">{{p.sellprice}}</td>
+                    <td style="text-align:right">{{p.sellprice | number}}</td>
                     <td style="text-align:right">{{p.qty * p.sellprice}}</td>
-                    <td style="text-align:right">{{p.DisAmt}}</td>
-                    <td style="text-align:right">{{p.stax}}</td>
-                    <td style="text-align:right">{{p.StAmt}}</td>
+                    <td style="text-align:right">{{p.DisAmt | number}}</td>
+                    <td style="text-align:right">{{p.stax | number}}</td>
+                    <td style="text-align:right">{{p.StAmt | number}}</td>
                     <td style="text-align:right">{{p.qty * p.sellprice + p.StAmt}}</td>
                   </tr>
                 </tbody>
@@ -143,19 +143,19 @@
                       <th>Total</th>
                       <th  style="text-align:right">{{Quantity}}</th>
                       <th></th>
-                      <th style="text-align:right">{{Amount}}</th>
+                      <th style="text-align:right">{{Amount | number}}</th>
                       <th></th>
                       <th ></th>
-                      <th  style="text-align:right">{{taxAmt}}</th>
-                      <th  style="text-align:right">{{TotalAmt}}</th>
+                      <th  style="text-align:right">{{taxAmt | number}}</th>
+                      <th  style="text-align:right">{{TotalAmt | number}}</th>
                   </tr>
                   <tr>
                     <th colspan="6"></th>
-                    <th colspan="4" class="d-bg">Discout on Invoice : {{disAmount}}</th>
+                    <th colspan="4" class="d-bg">Discout on Invoice : {{disAmount | number}}</th>
                   </tr>
                   <tr>
                     <th colspan="6"></th>
-                    <th colspan="4" class="d-bg">Net Amount : {{netAmount}}</th>
+                    <th colspan="4" class="d-bg">Net Amount : {{netAmount | number}}</th>
                   </tr>
               </tfoot>
             </table>
