@@ -24,4 +24,6 @@ export class AppGlobal {
     public readonly GET_DASHBOARD_DATA = "/Master/getdashboardData?userid=";
 
     public readonly ITEM_WISE_REPORT = "/Master/itemwiseReport";
+
+    public readonly MONTHALY_SALES_BY_LOCATION = "/Master/monthlySale?locationID=";
 }

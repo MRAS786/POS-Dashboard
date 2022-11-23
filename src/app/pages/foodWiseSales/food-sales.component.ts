@@ -89,12 +89,12 @@ export class FoodSalesComponent implements OnInit {
       yAxes: [{
         ticks: {
           beginAtZero: true,
-          stepSize: 500000,
-          callback: function (value, index, values) {
-            var val = Number(value) / 1e6 + 'M';
-            return val
+          // stepSize: 500000,
+          // callback: function (value, index, values) {
+          //   var val = Number(value) / 1e6 + 'M';
+          //   return val
 
-          }
+          // }
         }
       }]
     }

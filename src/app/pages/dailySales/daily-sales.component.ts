@@ -41,6 +41,7 @@ export class DailySalesComponent implements OnInit {
   accessToken: any;
   UserId: any;
   searchForm: FormGroup;
+  searchmonthly: FormGroup;
   hideShowDiv: boolean = false;
   dropdownSettings: IDropdownSettings = {};
   grandSaleRequestModel: grandSaleRequestModel;
@@ -77,7 +78,7 @@ export class DailySalesComponent implements OnInit {
         anchor: 'end',
         align: 'end',
         color: 'black',
-        padding: 0
+        padding: 0,
       },
    
     },
@@ -86,15 +87,16 @@ export class DailySalesComponent implements OnInit {
         ticks: {}
       }],
       yAxes: [{
+        
         ticks: {
           beginAtZero: true,
-          stepSize: 500000,
-          callback: function (value, index, values) {
-            var val = Number(value) / 1e6 + 'M';
-            return val
-
-          }
+          // stepSize: 500000,
+          // callback: function (value, index, values) {
+          //   var val = Number(value) / 1e6 + 'M';
+          //   return val
+          // }
         }
+       
       }]
     }
   };
@@ -125,6 +127,7 @@ export class DailySalesComponent implements OnInit {
     this.complaintCount = [];
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
+ 
   }
 
   ngOnInit() {
@@ -144,6 +147,10 @@ export class DailySalesComponent implements OnInit {
     this.searchForm = this.fb.group({
       mFromDate: ['', Validators.compose([Validators.required])],
       mToDate: ['', Validators.compose([Validators.required])],
+    });
+
+    this.searchmonthly = this.fb.group({
+      locationID: ['', Validators.compose([Validators.required])],
     });
   }
   private formatDate(date) {
@@ -227,7 +234,24 @@ export class DailySalesComponent implements OnInit {
       }
     });
   }
-
+  onchangeLocation(event){
+    this.searchmonthly.value.locationID = event.target.value;
+    this.getMonthlySales(event.target.value)
+  }
+  getMonthlySales(locationID){
+    this.API.getdata(this.config.MONTHALY_SALES_BY_LOCATION + locationID).subscribe({
+      next: (data) => {
+        if (data != null) {
+        
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
   resetForm(){
     this.searchForm.reset();
     this.hideShowDiv = false;
