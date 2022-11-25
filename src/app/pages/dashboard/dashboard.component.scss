@@ -2,6 +2,81 @@
     color: #fff !important;
 }
 .bg-new{
-    // background: linear-gradient(to top right, #000000 60%, #c75336 100%);
+    background: linear-gradient(to top right, #000000 60%, #c75336 100%);
+    color: #fff;
+    // background-color: #c75336;
+}
+.bg-new-2{
     background-color: #c75336;
+}
+:host ::ng-deep .buttons-copy {
+    background-color: #008CBA !important;
+    color: #ffffff;
+}
+
+:host ::ng-deep .buttons-csv {
+    background-color: #f44336 !important;
+    color: #ffffff;
+}
+
+:host ::ng-deep .buttons-excel {
+    background-color: #555555 !important;
+    color: #ffffff;
+}
+
+:host ::ng-deep .buttons-print {
+    background-color: #FF8C00 !important;
+    color: #ffffff;
+}
+
+:host ::ng-deep .dataTables_info {
+    color: #1E90FF;
+}
+
+:host ::ng-deep .dataTables_paginate,
+.paging_full_numbers {
+    color: #1E90FF;
+}
+
+:host ::ng-deep .dataTables_length {
+    margin-left: 35px;
+    color: #1E90FF;
+}
+.d-bg{
+    background-color: #c75336;
+    color: #000;
+}
+.styl-new{
+    cursor: pointer;
+}
+.styl-new:hover{
+    background-color: #c75336;
+    color: #ffffff;
+}
+
+.card-inner:hover {
+    transform: scale(1.1);
+    transition: all linear 200ms;
+    z-index: 1;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, .3);
+    cursor: pointer;
+}
+
+.bg-color-1 {
+    background: linear-gradient(to right, #33ccff 0%, #0000cc 100%);
+}
+
+.bg-color-2 {
+    background: linear-gradient(to right, #cc0066 0%, #ff9966 100%);
+}
+
+.bg-color-3 {
+    background: linear-gradient(to right, #009933 0%, #00cc99 100%);
+}
+
+.bg-color-4 {
+    background: linear-gradient(to right, #cccc00 0%, #ff6600 100%);
+}
+.bg-color-5 {
+    background: linear-gradient(to right, #669900 0%, #ff9933 100%);
 }

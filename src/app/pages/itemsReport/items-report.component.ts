@@ -77,7 +77,8 @@ export class ItemsReportComponent implements OnInit {
         anchor: 'end',
         align: 'end',
         color: 'black',
-        padding: 0
+        padding: 0,
+
       },
    
     },
@@ -88,12 +89,6 @@ export class ItemsReportComponent implements OnInit {
       yAxes: [{
         ticks: {
           beginAtZero: true,
-          stepSize: 500000,
-          callback: function (value, index, values) {
-            var val = Number(value) / 1e6 + 'M';
-            return val
-
-          }
         }
       }]
     }
@@ -126,6 +121,7 @@ export class ItemsReportComponent implements OnInit {
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
     this.listAllData = [];
+
   }
   ngAfterViewInit(): void {
     this.dtTrigger.next(0);
@@ -177,24 +173,28 @@ export class ItemsReportComponent implements OnInit {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
-    this.API.PostData(this.config.ITEM_WISE_REPORT , this.grandSaleRequestModel).subscribe({
-      next: (data) => {
-        if (data != null) {
-          this.hideShowDiv = true;
-          this.invoiceDetailResponse = data;
-          this.getBarChartHorizental();
-        
-          this.listAllData =  data;
-          this.rerender(); 
+    if(this.selectedLocations == ''){
+      this.toastr.error("Select Location", 'Error');
+    }
+    else{
+      this.API.PostData(this.config.ITEM_WISE_REPORT , this.grandSaleRequestModel).subscribe({
+        next: (data) => {
+          if (data != null) {
+            this.hideShowDiv = true;
+            this.invoiceDetailResponse = data;
+            this.getBarChartHorizental();
+          
+            this.listAllData =  data;
+            this.rerender(); 
+          }
+        },
+        error: (error) => {
+          if (error.error != undefined) {
+            this.toastr.error(error.error.Message, 'Error');
+          }
         }
-      },
-      error: (error) => {
-        if (error.error != undefined) {
-          this.toastr.error(error.error.Message, 'Error');
-        }
-      }
-    });
-
+      });  
+    }
   }
 
   getAssignedLocations(){
@@ -218,18 +218,14 @@ export class ItemsReportComponent implements OnInit {
   }
 
   getBarChartHorizental() {
-    this.grandTotal = 0;
-    this.invoiceDetailResponse.forEach(e => {
-      this.grandTotal = this.grandTotal + e.NOP;
-    });
     this.complaintCount = this.invoiceDetailResponse.map((item) => {
-      return item.NOP;
+      return item.sellprice;
     });
-    // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
     this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
     var complaintDept = [];
     complaintDept = this.invoiceDetailResponse.map((item) => {
-      return item.TimeSlot;
+      let newDate = this.datepipe.transform(item.dates, 'dd/MM/yyyy');
+      return newDate;
     });
     this.barChartLabelsNaturewise = complaintDept;
   }

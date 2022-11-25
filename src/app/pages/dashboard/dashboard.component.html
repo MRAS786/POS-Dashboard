@@ -1,15 +1,107 @@
 <div class="container-fluid p-0">
     <div class="row">
         <div class="col-md-12">
-            <div id="accordion-1" role="tablist" aria-multiselectable="true">
-                <div class="card" *ngFor="let loc of getLocationsList">
-                    <div role="tab" id="headingOne" class="bg-new">
-                        <h6 class="p-2 mb-0"><a data-toggle="collapse" href="#collapseOne" aria-expanded="true"
-                                aria-controls="collapseOne" style="color: #fff;">{{loc.locationName}}</a></h6>
+            <div id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="card mb-3" *ngFor="let loc of getLocationsList; let i = index;">
+                    <div role="tab" id="headingOne" class="bg-new-2">
+                        <h6 class="p-3 mb-0"><a data-toggle="collapse" href="#collapseOne{{i}}" aria-expanded="true"
+                                aria-controls="collapseOne{{i}}" style="color: #fff;">{{loc.locationName}}</a></h6>
                     </div>
-                    <div id="collapseOne" data-parent="#accordion-1" role="tabpanel" aria-labelledby="headingOne"
+                    <div id="collapseOne{{i}}" data-parent="#accordion" role="tabpanel" aria-labelledby="headingOne"
                         class="collapse show">
-                        <div class="card-body">
+
+
+                        <div class="card-body" *ngIf="getLocationsList.length < 2">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header p-2">
+                                            <h6 class="mb-0">Today</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="card card-inner" (click)="getDailySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-2">
+                                                            <h6 class="mb-0 new-sttng">Sales</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>{{loc.dashBoardCount.Sale_Daily | number}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="card card-inner" (click)="getDailySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-2">
+                                                            <h6 class="mb-0 new-sttng">Orders</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>{{loc.dashBoardCount.Order_Daily | number}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="card card-inner" (click)="getDailySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-2">
+                                                            <h6 class="mb-0 new-sttng">Visitors</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>{{loc.dashBoardCount.Persons | number}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="card">
+                                        <div class="card-header p-2">
+                                            <h6 class="mb-0">Monthly</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="card card-inner" (click)="getMonthlySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-5">
+                                                            <h6 class="mb-0 new-sttng">Sales</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>{{loc.dashBoardCount.Sale_Monthly | number}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="card card-inner" (click)="getMonthlySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-5">
+                                                            <h6 class="mb-0 new-sttng">Orders</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>{{loc.dashBoardCount.Order_Monthly | number}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="card card-inner" (click)="getMonthlySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-5">
+                                                            <h6 class="mb-0 new-sttng">Visitors</h6>
+                                                        </div>
+                                                        <div class="card-body text-center p-2">
+                                                            <h3>{{loc.dashBoardCount.MonthlyPersons | number}}</h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card-body" *ngIf="getLocationsList.length > 1">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card">
@@ -19,8 +111,8 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col">
-                                                    <div class="card">
-                                                        <div class="card-header text-center p-1 bg-dark">
+                                                    <div class="card card-inner" (click)="getDailySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-2">
                                                             <h6 class="mb-0 new-sttng">Sales</h6>
                                                         </div>
                                                         <div class="card-body text-center p-2">
@@ -29,8 +121,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <div class="card">
-                                                        <div class="card-header text-center p-1 bg-dark">
+                                                    <div class="card card-inner" (click)="getDailySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-2">
                                                             <h6 class="mb-0 new-sttng">Orders</h6>
                                                         </div>
                                                         <div class="card-body text-center p-2">
@@ -39,8 +131,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <div class="card">
-                                                        <div class="card-header text-center p-1 bg-dark">
+                                                    <div class="card card-inner" (click)="getDailySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-2">
                                                             <h6 class="mb-0 new-sttng">Visitors</h6>
                                                         </div>
                                                         <div class="card-body text-center p-2">
@@ -61,8 +153,8 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col">
-                                                    <div class="card">
-                                                        <div class="card-header text-center p-1 bg-success">
+                                                    <div class="card card-inner" (click)="getMonthlySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-5">
                                                             <h6 class="mb-0 new-sttng">Sales</h6>
                                                         </div>
                                                         <div class="card-body text-center p-2">
@@ -71,8 +163,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <div class="card">
-                                                        <div class="card-header text-center p-1 bg-success">
+                                                    <div class="card card-inner" (click)="getMonthlySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-5">
                                                             <h6 class="mb-0 new-sttng">Orders</h6>
                                                         </div>
                                                         <div class="card-body text-center p-2">
@@ -81,8 +173,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <div class="card">
-                                                        <div class="card-header text-center p-1 bg-success">
+                                                    <div class="card card-inner" (click)="getMonthlySales(loc.locationID)" data-toggle="modal" data-target="#dailyDetails">
+                                                        <div class="card-header text-center p-1 bg-color-5">
                                                             <h6 class="mb-0 new-sttng">Visitors</h6>
                                                         </div>
                                                         <div class="card-body text-center p-2">
@@ -96,9 +188,133 @@
                                     </div>
                                 </div>
                             </div>
-                           
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="dailyDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Report Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                        class="table table-hover table-striped dt-responsive table-bordered" width="100%">
+                        <thead>
+                            <tr class="d-bg">
+                                <th class="text-center">Sr.</th>
+                                <th class="text-center">Invoice Number</th>
+                                <th class="text-center">No. of Persons</th>
+                                <th class="text-right">Value</th>
+                                <th class="text-right">Discount Amount</th>
+                                <th class="text-right">Sale Tax</th>
+                                <th class="text-right">Total Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let p of monthlyReportList let i=index;">
+                                <td class="text-center">{{i+1}}</td>
+                                <td class="text-center styl-new" data-toggle="modal" data-target="#invoiceDetails" (click)="getInvoiceDetail(p.invoiceno)" title="View Invoice Detail">{{p.invoiceno }}</td>
+                                <td class="text-center">{{p.Persons}}</td>
+                                <td class="text-right">{{p.Value | number}}</td>
+                                <td class="text-right">{{p.DisAmount | number}}</td>
+                                <td class="text-right">{{p.StAmt | number}}</td>
+                                <td class="text-right">{{p.TotSale | number}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Invice Details Pop up -->
+
+
+
+
+<div class="modal fade" id="invoiceDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- <div class="text-right">
+                    <button class="btn-dark p-2" [useExistingCss]="true" printSectionId="printInvoiceDetail" ngxPrint><i
+                        class="fa fa-print mr-1"></i> Print</button>
+                </div> -->
+                <div class="table-responsive" id="printInvoiceDetail">
+                    <table class="table table-hover table-striped dt-responsive table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                          <tr class="d-bg">
+                            <th colspan="4">Invoice Number : {{invoiceNumber}} </th>
+                          </tr>
+                          <tr class="d-bg">
+                            <th>Sr.</th>
+                            <th>Item</th>
+                            <th class="text-right">Quantity</th>
+                            <th class="text-right">Rate</th>
+                            <th class="text-right">Amount</th>
+                            <th class="text-right">Discount</th>
+                            <th class="text-right">Tax %</th>
+                            <th class="text-right">Tax Amt</th>
+                            <th class="text-right">Total Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let p of invoiceDetailResponse let ndx = index">
+                            <td>{{ ndx + 1 }}</td>
+                            <td>{{p.Pname}}</td>
+                            <td style="text-align:right">{{p.qty}}</td>
+                            <td style="text-align:right">{{p.sellprice | number}}</td>
+                            <td style="text-align:right">{{p.qty * p.sellprice}}</td>
+                            <td style="text-align:right">{{p.DisAmt | number}}</td>
+                            <td style="text-align:right">{{p.stax | number}}</td>
+                            <td style="text-align:right">{{p.StAmt | number}}</td>
+                            <td style="text-align:right">{{p.qty * p.sellprice + p.StAmt}}</td>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                          <tr class="d-bg">
+                              <th></th>
+                              <th>Total</th>
+                              <th  style="text-align:right">{{Quantity}}</th>
+                              <th></th>
+                              <th style="text-align:right">{{Amount | number}}</th>
+                              <th></th>
+                              <th ></th>
+                              <th  style="text-align:right">{{taxAmt | number}}</th>
+                              <th  style="text-align:right">{{TotalAmt | number}}</th>
+                          </tr>
+                          <tr>
+                            <th colspan="5"></th>
+                            <th colspan="3" class="d-bg text-right">Discout on Invoice</th>
+                            <th colspan="" class="d-bg text-right">{{disAmount | number}}</th>
+                          </tr>
+                          <tr>
+                            <th colspan="5"></th>
+                            <th colspan="3" class="d-bg text-right">Net Amount</th>
+                            <th colspan="" class="d-bg text-right">{{netAmount | number}}</th>
+                          </tr>
+                      </tfoot>
+                    </table>
                 </div>
             </div>
         </div>

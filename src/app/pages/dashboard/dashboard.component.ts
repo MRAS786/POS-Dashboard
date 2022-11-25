@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { AppSettings } from 'src/app/app.settings';
 import { Settings } from 'src/app/app.settings.model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -8,9 +8,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppGlobal } from 'src/app/services/app.global';
 import { GvarService } from 'src/app/services/gvar.service';
 import { ApiService } from 'src/app/services/api.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { grandSaleRequestModel } from './dashboard.model';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -18,6 +20,12 @@ import { grandSaleRequestModel } from './dashboard.model';
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit {
+  modalRef: NgbModalRef;
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
+  datatableElement: QueryList<DataTableDirective>;
+  dtOptions: any = {};
+  dtTrigger: Subject<any> = new Subject();
   url: any;
   accessToken: any;
   UserId: any;
@@ -25,6 +33,16 @@ export class DashboardComponent implements OnInit {
   grandSaleRequestModel: grandSaleRequestModel;
   getLocationsList: any = [];
   selectedLocations:any = [];
+  monthlyReportList: any = [];
+  netAmount:number;
+  Quantity:number;
+  TaxAmt:number;
+  disAmount:number;
+  TotalAmt:number;
+  Amount:number;
+  taxAmt:number;
+  invoiceNumber:string;
+  invoiceDetailResponse: any = [];
   constructor(
     private domSanitizer: DomSanitizer,
     private toastr: ToastrService,
@@ -38,12 +56,27 @@ export class DashboardComponent implements OnInit {
     this.grandSaleRequestModel = new grandSaleRequestModel();
     this.getLocationsList = [];
     this.selectedLocations = [];
+    this.monthlyReportList = [];
+    this.invoiceDetailResponse = [];
   }
 
   ngOnInit() {
     this.getAssignedLocations();
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 25,
+      processing: true,
+      dom: 'Blfrtip',
+      buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+    };
   }
-
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(0);
+  }
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
   getAssignedLocations(){
     this.API.getdata(this.config.GET_DASHBOARD_DATA + this.UserId).subscribe({
       next: (data) => {
@@ -56,6 +89,76 @@ export class DashboardComponent implements OnInit {
           this.toastr.error(error.error.Message, 'Error');
         }
       }
+    });
+  }
+
+  getMonthlySales(locationID){
+    this.API.getdata(this.config.MONTHALY_SALES_BY_LOCATION + locationID).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.monthlyReportList =  data;
+          this.rerender();
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+
+  getDailySales(locationID){
+    this.API.getdata(this.config.DAILY_SALES_BY_LOCATION + locationID).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.monthlyReportList =  data;
+          this.rerender();
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+
+  getInvoiceDetail(invoiceno){
+    this.API.getdata(this.config.GET_RECIPT_DETAILS_INVOICE + invoiceno).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.invoiceNumber = invoiceno;
+          this.invoiceDetailResponse = data;
+          this.Quantity = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty, 0);
+          var sellprice = this.invoiceDetailResponse.reduce((sum, current) => sum + current.sellprice, 0);
+          var StAmt = this.invoiceDetailResponse.reduce((sum, current) => sum + current.StAmt, 0);
+          this.disAmount=this.invoiceDetailResponse[0].DisAmount;
+          this.taxAmt=StAmt;
+          this.Amount = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty * current.sellprice, 0);
+          this.TotalAmt = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty * current.sellprice + current.StAmt, 0);
+          this.netAmount=this.TotalAmt-this.disAmount;
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+
+
+  
+  rerender(): void {
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      if (dtElement.dtInstance)
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+        });
+    });
+    setTimeout(() => {
+      this.dtTrigger.next(0);
     });
   }
 }

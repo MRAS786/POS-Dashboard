@@ -5,7 +5,7 @@ export const verticalMenuItems = [
     new Menu (5, 'Sales', '/view/dailysales', null, 'calendar', null, false, 0),
     new Menu (6, 'Category Wise Data', '/view/foodsales', null, 'calendar', null, false, 0),
     new Menu (7, 'Timeslot Wise Sales', '/view/timeslotsales', null, 'calendar', null, false, 0),
-    new Menu (8, 'Timeslot wWse Sales (NOP)', '/view/timeslotnopsales', null, 'calendar', null, false, 0),
+    new Menu (8, 'Timeslot Wise Sales (NOP)', '/view/timeslotnopsales', null, 'calendar', null, false, 0),
     new Menu (9, 'Items Wise Report', '/view/itemsreport', null, 'calendar', null, false, 0),
 
     new Menu (2, 'Master', null, null, 'sitemap', null, true, 0),

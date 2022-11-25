@@ -26,4 +26,7 @@ export class AppGlobal {
     public readonly ITEM_WISE_REPORT = "/Master/itemwiseReport";
 
     public readonly MONTHALY_SALES_BY_LOCATION = "/Master/monthlySale?locationID=";
+    public readonly DAILY_SALES_BY_LOCATION = "/Master/dailySale?locationID=";
+
+    public readonly GET_CATEGORY_LIST = "/Master/categorList";
 }

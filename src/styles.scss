@@ -320,12 +320,16 @@ $icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap";
   background-color: #c75336 !important;
   border-color: #c75336 !important;
 }
-.btn-success:hover {
+.btn-success:hover,.btn-success.active {
   color: #fff;
   background-color: #c75336 !important;
   border-color: #c75336 !important;
 }
-
+.btn-success:active {
+  color: #fff;
+  background-color: #c75336 !important;
+  border-color: #c75336 !important;
+}
 ::placeholder {
   color: #808080;
   font-style: italic;
@@ -480,5 +484,7 @@ $icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap";
   background-color: #c75336 !important;
   color: #fff;
 }
-
+.close{
+  color: #fff !important;
+}
 

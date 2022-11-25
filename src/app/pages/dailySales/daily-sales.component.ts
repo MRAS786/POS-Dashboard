@@ -23,14 +23,14 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./daily-sales.component.scss']
 })
 export class DailySalesComponent implements OnInit {
-  netAmount:number;
-  Quantity:number;
-  TaxAmt:number;
-  disAmount:number;
-  TotalAmt:number;
-  Amount:number;
-  taxAmt:number;
-  invoiceNumber:string;
+  netAmount: number;
+  Quantity: number;
+  TaxAmt: number;
+  disAmount: number;
+  TotalAmt: number;
+  Amount: number;
+  taxAmt: number;
+  invoiceNumber: string;
   modalRef: NgbModalRef;
   @ViewChildren(DataTableDirective)
   datatableElement: QueryList<DataTableDirective>;
@@ -41,16 +41,69 @@ export class DailySalesComponent implements OnInit {
   accessToken: any;
   UserId: any;
   searchForm: FormGroup;
-  searchmonthly: FormGroup;
   hideShowDiv: boolean = false;
   dropdownSettings: IDropdownSettings = {};
   grandSaleRequestModel: grandSaleRequestModel;
   getLocationsList: any = [];
-  selectedLocations:any = [];
+  selectedLocations: any = [];
   invoiceDetailResponse: any = [];
   reportListDateWise: any = [];
   reportList: any = [];
   complaintCount = [];
+
+  public daily = [
+    {
+      date: '11/24/2022',
+      sales: '500'
+    },
+    {
+      date: '11/24/2022',
+      sales: '600'
+    },
+    {
+      date: '11/24/2022',
+      sales: '800'
+    },
+    {
+      date: '11/24/2022',
+      sales: '1000'
+    },
+    {
+      date: '11/24/2022',
+      sales: '1500'
+    },
+    {
+      date: '11/24/2022',
+      sales: '5000'
+    }
+  ]
+  public monthly = [
+    {
+      date: '09/01/2022',
+      sales: '60000'
+    },
+    {
+      date: '10/01/2022',
+      sales: '70000'
+    },
+    {
+      date: '11/01/2022',
+      sales: '80000'
+    }
+  ]
+  public yearly = [
+    {
+      year: '2021',
+      sales: '60000'
+    },
+    {
+      year: '2022',
+      sales: '70000'
+    },
+  ]
+
+
+
 
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
@@ -61,7 +114,7 @@ export class DailySalesComponent implements OnInit {
   public barChartDataNaturewise: ChartDataSets[] = [
     { data: [12, 68, 6] }
   ];
-  
+
   public barChartOptions: ChartOptions = {
     responsive: true,
     tooltips: {
@@ -78,25 +131,26 @@ export class DailySalesComponent implements OnInit {
         anchor: 'end',
         align: 'end',
         color: 'black',
-        padding: 0,
-      },
-   
+        padding: 2,
+        formatter: function(value) {
+          return Number(value).toFixed(0).replace(/./g, function (c, i, a) {
+            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+          });
+         }
+      }
     },
     scales: {
       xAxes: [{
         ticks: {}
       }],
       yAxes: [{
-        
         ticks: {
           beginAtZero: true,
-          // stepSize: 500000,
-          // callback: function (value, index, values) {
-          //   var val = Number(value) / 1e6 + 'M';
-          //   return val
-          // }
+          callback: function (value, index, values) {
+            return value.toLocaleString();   // this is all we need
+          }
+         
         }
-       
       }]
     }
   };
@@ -109,15 +163,15 @@ export class DailySalesComponent implements OnInit {
     private API: ApiService,
     private datepipe: DatePipe,
     private modalService: NgbModal) {
-      this.dropdownSettings = {
-        singleSelection: false,
-        idField: 'locationID',
-        textField: 'locationName',
-        selectAllText: 'Select All',
-        unSelectAllText: 'UnSelect All',
-        itemsShowLimit: 3,
-        allowSearchFilter: true
-      }
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'locationID',
+      textField: 'locationName',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true
+    }
     this.accessToken = localStorage.getItem('access_token');
     this.UserId = localStorage.getItem('UserId');
     this.grandSaleRequestModel = new grandSaleRequestModel();
@@ -128,6 +182,7 @@ export class DailySalesComponent implements OnInit {
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
  
+
   }
 
   ngOnInit() {
@@ -147,10 +202,6 @@ export class DailySalesComponent implements OnInit {
     this.searchForm = this.fb.group({
       mFromDate: ['', Validators.compose([Validators.required])],
       mToDate: ['', Validators.compose([Validators.required])],
-    });
-
-    this.searchmonthly = this.fb.group({
-      locationID: ['', Validators.compose([Validators.required])],
     });
   }
   private formatDate(date) {
@@ -172,59 +223,62 @@ export class DailySalesComponent implements OnInit {
     this.grandSaleRequestModel.locationList.splice(this.grandSaleRequestModel.locationList.findIndex(ele => ele.locationID == items.locationID), 1);
   }
 
-  searchSales(){
+  searchSales() {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
-    this.API.PostData(this.config.GET_SALE_DATE_WISE , this.grandSaleRequestModel).subscribe({
-      next: (data) => {
-        if (data != null) {
-          this.hideShowDiv = true;
-          this.reportList = data;
-          this.complaintCount =  this.reportList.map((item) => {
-            return item.totalSale;
-          });
-          // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
-          this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
-          var complaintDept = [];
-          complaintDept =  this.reportList.map((item) => {
-            let newDate = this.datepipe.transform(item.saleDate, 'dd/MM/yyyy')
-            return newDate;
-          });
-          this.barChartLabelsNaturewise = complaintDept;
-        }
-      },
-      error: (error) => {
-        if (error.error != undefined) {
-          this.toastr.error(error.error.Message, 'Error');
-        }
-      }
-    });
-
-
-    this.API.PostData(this.config.GET_DATE_WISE_DETAILS , this.grandSaleRequestModel).subscribe({
-      next: (data) => {
-        if (data != null) {
-          this.destroyDT(0, true).then((destroyed) => {
+    if(this.selectedLocations == ''){
+      this.toastr.error("Select Location", 'Error');
+    }
+    else{
+      this.API.PostData(this.config.GET_SALE_DATE_WISE, this.grandSaleRequestModel).subscribe({
+        next: (data) => {
+          if (data != null) {
             this.hideShowDiv = true;
-            this.reportListDateWise = data;
-            this.dtTrigger.next(0);
-          });
+            this.reportList = data;
+            this.complaintCount = this.reportList.map((item) => {
+              return item.totalSale;
+            });
+            this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+            var complaintDept = [];
+            complaintDept = this.reportList.map((item) => {
+              let newDate = this.datepipe.transform(item.saleDate, 'dd/MM/yyyy')
+              return newDate;
+            });
+            this.barChartLabelsNaturewise = complaintDept;
+          }
+        },
+        error: (error) => {
+          if (error.error != undefined) {
+            this.toastr.error(error.error.Message, 'Error');
+          }
         }
-      },
-      error: (error) => {
-        if (error.error != undefined) {
-          this.toastr.error(error.error.Message, 'Error');
+      });
+
+      this.API.PostData(this.config.GET_DATE_WISE_DETAILS, this.grandSaleRequestModel).subscribe({
+        next: (data) => {
+          if (data != null) {
+            this.destroyDT(0, true).then((destroyed) => {
+              this.hideShowDiv = true;
+              this.reportListDateWise = data;
+              this.dtTrigger.next(0);
+            });
+          }
+        },
+        error: (error) => {
+          if (error.error != undefined) {
+            this.toastr.error(error.error.Message, 'Error');
+          }
         }
-      }
-    });
+      });
+    }
   }
 
-  getAssignedLocations(){
+  getAssignedLocations() {
     this.API.getdata(this.config.GET_ASSIGNED_LOCATIONS).subscribe({
       next: (data) => {
         if (data != null) {
-            this.getLocationsList = data;
+          this.getLocationsList = data;
         }
       },
       error: (error) => {
@@ -234,30 +288,13 @@ export class DailySalesComponent implements OnInit {
       }
     });
   }
-  onchangeLocation(event){
-    this.searchmonthly.value.locationID = event.target.value;
-    this.getMonthlySales(event.target.value)
-  }
-  getMonthlySales(locationID){
-    this.API.getdata(this.config.MONTHALY_SALES_BY_LOCATION + locationID).subscribe({
-      next: (data) => {
-        if (data != null) {
-        
-        }
-      },
-      error: (error) => {
-        if (error.error != undefined) {
-          this.toastr.error(error.error.Message, 'Error');
-        }
-      }
-    });
-  }
-  resetForm(){
+
+  resetForm() {
     this.searchForm.reset();
     this.hideShowDiv = false;
   }
 
-  getInvoiceDetail(content, invoiceno){
+  getInvoiceDetail(content, invoiceno) {
     this.modalRef = this.modalService.open(content, { centered: false, size: 'lg' });
     this.API.getdata(this.config.GET_RECIPT_DETAILS_INVOICE + invoiceno).subscribe({
       next: (data) => {
@@ -267,11 +304,11 @@ export class DailySalesComponent implements OnInit {
           this.Quantity = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty, 0);
           var sellprice = this.invoiceDetailResponse.reduce((sum, current) => sum + current.sellprice, 0);
           var StAmt = this.invoiceDetailResponse.reduce((sum, current) => sum + current.StAmt, 0);
-          this.disAmount=this.invoiceDetailResponse[0].DisAmount;
-          this.taxAmt=StAmt;
+          this.disAmount = this.invoiceDetailResponse[0].DisAmount;
+          this.taxAmt = StAmt;
           this.Amount = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty * current.sellprice, 0);
           this.TotalAmt = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty * current.sellprice + current.StAmt, 0);
-          this.netAmount=this.TotalAmt-this.disAmount;
+          this.netAmount = this.TotalAmt - this.disAmount;
         }
       },
       error: (error) => {
@@ -281,6 +318,47 @@ export class DailySalesComponent implements OnInit {
       }
     });
   }
+
+
+  timeFrame(event){
+    if(event.target.value == "daily"){
+      this.complaintCount = this.daily.map((item) => {
+        return item.sales;
+      });
+      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+      var complaintDept = [];
+      complaintDept = this.daily.map((item) => {
+        let newDate = this.datepipe.transform(item.date, 'dd/MM/yyyy')
+        return newDate;
+      });
+      this.barChartLabelsNaturewise = complaintDept;
+    }
+    if(event.target.value == "monthly"){
+      this.complaintCount = this.monthly.map((item) => {
+        return item.sales;
+      });
+      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+      var complaintDept = [];
+      complaintDept = this.monthly.map((item) => {
+        let newDate = this.datepipe.transform(item.date, 'dd/MM/yyyy')
+        return newDate;
+      });
+      this.barChartLabelsNaturewise = complaintDept;
+    }
+    if(event.target.value == "yearly"){
+      this.complaintCount = this.yearly.map((item) => {
+        return item.sales;
+      });
+      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+      var complaintDept = [];
+      complaintDept = this.yearly.map((item) => {
+        return item.year;
+      });
+      this.barChartLabelsNaturewise = complaintDept;
+    }
+  }
+
+
 
   destroyDT = (tableIndex, clearData): Promise<boolean> => {
     return new Promise((resolve) => {

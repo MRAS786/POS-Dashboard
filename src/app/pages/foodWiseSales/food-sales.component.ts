@@ -10,13 +10,13 @@ import { GvarService } from 'src/app/services/gvar.service';
 import { ApiService } from 'src/app/services/api.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { grandSaleRequestModel } from '../dashboard/dashboard.model';
 import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { MultiDataSet, Label, Color, SingleDataSet } from 'ng2-charts';
 import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { grandSaleRequestModel } from './food-sales.model';
 @Component({
   selector: 'food-sales',
   templateUrl: './food-sales.component.html',
@@ -44,9 +44,14 @@ export class FoodSalesComponent implements OnInit {
   searchForm: FormGroup;
   hideShowDiv: boolean = false;
   dropdownSettings: IDropdownSettings = {};
+  dropdownSettings2: IDropdownSettings = {};
   grandSaleRequestModel: grandSaleRequestModel;
   getLocationsList: any = [];
   selectedLocations:any = [];
+
+  getCategoryList: any = [];
+  selectedCategories:any = [];
+
   invoiceDetailResponse: any = [];
   reportListDateWise: any = [];
   foodwiseResponseModel: any = [];
@@ -78,7 +83,12 @@ export class FoodSalesComponent implements OnInit {
         anchor: 'end',
         align: 'end',
         color: 'black',
-        padding: 0
+        padding: 0,
+        formatter: function(value) {
+          return Number(value).toFixed(0).replace(/./g, function (c, i, a) {
+            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+          });
+         }
       },
    
     },
@@ -89,12 +99,9 @@ export class FoodSalesComponent implements OnInit {
       yAxes: [{
         ticks: {
           beginAtZero: true,
-          // stepSize: 500000,
-          // callback: function (value, index, values) {
-          //   var val = Number(value) / 1e6 + 'M';
-          //   return val
-
-          // }
+          callback: function (value, index, values) {
+            return value.toLocaleString();   // this is all we need
+          }
         }
       }]
     }
@@ -118,6 +125,15 @@ export class FoodSalesComponent implements OnInit {
         itemsShowLimit: 3,
         allowSearchFilter: true
       }
+      this.dropdownSettings2 = {
+        singleSelection: false,
+        idField: 'mcode',
+        textField: 'name',
+        selectAllText: 'Select All',
+        unSelectAllText: 'UnSelect All',
+        itemsShowLimit: 3,
+        allowSearchFilter: true
+      }
     this.accessToken = localStorage.getItem('access_token');
     this.UserId = localStorage.getItem('UserId');
     this.grandSaleRequestModel = new grandSaleRequestModel();
@@ -128,11 +144,14 @@ export class FoodSalesComponent implements OnInit {
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
     this.listAllData = [];
+    this.getCategoryList = [];
+    this.selectedLocations = [];
   }
 
   ngOnInit() {
     this.InitializeForm();
     this.getAssignedLocations();
+    this.getCategory();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 25,
@@ -181,24 +200,28 @@ export class FoodSalesComponent implements OnInit {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
-    this.API.PostData(this.config.GET_FOOD_WISE_REPORT , this.grandSaleRequestModel).subscribe({
-      next: (data) => {
-        if (data != null) {
-          this.hideShowDiv = true;
-          this.foodwiseResponseModel = data;
-          this.getBarChartHorizental();
-        
-          this.listAllData =  data;
-          this.rerender(); 
+    if(this.selectedLocations == ''){
+      this.toastr.error("Select Location", 'Error');
+    }
+    else{
+      this.API.PostData(this.config.GET_FOOD_WISE_REPORT , this.grandSaleRequestModel).subscribe({
+        next: (data) => {
+          if (data != null) {
+            this.hideShowDiv = true;
+            this.foodwiseResponseModel = data;
+            this.getBarChartHorizental();
+          
+            this.listAllData =  data;
+            this.rerender(); 
+          }
+        },
+        error: (error) => {
+          if (error.error != undefined) {
+            this.toastr.error(error.error.Message, 'Error');
+          }
         }
-      },
-      error: (error) => {
-        if (error.error != undefined) {
-          this.toastr.error(error.error.Message, 'Error');
-        }
-      }
-    });
-
+      });
+    }
   }
 
   getAssignedLocations(){
@@ -238,6 +261,35 @@ export class FoodSalesComponent implements OnInit {
     });
     this.barChartLabelsNaturewise = complaintDept;
   }
+
+  onItemSelectCat(item: any) {
+    this.grandSaleRequestModel.categoryList.push(item);
+  }
+  onSelectAllCat(items: any) {
+    this.grandSaleRequestModel.categoryList = items;
+  }
+  ondeSelectCat(items: any) {
+    this.grandSaleRequestModel.categoryList.splice(this.grandSaleRequestModel.categoryList.findIndex(ele => ele.mcode == items.mcode), 1);
+  }
+
+  getCategory(){
+    this.API.getdata(this.config.GET_CATEGORY_LIST).subscribe({
+      next: (data) => {
+        if (data != null) {
+            this.getCategoryList = data;
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+
+
+
+
 
   rerender(): void {
     this.dtElements.forEach((dtElement: DataTableDirective) => {

@@ -78,7 +78,12 @@ export class TimeslotSalesComponent implements OnInit {
         anchor: 'end',
         align: 'end',
         color: 'black',
-        padding: 0
+        padding: 0,
+        formatter: function(value) {
+          return Number(value).toFixed(0).replace(/./g, function (c, i, a) {
+            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+          });
+         }
       },
    
     },
@@ -89,11 +94,8 @@ export class TimeslotSalesComponent implements OnInit {
       yAxes: [{
         ticks: {
           beginAtZero: true,
-          stepSize: 500000,
           callback: function (value, index, values) {
-            var val = Number(value) / 1e6 + 'M';
-            return val
-
+            return value.toLocaleString();   // this is all we need
           }
         }
       }]
@@ -178,24 +180,28 @@ export class TimeslotSalesComponent implements OnInit {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
-    this.API.PostData(this.config.GET_HOURY_WISE_REPORT , this.grandSaleRequestModel).subscribe({
-      next: (data) => {
-        if (data != null) {
-          this.hideShowDiv = true;
-          this.hourlyResponse = data;
-          this.getBarChartHorizental();
-
-          this.listAllData =  data;
-          this.rerender(); 
+    if(this.selectedLocations == ''){
+      this.toastr.error("Select Location", 'Error');
+    }
+    else{
+      this.API.PostData(this.config.GET_HOURY_WISE_REPORT , this.grandSaleRequestModel).subscribe({
+        next: (data) => {
+          if (data != null) {
+            this.hideShowDiv = true;
+            this.hourlyResponse = data;
+            this.getBarChartHorizental();
+  
+            this.listAllData =  data;
+            this.rerender(); 
+          }
+        },
+        error: (error) => {
+          if (error.error != undefined) {
+            this.toastr.error(error.error.Message, 'Error');
+          }
         }
-      },
-      error: (error) => {
-        if (error.error != undefined) {
-          this.toastr.error(error.error.Message, 'Error');
-        }
-      }
-    });
-
+      });
+    }
   }
 
   getAssignedLocations(){
