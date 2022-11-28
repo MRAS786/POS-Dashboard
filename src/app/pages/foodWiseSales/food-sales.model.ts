@@ -9,6 +9,8 @@ export class categoryList  {
 export class grandSaleRequestModel{
     mFromDate:string;
     mToDate:string;
+    mcode: string;
+    itemcode1: string;
     locationList:locationList [];
     categoryList:categoryList [];
     constructor(){

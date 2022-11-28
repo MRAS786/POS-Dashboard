@@ -50,61 +50,9 @@ export class DailySalesComponent implements OnInit {
   reportListDateWise: any = [];
   reportList: any = [];
   complaintCount = [];
-
-  public daily = [
-    {
-      date: '11/24/2022',
-      sales: '500'
-    },
-    {
-      date: '11/24/2022',
-      sales: '600'
-    },
-    {
-      date: '11/24/2022',
-      sales: '800'
-    },
-    {
-      date: '11/24/2022',
-      sales: '1000'
-    },
-    {
-      date: '11/24/2022',
-      sales: '1500'
-    },
-    {
-      date: '11/24/2022',
-      sales: '5000'
-    }
-  ]
-  public monthly = [
-    {
-      date: '09/01/2022',
-      sales: '60000'
-    },
-    {
-      date: '10/01/2022',
-      sales: '70000'
-    },
-    {
-      date: '11/01/2022',
-      sales: '80000'
-    }
-  ]
-  public yearly = [
-    {
-      year: '2021',
-      sales: '60000'
-    },
-    {
-      year: '2022',
-      sales: '70000'
-    },
-  ]
-
-
-
-
+  dailyReports: any = [];
+  monthlyReports: any = [];
+  yearlyReports: any = [];
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
   public barChartLegend = false;
@@ -132,11 +80,11 @@ export class DailySalesComponent implements OnInit {
         align: 'end',
         color: 'black',
         padding: 2,
-        formatter: function(value) {
+        formatter: function (value) {
           return Number(value).toFixed(0).replace(/./g, function (c, i, a) {
             return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
           });
-         }
+        }
       }
     },
     scales: {
@@ -149,7 +97,7 @@ export class DailySalesComponent implements OnInit {
           callback: function (value, index, values) {
             return value.toLocaleString();   // this is all we need
           }
-         
+
         }
       }]
     }
@@ -181,10 +129,10 @@ export class DailySalesComponent implements OnInit {
     this.complaintCount = [];
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
- 
-
+    this.dailyReports = [];
+    this.monthlyReports = [];
+    this.yearlyReports = [];
   }
-
   ngOnInit() {
     this.InitializeForm();
     this.getAssignedLocations();
@@ -227,22 +175,24 @@ export class DailySalesComponent implements OnInit {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
-    if(this.selectedLocations == ''){
+    if (this.selectedLocations == '') {
       this.toastr.error("Select Location", 'Error');
     }
-    else{
+    else {
       this.API.PostData(this.config.GET_SALE_DATE_WISE, this.grandSaleRequestModel).subscribe({
         next: (data) => {
           if (data != null) {
             this.hideShowDiv = true;
-            this.reportList = data;
-            this.complaintCount = this.reportList.map((item) => {
+            this.dailyReports = data.dailyReport;
+            this.monthlyReports = data.monthlyReport;
+            this.yearlyReports = data.yearlyReport;
+            this.complaintCount = this.dailyReports.map((item) => {
               return item.totalSale;
             });
             this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
             var complaintDept = [];
-            complaintDept = this.reportList.map((item) => {
-              let newDate = this.datepipe.transform(item.saleDate, 'dd/MM/yyyy')
+            complaintDept = this.dailyReports.map((item) => {
+              let newDate = this.datepipe.transform(item.date, 'dd/MM/yyyy')
               return newDate;
             });
             this.barChartLabelsNaturewise = complaintDept;
@@ -320,46 +270,42 @@ export class DailySalesComponent implements OnInit {
   }
 
 
-  timeFrame(event){
-    if(event.target.value == "daily"){
-      this.complaintCount = this.daily.map((item) => {
-        return item.sales;
+  timeFrame(event) {
+    if (event.target.value == "daily") {
+      this.complaintCount = this.dailyReports.map((item) => {
+        return item.totalSale;
       });
       this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
       var complaintDept = [];
-      complaintDept = this.daily.map((item) => {
+      complaintDept = this.dailyReports.map((item) => {
         let newDate = this.datepipe.transform(item.date, 'dd/MM/yyyy')
         return newDate;
       });
       this.barChartLabelsNaturewise = complaintDept;
     }
-    if(event.target.value == "monthly"){
-      this.complaintCount = this.monthly.map((item) => {
-        return item.sales;
+    if (event.target.value == "monthly") {
+      this.complaintCount = this.monthlyReports.map((item) => {
+        return item.totalSale;
       });
       this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
       var complaintDept = [];
-      complaintDept = this.monthly.map((item) => {
-        let newDate = this.datepipe.transform(item.date, 'dd/MM/yyyy')
-        return newDate;
+      complaintDept = this.monthlyReports.map((item) => {
+        return item.monthName;
       });
       this.barChartLabelsNaturewise = complaintDept;
     }
-    if(event.target.value == "yearly"){
-      this.complaintCount = this.yearly.map((item) => {
-        return item.sales;
+    if (event.target.value == "yearly") {
+      this.complaintCount = this.yearlyReports.map((item) => {
+        return item.totalSale;
       });
       this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
       var complaintDept = [];
-      complaintDept = this.yearly.map((item) => {
-        return item.year;
+      complaintDept = this.yearlyReports.map((item) => {
+        return item.yearName;
       });
       this.barChartLabelsNaturewise = complaintDept;
     }
   }
-
-
-
   destroyDT = (tableIndex, clearData): Promise<boolean> => {
     return new Promise((resolve) => {
       this.datatableElement.forEach((dtElement: DataTableDirective, index) => {

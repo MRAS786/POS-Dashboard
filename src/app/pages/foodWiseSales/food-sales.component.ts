@@ -37,6 +37,8 @@ export class FoodSalesComponent implements OnInit {
   datatableElement: QueryList<DataTableDirective>;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
+  dtTrigger1: Subject<any> = new Subject();
+  dtTrigger2: Subject<any> = new Subject();
   dataTable: any;
   url: any;
   accessToken: any;
@@ -55,8 +57,9 @@ export class FoodSalesComponent implements OnInit {
   invoiceDetailResponse: any = [];
   reportListDateWise: any = [];
   foodwiseResponseModel: any = [];
+  itemDetailResponse: any = [];
+  salesListDateWise: any = [];
   complaintCount = [];
-  listAllData = [];
   grandTotal:number=0;
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
@@ -143,9 +146,10 @@ export class FoodSalesComponent implements OnInit {
     this.complaintCount = [];
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
-    this.listAllData = [];
     this.getCategoryList = [];
     this.selectedLocations = [];
+    this.itemDetailResponse = [];
+    this.salesListDateWise = [];
   }
 
   ngOnInit() {
@@ -173,11 +177,15 @@ export class FoodSalesComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     this.dtTrigger.next(0);
+    this.dtTrigger1.next(0);
+    this.dtTrigger2.next(0);
   }
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+    this.dtTrigger1.unsubscribe();
+    this.dtTrigger2.unsubscribe();
   }
   InitializeForm() {
     this.searchForm = this.fb.group({
@@ -196,11 +204,11 @@ export class FoodSalesComponent implements OnInit {
   }
 
   searchSales(){
-    
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
     this.grandSaleRequestModel.categoryList = this.selectedCategories;
+    this.grandSaleRequestModel.mcode = '';
     if(this.selectedLocations == ''){
       this.toastr.error("Select Location", 'Error');
     }
@@ -286,9 +294,48 @@ export class FoodSalesComponent implements OnInit {
     });
   }
 
+  getItemDetail(mcode){
+    this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
+    this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
+    this.grandSaleRequestModel.locationList = this.selectedLocations;
+    this.grandSaleRequestModel.categoryList = [];
+    this.grandSaleRequestModel.mcode = mcode;
+    this.API.PostData(this.config.ITEM_WISE_REPORT , this.grandSaleRequestModel).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.itemDetailResponse = data;
+          this.rerender(); 
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });  
+  }
 
-
-
+  getSalesDetail(itemcode1){
+    this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
+    this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
+    this.grandSaleRequestModel.locationList = this.selectedLocations;
+    this.grandSaleRequestModel.categoryList = [];
+    this.grandSaleRequestModel.mcode = '';
+    this.grandSaleRequestModel.itemcode1 = itemcode1;
+    this.API.PostData(this.config.GET_DATE_WISE_DETAILS, this.grandSaleRequestModel).subscribe({
+      next: (data) => {
+        if (data != null) {
+            this.salesListDateWise = data;
+            this.rerender();
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
 
   rerender(): void {
     this.dtElements.forEach((dtElement: DataTableDirective) => {
@@ -299,6 +346,8 @@ export class FoodSalesComponent implements OnInit {
     });
     setTimeout(() => {
       this.dtTrigger.next(0);
+      this.dtTrigger1.next(0);
+      this.dtTrigger2.next(0);
     });
 
   }
