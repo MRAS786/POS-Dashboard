@@ -200,6 +200,7 @@ export class FoodSalesComponent implements OnInit {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
+    this.grandSaleRequestModel.categoryList = this.selectedCategories;
     if(this.selectedLocations == ''){
       this.toastr.error("Select Location", 'Error');
     }

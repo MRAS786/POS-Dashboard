@@ -10,13 +10,13 @@ import { GvarService } from 'src/app/services/gvar.service';
 import { ApiService } from 'src/app/services/api.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { grandSaleRequestModel } from '../dashboard/dashboard.model';
 import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { MultiDataSet, Label, Color, SingleDataSet } from 'ng2-charts';
 import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { grandSaleRequestModel } from './items.model';
 @Component({
   selector: 'items-report',
   templateUrl: './items-report.component.html',
@@ -44,9 +44,12 @@ export class ItemsReportComponent implements OnInit {
   searchForm: FormGroup;
   hideShowDiv: boolean = false;
   dropdownSettings: IDropdownSettings = {};
+  dropdownSettings2: IDropdownSettings = {};
   grandSaleRequestModel: grandSaleRequestModel;
   getLocationsList: any = [];
   selectedLocations:any = [];
+  getItemList: any = [];
+  selectedItems:any = [];
   invoiceDetailResponse: any = [];
   reportListDateWise: any = [];
   complaintCount = [];
@@ -77,10 +80,13 @@ export class ItemsReportComponent implements OnInit {
         anchor: 'end',
         align: 'end',
         color: 'black',
-        padding: 0,
-
-      },
-   
+        padding: 2,
+        formatter: function(value) {
+          return Number(value).toFixed(0).replace(/./g, function (c, i, a) {
+            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+          });
+         }
+      }
     },
     scales: {
       xAxes: [{
@@ -89,9 +95,26 @@ export class ItemsReportComponent implements OnInit {
       yAxes: [{
         ticks: {
           beginAtZero: true,
+          callback: function (value, index, values) {
+            return value.toLocaleString();   // this is all we need
+          }
+         
         }
       }]
     }
+  };
+  public barChartOptionsFoodWise: ChartOptions = {
+    responsive: true,
+    tooltips: {
+      callbacks: {
+        label: function (tooltipItem, data) {
+          return "Rs " + Number(tooltipItem.yLabel).toFixed(0).replace(/./g, function (c, i, a) {
+            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+          });
+        }
+      }
+    },
+    
   };
   constructor(
     private domSanitizer: DomSanitizer,
@@ -111,6 +134,15 @@ export class ItemsReportComponent implements OnInit {
         itemsShowLimit: 3,
         allowSearchFilter: true
       }
+      this.dropdownSettings2 = {
+        singleSelection: false,
+        idField: 'SubCCode',
+        textField: 'Descr',
+        selectAllText: 'Select All',
+        unSelectAllText: 'UnSelect All',
+        itemsShowLimit: 3,
+        allowSearchFilter: true
+      }
     this.accessToken = localStorage.getItem('access_token');
     this.UserId = localStorage.getItem('UserId');
     this.grandSaleRequestModel = new grandSaleRequestModel();
@@ -121,7 +153,8 @@ export class ItemsReportComponent implements OnInit {
     this.reportListDateWise = [];
     this.invoiceDetailResponse = [];
     this.listAllData = [];
-
+    this.getItemList = [];
+    this.selectedItems = [];
   }
   ngAfterViewInit(): void {
     this.dtTrigger.next(0);
@@ -134,6 +167,7 @@ export class ItemsReportComponent implements OnInit {
   ngOnInit() {
     this.InitializeForm();
     this.getAssignedLocations();
+    this.getItems();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 25,
@@ -173,6 +207,7 @@ export class ItemsReportComponent implements OnInit {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
+    this.grandSaleRequestModel.ItemList = this.selectedItems;
     if(this.selectedLocations == ''){
       this.toastr.error("Select Location", 'Error');
     }
@@ -218,16 +253,44 @@ export class ItemsReportComponent implements OnInit {
   }
 
   getBarChartHorizental() {
-    this.complaintCount = this.invoiceDetailResponse.map((item) => {
-      return item.sellprice;
+    this.grandTotal=0;
+    this.invoiceDetailResponse.forEach(e => {
+      this.grandTotal=this.grandTotal+e.Amount;
     });
+    this.complaintCount = this.invoiceDetailResponse.map((item) => {
+      return item.Amount;
+    });
+    // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
     this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
     var complaintDept = [];
     complaintDept = this.invoiceDetailResponse.map((item) => {
-      let newDate = this.datepipe.transform(item.dates, 'dd/MM/yyyy');
-      return newDate;
+        return item.SName;
     });
     this.barChartLabelsNaturewise = complaintDept;
+  }
+
+  onSelectItems(item: any) {
+    this.grandSaleRequestModel.ItemList.push(item);
+  }
+  onSelectAllItems(items: any) {
+    this.grandSaleRequestModel.ItemList = items;
+  }
+  ondeSelectItems(items: any) {
+    this.grandSaleRequestModel.ItemList.splice(this.grandSaleRequestModel.ItemList.findIndex(ele => ele.SubCCode == items.SubCCode), 1);
+  }
+  getItems(){
+    this.API.getdata(this.config.GET_ITEM_LIST).subscribe({
+      next: (data) => {
+        if (data != null) {
+            this.getItemList = data;
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
   }
   rerender(): void {
     this.dtElements.forEach((dtElement: DataTableDirective) => {

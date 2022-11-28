@@ -5,7 +5,7 @@
                 <div class="card-body">
                     <form [formGroup]="searchForm" role="form">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Locations</label><span class="imp">*</span>
                                     <ng-multiselect-dropdown [placeholder]="'Select Locations'"
@@ -16,13 +16,24 @@
                                     </ng-multiselect-dropdown>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Items</label>
+                                    <ng-multiselect-dropdown [placeholder]="'Select Items'"
+                                        [data]="getItemList" [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="selectedItems" [settings]="dropdownSettings2"
+                                        (onSelect)="onSelectItems($event)" (onSelectAll)="onSelectAllItems($event)"
+                                        (onDeSelect)="ondeSelectItems($event)">
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Date From</label><span class="imp">*</span>
                                     <input type="date" class="form-control" formControlName="mFromDate">
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Date To</label><span class="imp">*</span>
                                     <input type="date" class="form-control" formControlName="mToDate">
@@ -43,7 +54,7 @@
         </div>
     </div>
 
-    <!-- <div class="row mt-4" *ngIf="hideShowDiv">
+    <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -54,7 +65,7 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
@@ -70,8 +81,8 @@
                                     <th>Item Code</th>
                                     <th>Item Description</th>
                                     <th>Qty</th>
-                                    <th class="text-right">Amount</th>
                                     <th class="text-right">Avg. Rate</th>
+                                    <th class="text-right">Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,8 +91,8 @@
                                     <td>{{p.itemcode}}</td>
                                     <td>{{p.SName}}</td>
                                     <td>{{p.qty}}</td>
-                                    <td class="text-right">{{p.qty * p.sellprice}}</td>
                                     <td class="text-right">{{p.sellprice}}</td>
+                                    <td class="text-right">{{p.Amount}}</td>
                                 </tr>
                             </tbody>
                         </table>

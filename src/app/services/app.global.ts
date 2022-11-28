@@ -29,4 +29,6 @@ export class AppGlobal {
     public readonly DAILY_SALES_BY_LOCATION = "/Master/dailySale?locationID=";
 
     public readonly GET_CATEGORY_LIST = "/Master/categorList";
+
+    public readonly GET_ITEM_LIST = "/Master/itemList";
 }
