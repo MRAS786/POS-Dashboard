@@ -204,6 +204,7 @@ export class ItemsReportComponent implements OnInit {
   }
 
   searchSales(){
+    this.invoiceDetailResponse = [];
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
@@ -218,8 +219,6 @@ export class ItemsReportComponent implements OnInit {
             this.hideShowDiv = true;
             this.invoiceDetailResponse = data;
             this.getBarChartHorizental();
-          
-            this.listAllData =  data;
             this.rerender(); 
           }
         },

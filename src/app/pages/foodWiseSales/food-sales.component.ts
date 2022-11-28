@@ -196,7 +196,7 @@ export class FoodSalesComponent implements OnInit {
   }
 
   searchSales(){
-    this.listAllData = [];
+    
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
@@ -211,8 +211,6 @@ export class FoodSalesComponent implements OnInit {
             this.hideShowDiv = true;
             this.foodwiseResponseModel = data;
             this.getBarChartHorizental();
-          
-            this.listAllData =  data;
             this.rerender(); 
           }
         },
