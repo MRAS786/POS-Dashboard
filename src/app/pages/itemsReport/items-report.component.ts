@@ -219,6 +219,7 @@ export class ItemsReportComponent implements OnInit {
             this.hideShowDiv = true;
             this.invoiceDetailResponse = data;
             this.getBarChartHorizental();
+            this.reportListDateWise = data;
             this.rerender(); 
           }
         },
