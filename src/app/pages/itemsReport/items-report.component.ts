@@ -136,8 +136,8 @@ export class ItemsReportComponent implements OnInit {
       }
       this.dropdownSettings2 = {
         singleSelection: false,
-        idField: 'SubCCode',
-        textField: 'Descr',
+        idField: 'itemcode1',
+        textField: 'name',
         selectAllText: 'Select All',
         unSelectAllText: 'UnSelect All',
         itemsShowLimit: 3,

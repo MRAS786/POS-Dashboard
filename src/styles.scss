@@ -487,4 +487,7 @@ $icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap";
 .close{
   color: #fff !important;
 }
-
+.modal {
+  z-index: 999999;
+  padding-top: 0% !important;
+}

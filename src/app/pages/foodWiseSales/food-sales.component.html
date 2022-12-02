@@ -126,8 +126,8 @@
                                 <td>{{p.itemcode}}</td>
                                 <td class="styl-new" data-toggle="modal" data-target="#salesDetails" (click)="getSalesDetail(p.itemcode)" title="View Sales Detail">{{p.SName}}</td>
                                 <td>{{p.qty}}</td>
-                                <td class="text-right">{{p.sellprice}}</td>
-                                <td class="text-right">{{p.Amount}}</td>
+                                <td class="text-right">{{p.sellprice | number}}</td>
+                                <td class="text-right">{{p.Amount | number}}</td>
                             </tr>
                         </tbody>
                     </table>

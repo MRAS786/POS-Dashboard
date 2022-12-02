@@ -1,6 +1,6 @@
 <ol class="breadcrumb" *ngIf="router.url != '/'">  
     <li *ngIf="router.url != '/'" class="breadcrumb-item">
-        <a routerLink="/" (click)="closeSubMenus()"><i class="fa fa-home mr-2"></i>Home</a>
+        <a routerLink="/view/dashboard" (click)="closeSubMenus()"><i class="fa fa-home mr-2"></i>Home</a>
     </li>
     <li *ngFor="let breadcrumb of breadcrumbs; let i = index;" class="breadcrumb-item">
         <a [hidden]="i == (breadcrumbs.length - 1)" [routerLink]="[breadcrumb.url]">{{breadcrumb.name}}</a>          
