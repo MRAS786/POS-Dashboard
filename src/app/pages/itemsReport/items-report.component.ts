@@ -37,6 +37,7 @@ export class ItemsReportComponent implements OnInit {
   datatableElement: QueryList<DataTableDirective>;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
+  dtTrigger2: Subject<any> = new Subject();
   dataTable: any;
   url: any;
   accessToken: any;
@@ -54,6 +55,7 @@ export class ItemsReportComponent implements OnInit {
   reportListDateWise: any = [];
   complaintCount = [];
   listAllData = [];
+  salesListDateWise = [];
   grandTotal: number = 0;
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
@@ -77,8 +79,8 @@ export class ItemsReportComponent implements OnInit {
     },
     plugins: {
       datalabels: {
-        anchor: 'end',
-        align: 'end',
+        anchor: 'center',
+        align: 'center',
         color: 'black',
         padding: 2,
         formatter: function(value) {
@@ -155,14 +157,17 @@ export class ItemsReportComponent implements OnInit {
     this.listAllData = [];
     this.getItemList = [];
     this.selectedItems = [];
+    this.salesListDateWise = [];
   }
   ngAfterViewInit(): void {
     this.dtTrigger.next(0);
+    this.dtTrigger2.next(0);
   }
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+    this.dtTrigger2.unsubscribe();
   }
   ngOnInit() {
     this.InitializeForm();
@@ -292,6 +297,31 @@ export class ItemsReportComponent implements OnInit {
       }
     });
   }
+
+  getSalesDetail(itemcode1){
+    this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
+    this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
+    this.grandSaleRequestModel.locationList = this.selectedLocations;
+    this.grandSaleRequestModel.ItemList = [];
+    this.grandSaleRequestModel.itemcode1 = itemcode1;
+    this.API.PostData(this.config.GET_DATE_WISE_DETAILS, this.grandSaleRequestModel).subscribe({
+      next: (data) => {
+        if (data != null) {
+            this.salesListDateWise = data;
+            this.rerender();
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+
+
+
+
   rerender(): void {
     this.dtElements.forEach((dtElement: DataTableDirective) => {
       if (dtElement.dtInstance)
@@ -301,6 +331,7 @@ export class ItemsReportComponent implements OnInit {
     });
     setTimeout(() => {
       this.dtTrigger.next(0);
+      this.dtTrigger2.next(0);
     });
 
   }

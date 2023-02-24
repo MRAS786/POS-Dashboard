@@ -54,10 +54,55 @@
     </div>
 
     <div class="row mt-4" *ngIf="hideShowDiv">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="card">
+                <div class="card-header text-center">
+                    <h5>Category Wise</h5>
+                </div>
                 <div class="card-body">
-                    <canvas [height]="100" baseChart [datasets]="barChartDataNaturewise"
+                    <canvas baseChart [datasets]="barChartDataNaturewise"
+                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                        [legend]="barChartLegend" [chartType]="barChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5>Sale and Cost</h5>
+                </div>
+                <div class="card-body">
+                    <canvas baseChart [datasets]="barChartDataNaturewise"
+                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                        [legend]="barChartLegend" [chartType]="barChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4" *ngIf="hideShowDiv">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5>Cost %</h5>
+                </div>
+                <div class="card-body">
+                    <canvas baseChart [datasets]="barChartDataNaturewise"
+                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                        [legend]="barChartLegend" [chartType]="barChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5>Share % in Sale</h5>
+                </div>
+                <div class="card-body">
+                    <canvas baseChart [datasets]="barChartDataNaturewise"
                         [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
                         [legend]="barChartLegend" [chartType]="barChartType">
                     </canvas>
@@ -78,12 +123,18 @@
                                     <th class="text-center">Sr.</th>
                                     <th>Category</th>
                                     <th class="text-right">Sale</th>
+                                    <th class="text-right">Cost</th>
+                                    <th class="text-right">Cost %</th>
+                                    <th class="text-right">Share % in Sale</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let p of foodwiseResponseModel let ndx=index;">
                                     <td class="text-center">{{ndx+1}}</td>
                                     <td class="styl-new" data-toggle="modal" data-target="#itemDetails" (click)="getItemDetail(p.mcode)" title="View Item Detail">{{p.Mname }}</td>
+                                    <td class="text-right">{{p.SAmt | number}}</td>
+                                    <td class="text-right">{{p.SAmt | number}}</td>
+                                    <td class="text-right">{{p.SAmt | number}}</td>
                                     <td class="text-right">{{p.SAmt | number}}</td>
                                 </tr>
                             </tbody>

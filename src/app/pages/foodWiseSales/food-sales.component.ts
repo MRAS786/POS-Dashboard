@@ -83,8 +83,8 @@ export class FoodSalesComponent implements OnInit {
     },
     plugins: {
       datalabels: {
-        anchor: 'end',
-        align: 'end',
+        anchor: 'center',
+        align: 'center',
         color: 'black',
         padding: 0,
         formatter: function(value) {
@@ -92,8 +92,7 @@ export class FoodSalesComponent implements OnInit {
             return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
           });
          }
-      },
-   
+      }
     },
     scales: {
       xAxes: [{
@@ -261,7 +260,7 @@ export class FoodSalesComponent implements OnInit {
       return item.SAmt;
     });
     // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
-    this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+     this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
     var complaintDept = [];
     complaintDept = this.foodwiseResponseModel.map((item) => {
         return item.Mname;

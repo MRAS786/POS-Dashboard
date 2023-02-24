@@ -75,8 +75,8 @@ export class TimeslotSalesComponent implements OnInit {
     },
     plugins: {
       datalabels: {
-        anchor: 'end',
-        align: 'end',
+        anchor: 'center',
+        align: 'center',
         color: 'black',
         padding: 0,
         formatter: function(value) {

@@ -88,7 +88,7 @@
                             <tbody>
                                 <tr *ngFor="let p of reportListDateWise let ndx=index;">
                                     <td>{{ndx+1}}</td>
-                                    <td>{{p.itemcode}}</td>
+                                    <td class="styl-new" data-toggle="modal" data-target="#salesDetails" (click)="getSalesDetail(p.itemcode)" title="View Sales Detail">{{p.itemcode}}</td>
                                     <td>{{p.SName}}</td>
                                     <td>{{p.qty}}</td>
                                     <td class="text-right">{{p.sellprice}}</td>
@@ -98,6 +98,49 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="salesDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sales Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2"
+                        class="table table-hover table-striped dt-responsive table-bordered" width="100%">
+                        <thead>
+                            <tr class="d-bg">
+                                <th class="text-center">Sr.</th>
+                                <th class="text-center">Invoice Number</th>
+                                <th class="text-center">No. of Persons</th>
+                                <th class="text-right">Value</th>
+                                <th class="text-right">Discount Amount</th>
+                                <th class="text-right">Sale Tax</th>
+                                <th class="text-right">Total Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let p of salesListDateWise let i=index;">
+                                <td class="text-center">{{i+1}}</td>
+                                <td class="text-center styl-new">{{p.invoiceno }}</td>
+                                <td class="text-center">{{p.Persons}}</td>
+                                <td class="text-right">{{p.Value | number}}</td>
+                                <td class="text-right">{{p.DisAmount | number}}</td>
+                                <td class="text-right">{{p.StAmt | number}}</td>
+                                <td class="text-right">{{p.TotSale | number}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
         </div>
     </div>
