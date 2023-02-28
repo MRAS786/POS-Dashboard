@@ -57,6 +57,9 @@
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
             <div class="card">
+                <div class="modal-header text-center pb-0">
+                    <p>ITEMS REPORT</p>
+                </div>
                 <div class="card-body">
                     <canvas [height]="100" baseChart [datasets]="barChartDataNaturewise"
                         [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"

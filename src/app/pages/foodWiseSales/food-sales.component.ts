@@ -23,14 +23,14 @@ import { grandSaleRequestModel } from './food-sales.model';
   styleUrls: ['./food-sales.component.scss']
 })
 export class FoodSalesComponent implements OnInit {
-  netAmount:number;
-  Quantity:number;
-  TaxAmt:number;
-  disAmount:number;
-  TotalAmt:number;
-  Amount:number;
-  taxAmt:number;
-  invoiceNumber:string;
+  netAmount: number;
+  Quantity: number;
+  TaxAmt: number;
+  disAmount: number;
+  TotalAmt: number;
+  Amount: number;
+  taxAmt: number;
+  invoiceNumber: string;
   modalRef: NgbModalRef;
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
@@ -49,10 +49,10 @@ export class FoodSalesComponent implements OnInit {
   dropdownSettings2: IDropdownSettings = {};
   grandSaleRequestModel: grandSaleRequestModel;
   getLocationsList: any = [];
-  selectedLocations:any = [];
+  selectedLocations: any = [];
 
   getCategoryList: any = [];
-  selectedCategories:any = [];
+  selectedCategories: any = [];
 
   invoiceDetailResponse: any = [];
   reportListDateWise: any = [];
@@ -60,7 +60,9 @@ export class FoodSalesComponent implements OnInit {
   itemDetailResponse: any = [];
   salesListDateWise: any = [];
   complaintCount = [];
-  grandTotal:number=0;
+  grandTotal: number = 0;
+
+  totalSales = 0;
   public barChartType: ChartType = 'bar';
   public barChartTypeFeedBack: ChartType = 'bar';
   public barChartLegend = false;
@@ -87,11 +89,11 @@ export class FoodSalesComponent implements OnInit {
         align: 'center',
         color: 'black',
         padding: 0,
-        formatter: function(value) {
+        formatter: function (value) {
           return Number(value).toFixed(0).replace(/./g, function (c, i, a) {
             return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
           });
-         }
+        }
       }
     },
     scales: {
@@ -108,7 +110,30 @@ export class FoodSalesComponent implements OnInit {
       }]
     }
   };
-  
+
+
+
+
+  costCount = [];
+  public costWiseLabels: Label[];
+  public barChartCost: ChartDataSets[] = [
+    { data: [12, 68, 6], label: 'Series A' }
+  ];
+
+
+  shareInSalesCount = [];
+  public shareinSalesLabels: Label[];
+  public barChartshareInSales: ChartDataSets[] = [
+    { data: [12, 68, 6] }
+  ];
+
+  salesAndCost = [];
+  salesAndCost2 = [];
+  public salesAndCostLabels: Label[];
+  public barChartshareAndCost: ChartDataSets[] = [
+    { data: [12, 68, 6] }
+  ];
+
   constructor(
     private domSanitizer: DomSanitizer,
     private toastr: ToastrService,
@@ -118,24 +143,24 @@ export class FoodSalesComponent implements OnInit {
     private API: ApiService,
     private datepipe: DatePipe,
     private modalService: NgbModal) {
-      this.dropdownSettings = {
-        singleSelection: false,
-        idField: 'locationID',
-        textField: 'locationName',
-        selectAllText: 'Select All',
-        unSelectAllText: 'UnSelect All',
-        itemsShowLimit: 3,
-        allowSearchFilter: true
-      }
-      this.dropdownSettings2 = {
-        singleSelection: false,
-        idField: 'mcode',
-        textField: 'name',
-        selectAllText: 'Select All',
-        unSelectAllText: 'UnSelect All',
-        itemsShowLimit: 3,
-        allowSearchFilter: true
-      }
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'locationID',
+      textField: 'locationName',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true
+    }
+    this.dropdownSettings2 = {
+      singleSelection: false,
+      idField: 'mcode',
+      textField: 'name',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true
+    }
     this.accessToken = localStorage.getItem('access_token');
     this.UserId = localStorage.getItem('UserId');
     this.grandSaleRequestModel = new grandSaleRequestModel();
@@ -149,6 +174,10 @@ export class FoodSalesComponent implements OnInit {
     this.selectedLocations = [];
     this.itemDetailResponse = [];
     this.salesListDateWise = [];
+    this.costCount = [];
+    this.shareInSalesCount = [];
+    this.salesAndCost = [];
+    this.salesAndCost2 = [];
   }
 
   ngOnInit() {
@@ -202,23 +231,29 @@ export class FoodSalesComponent implements OnInit {
     this.grandSaleRequestModel.locationList.splice(this.grandSaleRequestModel.locationList.findIndex(ele => ele.locationID == items.locationID), 1);
   }
 
-  searchSales(){
+  searchSales() {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
     this.grandSaleRequestModel.categoryList = this.selectedCategories;
     this.grandSaleRequestModel.mcode = '';
-    if(this.selectedLocations == ''){
+    if (this.selectedLocations == '') {
       this.toastr.error("Select Location", 'Error');
     }
-    else{
-      this.API.PostData(this.config.GET_FOOD_WISE_REPORT , this.grandSaleRequestModel).subscribe({
+    else {
+      this.API.PostData(this.config.GET_FOOD_WISE_REPORT, this.grandSaleRequestModel).subscribe({
         next: (data) => {
           if (data != null) {
             this.hideShowDiv = true;
             this.foodwiseResponseModel = data;
+            this.totalSales = 0;
+            for (let d of data) {
+              if (d != null) {
+                this.totalSales = this.totalSales + d.SAmt;
+              }
+            }
             this.getBarChartHorizental();
-            this.rerender(); 
+            this.rerender();
           }
         },
         error: (error) => {
@@ -230,12 +265,12 @@ export class FoodSalesComponent implements OnInit {
     }
   }
 
-  getAssignedLocations(){
+  getAssignedLocations() {
     this.API.getdata(this.config.GET_ASSIGNED_LOCATIONS).subscribe({
       next: (data) => {
         if (data != null) {
-            this.getLocationsList = data;
-            
+          this.getLocationsList = data;
+
         }
       },
       error: (error) => {
@@ -246,26 +281,81 @@ export class FoodSalesComponent implements OnInit {
     });
   }
 
-  resetForm(){
+  resetForm() {
     this.searchForm.reset();
     this.hideShowDiv = false;
   }
 
   getBarChartHorizental() {
-    this.grandTotal=0;
+    this.grandTotal = 0;
     this.foodwiseResponseModel.forEach(e => {
-      this.grandTotal=this.grandTotal+e.SAmt;
+      this.grandTotal = this.grandTotal + e.SAmt;
     });
     this.complaintCount = this.foodwiseResponseModel.map((item) => {
       return item.SAmt;
     });
-    // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: false }];
-     this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+    this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#e07924', '#2492e0', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: true }];
+    // this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor:
+    //   'rgba(54, 162, 235, 0.2)', borderColor:'rgba(54, 162, 235, 1)', borderWidth: 1, hoverBackgroundColor: 'rgba(255, 99, 132, 0.2)', fill: false }];
     var complaintDept = [];
     complaintDept = this.foodwiseResponseModel.map((item) => {
-        return item.Mname;
+      return item.Mname;
     });
     this.barChartLabelsNaturewise = complaintDept;
+
+
+
+    //Cost graphr
+    this.costCount = this.foodwiseResponseModel.map((item) => {
+      return item.CAmt;
+    });
+    this.barChartCost = [{ data: this.costCount, backgroundColor: ['#5446eb', '#e07924', '#2492e0', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: true }];
+
+    // this.barChartCost = [{ data: this.costCount, backgroundColor:
+    //   'rgba(54, 162, 235, 0.2)', borderColor:'rgba(54, 162, 235, 1)',borderWidth: 1, hoverBackgroundColor: 'rgba(255, 99, 132, 0.2)', fill: false }];
+    var costDept = [];
+    costDept = this.foodwiseResponseModel.map((item) => {
+      return item.Mname;
+    });
+    this.costWiseLabels = costDept;
+
+
+    //Share in Sales graph
+    this.shareInSalesCount = this.foodwiseResponseModel.map((item) => {
+      var shareinsales = (item.SAmt / this.totalSales) * 100;
+      return shareinsales;
+    });
+    this.barChartshareInSales = [{ data: this.shareInSalesCount, backgroundColor: ['#5446eb', '#e07924', '#2492e0', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: true }];
+
+    // this.barChartshareInSales = [{ data: this.shareInSalesCount, backgroundColor:
+    //   'rgba(54, 162, 235, 0.2)', borderColor:'rgba(54, 162, 235, 1)', borderWidth: 1,hoverBackgroundColor: 'rgba(255, 99, 132, 0.2)', fill: false }];
+    var shareInsalesDept = [];
+    shareInsalesDept = this.foodwiseResponseModel.map((item) => {
+      return item.Mname;
+
+    });
+    this.shareinSalesLabels = shareInsalesDept;
+
+
+    //Sales and Cost graph
+    this.salesAndCost = this.foodwiseResponseModel.map((item) => {
+      return item.SAmt;
+    });
+    this.salesAndCost2 = this.foodwiseResponseModel.map((item) => {
+      return item.CAmt;
+    });
+
+    this.barChartshareAndCost = [{ data: this.salesAndCost, backgroundColor: ['#5446eb','#5446eb','#5446eb','#5446eb','#5446eb','#5446eb','#5446eb','#5446eb','#5446eb','#5446eb'], hoverBackgroundColor: ['#a1bbf7'], fill: true },
+    { data: this.salesAndCost2, backgroundColor: ['#e07924','#e07924','#e07924','#e07924','#e07924','#e07924','#e07924','#e07924','#e07924','#e07924','#e07924'], hoverBackgroundColor: ['#e07924'], fill: true }];
+
+ 
+    var salesAndCostDept = [];
+    salesAndCostDept = this.foodwiseResponseModel.map((item) => {
+      return item.Mname;
+    });
+    this.salesAndCostLabels = salesAndCostDept;
+
+
   }
 
   onItemSelectCat(item: any) {
@@ -278,11 +368,11 @@ export class FoodSalesComponent implements OnInit {
     this.grandSaleRequestModel.categoryList.splice(this.grandSaleRequestModel.categoryList.findIndex(ele => ele.mcode == items.mcode), 1);
   }
 
-  getCategory(){
+  getCategory() {
     this.API.getdata(this.config.GET_CATEGORY_LIST).subscribe({
       next: (data) => {
         if (data != null) {
-            this.getCategoryList = data;
+          this.getCategoryList = data;
         }
       },
       error: (error) => {
@@ -293,17 +383,17 @@ export class FoodSalesComponent implements OnInit {
     });
   }
 
-  getItemDetail(mcode){
+  getItemDetail(mcode) {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
     this.grandSaleRequestModel.categoryList = [];
     this.grandSaleRequestModel.mcode = mcode;
-    this.API.PostData(this.config.ITEM_WISE_REPORT , this.grandSaleRequestModel).subscribe({
+    this.API.PostData(this.config.ITEM_WISE_REPORT, this.grandSaleRequestModel).subscribe({
       next: (data) => {
         if (data != null) {
           this.itemDetailResponse = data;
-          this.rerender(); 
+          this.rerender();
         }
       },
       error: (error) => {
@@ -311,10 +401,10 @@ export class FoodSalesComponent implements OnInit {
           this.toastr.error(error.error.Message, 'Error');
         }
       }
-    });  
+    });
   }
 
-  getSalesDetail(itemcode1){
+  getSalesDetail(itemcode1) {
     this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
     this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
     this.grandSaleRequestModel.locationList = this.selectedLocations;
@@ -324,8 +414,8 @@ export class FoodSalesComponent implements OnInit {
     this.API.PostData(this.config.GET_DATE_WISE_DETAILS, this.grandSaleRequestModel).subscribe({
       next: (data) => {
         if (data != null) {
-            this.salesListDateWise = data;
-            this.rerender();
+          this.salesListDateWise = data;
+          this.rerender();
         }
       },
       error: (error) => {

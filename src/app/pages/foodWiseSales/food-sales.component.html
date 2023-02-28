@@ -1,5 +1,7 @@
 <div class="container-fluid p-0">
     <div class="row">
+
+
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -56,8 +58,8 @@
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header text-center">
-                    <h5>Category Wise</h5>
+                <div class="modal-header text-center pb-0">
+                    <p>SALES</p>
                 </div>
                 <div class="card-body">
                     <canvas baseChart [datasets]="barChartDataNaturewise"
@@ -69,12 +71,15 @@
         </div>
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header text-center">
-                    <h5>Sale and Cost</h5>
+                <div class="modal-header text-center pb-0">
+                    <p>SALE AND COST</p>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="div-styl mr-2"></span> SALES <span class="ml-4 mr-2 div-styl2"></span> COST
                 </div>
                 <div class="card-body">
-                    <canvas baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                    <canvas baseChart [datasets]="barChartshareAndCost"
+                        [labels]="salesAndCostLabels" [options]="barChartOptions" [plugins]="barChartPlugins"
                         [legend]="barChartLegend" [chartType]="barChartType">
                     </canvas>
                 </div>
@@ -85,12 +90,12 @@
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header text-center">
-                    <h5>Cost %</h5>
+                <div class="modal-header text-center pb-0">
+                    <p>COST %</p>
                 </div>
                 <div class="card-body">
-                    <canvas baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                    <canvas baseChart [datasets]="barChartCost"
+                        [labels]="costWiseLabels" [options]="barChartOptions" [plugins]="barChartPlugins"
                         [legend]="barChartLegend" [chartType]="barChartType">
                     </canvas>
                 </div>
@@ -98,12 +103,12 @@
         </div>
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header text-center">
-                    <h5>Share % in Sale</h5>
+                <div class="modal-header text-center pb-0">
+                    <p>SHARE % IN SALE</p>
                 </div>
                 <div class="card-body">
-                    <canvas baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                    <canvas baseChart [datasets]="barChartshareInSales"
+                        [labels]="shareinSalesLabels" [options]="barChartOptions" [plugins]="barChartPlugins"
                         [legend]="barChartLegend" [chartType]="barChartType">
                     </canvas>
                 </div>
@@ -133,9 +138,9 @@
                                     <td class="text-center">{{ndx+1}}</td>
                                     <td class="styl-new" data-toggle="modal" data-target="#itemDetails" (click)="getItemDetail(p.mcode)" title="View Item Detail">{{p.Mname }}</td>
                                     <td class="text-right">{{p.SAmt | number}}</td>
-                                    <td class="text-right">{{p.SAmt | number}}</td>
-                                    <td class="text-right">{{p.SAmt | number}}</td>
-                                    <td class="text-right">{{p.SAmt | number}}</td>
+                                    <td class="text-right">{{p.CAmt | number}}</td>
+                                    <td class="text-right">{{(p.CAmt/p.SAmt) * 100 | number}}</td>
+                                    <td class="text-right">{{(p.SAmt/totalSales) * 100 | number}}</td>
                                 </tr>
                             </tbody>
                         </table>

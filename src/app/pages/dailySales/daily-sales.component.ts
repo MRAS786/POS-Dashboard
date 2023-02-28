@@ -23,6 +23,8 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./daily-sales.component.scss']
 })
 export class DailySalesComponent implements OnInit {
+  
+  reporTitle: any;
   netAmount: number;
   Quantity: number;
   TaxAmt: number;
@@ -77,7 +79,7 @@ export class DailySalesComponent implements OnInit {
     },
     plugins: {
       datalabels: {
-        anchor: 'end',
+        anchor: 'center',
         align: 'center',
         color: 'black',
         padding: 0,
@@ -103,6 +105,8 @@ export class DailySalesComponent implements OnInit {
       }]
     }
   };
+
+  coloR = [];
   constructor(
     private domSanitizer: DomSanitizer,
     private toastr: ToastrService,
@@ -143,6 +147,7 @@ export class DailySalesComponent implements OnInit {
     this.dtTrigger.unsubscribe();
   }
   ngOnInit() {
+    this.reporTitle = "DAILY SALES";
     this.InitializeForm();
     this.getAssignedLocations();
     this.dtOptions = {
@@ -154,12 +159,16 @@ export class DailySalesComponent implements OnInit {
     };
     this.searchForm.get('mFromDate').patchValue(this.formatDate(new Date()));
     this.searchForm.get('mToDate').patchValue(this.formatDate(new Date()));
+
   }
   InitializeForm() {
     this.searchForm = this.fb.group({
       mFromDate: ['', Validators.compose([Validators.required])],
       mToDate: ['', Validators.compose([Validators.required])],
     });
+  }
+  getRandomColor() {
+  
   }
   private formatDate(date) {
     const d = new Date(date);
@@ -198,7 +207,7 @@ export class DailySalesComponent implements OnInit {
             this.complaintCount = this.dailyReports.map((item) => {
               return item.totalSale;
             });
-            this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+            this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: true }];
             var complaintDept = [];
             complaintDept = this.dailyReports.map((item) => {
               let newDate = this.datepipe.transform(item.date, 'dd/MM/yyyy')
@@ -280,10 +289,12 @@ export class DailySalesComponent implements OnInit {
 
   timeFrame(event) {
     if (event.target.value == "daily") {
+      this.reporTitle = "DAILY SALES";
       this.complaintCount = this.dailyReports.map((item) => {
         return item.totalSale;
       });
-      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: true }];
+
       var complaintDept = [];
       complaintDept = this.dailyReports.map((item) => {
         let newDate = this.datepipe.transform(item.date, 'dd/MM/yyyy')
@@ -292,10 +303,11 @@ export class DailySalesComponent implements OnInit {
       this.barChartLabelsNaturewise = complaintDept;
     }
     if (event.target.value == "monthly") {
+      this.reporTitle = "MONTHLY SALES";
       this.complaintCount = this.monthlyReports.map((item) => {
         return item.totalSale;
       });
-      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: true }];
       var complaintDept = [];
       complaintDept = this.monthlyReports.map((item) => {
         return item.monthName;
@@ -303,10 +315,11 @@ export class DailySalesComponent implements OnInit {
       this.barChartLabelsNaturewise = complaintDept;
     }
     if (event.target.value == "yearly") {
+      this.reporTitle = "YEARLY SALES";
       this.complaintCount = this.yearlyReports.map((item) => {
         return item.totalSale;
       });
-      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: '#2196f3', hoverBackgroundColor: '#c75336', fill: false }];
+      this.barChartDataNaturewise = [{ data: this.complaintCount, backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: true }];
       var complaintDept = [];
       complaintDept = this.yearlyReports.map((item) => {
         return item.yearName;
