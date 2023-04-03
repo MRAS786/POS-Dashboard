@@ -1,7 +1,5 @@
 <div class="container-fluid p-0">
     <div class="row">
-
-
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -21,11 +19,10 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Category</label>
-                                    <ng-multiselect-dropdown [placeholder]="'Select Category'"
-                                        [data]="getCategoryList" [ngModelOptions]="{standalone: true}"
-                                        [(ngModel)]="selectedCategories" [settings]="dropdownSettings2"
-                                        (onSelect)="onItemSelectCat($event)" (onSelectAll)="onSelectAllCat($event)"
-                                        (onDeSelect)="ondeSelectCat($event)">
+                                    <ng-multiselect-dropdown [placeholder]="'Select Category'" [data]="getCategoryList"
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedCategories"
+                                        [settings]="dropdownSettings2" (onSelect)="onItemSelectCat($event)"
+                                        (onSelectAll)="onSelectAllCat($event)" (onDeSelect)="ondeSelectCat($event)">
                                     </ng-multiselect-dropdown>
                                 </div>
                             </div>
@@ -45,7 +42,8 @@
                     </form>
                 </div>
                 <div class="card-footer text-right">
-                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i class="fa fa-spinner"></i>
+                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i
+                            class="fa fa-spinner"></i>
                         Load Data</button>
 
                     <button class="btn btn-dark" (click)="resetForm()"><i class="fa fa-refresh"></i>
@@ -56,61 +54,120 @@
     </div>
 
     <div class="row mt-4" *ngIf="hideShowDiv">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="modal-header text-center pb-0">
-                    <p>SALES</p>
-                </div>
-                <div class="card-body">
-                    <canvas baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="modal-header text-center pb-0">
-                    <p>SALE AND COST</p>
-                </div>
-                <div class="text-center mt-2">
-                    <span class="div-styl mr-2"></span> SALES <span class="ml-4 mr-2 div-styl2"></span> COST
-                </div>
-                <div class="card-body">
-                    <canvas baseChart [datasets]="barChartshareAndCost"
-                        [labels]="salesAndCostLabels" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
-                </div>
-            </div>
+        <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-info p-2" (click)="convetToPDFAll('generateAllPDF')"><i
+                    class="fa fa-print"></i> Generate All
+                PDF</button>
         </div>
     </div>
+    <div id="generateAllPDF">
+        <div class="row mt-4" *ngIf="hideShowDiv">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>SALES</p>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <i data-toggle="modal" data-target="#salesGraph" class="fa fa-bar-chart mr-2"
+                                    title="View Graph" style="font-size: 20px;cursor: pointer;"></i>
+                                <i (click)="convetToPDF('sales')" title="Generate PDF"
+                                    class="fa fa-arrow-circle-o-down"></i>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="row mt-4" *ngIf="hideShowDiv">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="modal-header text-center pb-0">
-                    <p>COST %</p>
+                    <div class="card-body">
+                        <div id="sales" class="text-center">
+                            <p class="pb-3">SALES</p>
+                            <canvas baseChart [datasets]="barChartDataNaturewise" [labels]="barChartLabelsNaturewise"
+                                [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                                [chartType]="barChartType">
+                            </canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <canvas baseChart [datasets]="barChartCost"
-                        [labels]="costWiseLabels" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>SALE AND COST</p>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <i data-toggle="modal" data-target="#salesandcost" class="fa fa-bar-chart mr-2"
+                                    title="View Graph" style="font-size: 20px;cursor: pointer;"></i>
+                                <i (click)="convetToPDF('saleAndCost')" title="Generate PDF"
+                                    class="fa fa-arrow-circle-o-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="saleAndCost">
+                        <div class="text-center mt-2">
+                            <span class="div-styl mr-2"></span> SALES <span class="ml-4 mr-2 div-styl2"></span> COST
+                        </div>
+                        <div class="card-body">
+                            <canvas baseChart [datasets]="barChartshareAndCost" [labels]="salesAndCostLabels"
+                                [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                                [chartType]="barChartType">
+                            </canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="modal-header text-center pb-0">
-                    <p>SHARE % IN SALE</p>
+
+        <div class="row mt-4" *ngIf="hideShowDiv">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>COST %</p>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <i data-toggle="modal" data-target="#costpercent" class="fa fa-bar-chart mr-2"
+                                title="View Graph" style="font-size: 20px;cursor: pointer;"></i>
+                                <i (click)="convetToPDF('cost')" title="Generate PDF"
+                                    class="fa fa-arrow-circle-o-down"></i></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="cost" class="text-center">
+                            <p class="pb-3">COST %</p>
+                            <canvas baseChart [datasets]="barChartCost" [labels]="costWiseLabels"
+                                [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                                [chartType]="barChartType">
+                            </canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <canvas baseChart [datasets]="barChartshareInSales"
-                        [labels]="shareinSalesLabels" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>SHARE % IN SALE</p>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <i data-toggle="modal" data-target="#saleinsahres" class="fa fa-bar-chart mr-2"
+                                    title="View Graph" style="font-size: 20px;cursor: pointer;"></i>
+                                <i (click)="convetToPDF('shareInsale')"
+                                    title="Generate PDF" class="fa fa-arrow-circle-o-down"></i></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="shareInsale" class="text-center">
+                            <p class="pb-3">SHARE % IN SALE</p>
+                            <canvas baseChart [datasets]="barChartshareInSales" [labels]="shareinSalesLabels"
+                                [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                                [chartType]="barChartType">
+                            </canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -136,11 +193,12 @@
                             <tbody>
                                 <tr *ngFor="let p of foodwiseResponseModel let ndx=index;">
                                     <td class="text-center">{{ndx+1}}</td>
-                                    <td class="styl-new" data-toggle="modal" data-target="#itemDetails" (click)="getItemDetail(p.mcode)" title="View Item Detail">{{p.Mname }}</td>
-                                    <td class="text-right">{{p.SAmt | number}}</td>
-                                    <td class="text-right">{{p.CAmt | number}}</td>
-                                    <td class="text-right">{{(p.CAmt/p.SAmt) * 100 | number}}</td>
-                                    <td class="text-right">{{(p.SAmt/totalSales) * 100 | number}}</td>
+                                    <td class="styl-new" data-toggle="modal" data-target="#itemDetails"
+                                        (click)="getItemDetail(p.mcode)" title="View Item Detail">{{p.Mname }}</td>
+                                    <td class="text-right">{{p.SAmt | number: '1.0-2'}}</td>
+                                    <td class="text-right">{{p.CAmt | number: '1.0-2'}}</td>
+                                    <td class="text-right">{{(p.CAmt/p.SAmt) * 100 | number: '1.0-2'}}</td>
+                                    <td class="text-right">{{(p.SAmt/totalSales) * 100 | number: '1.0-2'}} %</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -149,16 +207,18 @@
             </div>
         </div>
     </div>
+
 </div>
 
 
-<div class="modal fade" id="itemDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="itemDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Item Detail</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Item summary</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -173,6 +233,7 @@
                                 <th>Item Description</th>
                                 <th>Qty</th>
                                 <th class="text-right">Avg. Rate</th>
+                                <th class="text-right">Cost</th>
                                 <th class="text-right">Amount</th>
                             </tr>
                         </thead>
@@ -180,9 +241,11 @@
                             <tr *ngFor="let p of itemDetailResponse let ndx=index;">
                                 <td>{{ndx+1}}</td>
                                 <td>{{p.itemcode}}</td>
-                                <td class="styl-new" data-toggle="modal" data-target="#salesDetails" (click)="getSalesDetail(p.itemcode)" title="View Sales Detail">{{p.SName}}</td>
+                                <td class="styl-new" data-toggle="modal" data-target="#salesDetails"
+                                    (click)="getSalesDetail(p.itemcode)" title="View Sales Detail">{{p.SName}}</td>
                                 <td>{{p.qty}}</td>
                                 <td class="text-right">{{p.sellprice | number}}</td>
+                                <td class="text-right">{{p.costAmt}}</td>
                                 <td class="text-right">{{p.Amount | number}}</td>
                             </tr>
                         </tbody>
@@ -194,13 +257,15 @@
 </div>
 
 
-<div class="modal fade" id="salesDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="salesDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Sales Detail</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Item sale detail</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -213,7 +278,7 @@
                                 <th class="text-center">Invoice Number</th>
                                 <th class="text-center">No. of Persons</th>
                                 <th class="text-right">Value</th>
-                                <th class="text-right">Discount Amount</th>
+                                <!-- <th class="text-right">Discount Amount</th> -->
                                 <th class="text-right">Sale Tax</th>
                                 <th class="text-right">Total Value</th>
                             </tr>
@@ -221,17 +286,236 @@
                         <tbody>
                             <tr *ngFor="let p of salesListDateWise let i=index;">
                                 <td class="text-center">{{i+1}}</td>
-                                <td class="text-center styl-new">{{p.invoiceno }}</td>
+                                <td class="text-center styl-new" data-toggle="modal" data-target="#invoiceDetails"
+                                    (click)="getInvoiceDetail(p.invoiceno)">{{p.invoiceno }}</td>
                                 <td class="text-center">{{p.Persons}}</td>
                                 <td class="text-right">{{p.Value | number}}</td>
-                                <td class="text-right">{{p.DisAmount | number}}</td>
+                                <!-- <td class="text-right">{{p.DisAmount | number}}</td> -->
                                 <td class="text-right">{{p.StAmt | number}}</td>
                                 <td class="text-right">{{p.TotSale | number}}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="invoiceDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal_head">
+                <h5 class="modal-title">Invoice detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="text-right">
+                    <button class="btn-dark p-2" [useExistingCss]="true" printSectionId="printInvoiceDetail" ngxPrint><i
+                            class="fa fa-print mr-1"></i> Print</button>
+                </div>
+                <div class="table-responsive" id="printInvoiceDetail">
+                    <table class="table table-hover table-striped dt-responsive table-bordered" cellspacing="0"
+                        width="100%">
+                        <thead>
+                            <tr class="d-bg">
+                                <th colspan="4">Invoice Number : {{invoiceNumber}} </th>
+                            </tr>
+                            <tr class="d-bg">
+                                <th>Sr.</th>
+                                <th>Item</th>
+                                <th class="text-right">Quantity</th>
+                                <th class="text-right">Rate</th>
+                                <th class="text-right">Amount</th>
+                                <th class="text-right">Discount</th>
+                                <th class="text-right">Tax %</th>
+                                <th class="text-right">Tax Amt</th>
+                                <th class="text-right">Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let p of invoiceDetailResponse let ndx = index">
+                                <td>{{ ndx + 1 }}</td>
+                                <td>{{p.Pname}}</td>
+                                <td style="text-align:right">{{p.qty}}</td>
+                                <td style="text-align:right">{{p.sellprice | number}}</td>
+                                <td style="text-align:right">{{p.qty * p.sellprice}}</td>
+                                <td style="text-align:right">{{p.DisAmt | number}}</td>
+                                <td style="text-align:right">{{p.stax | number}}</td>
+                                <td style="text-align:right">{{p.StAmt | number}}</td>
+                                <td style="text-align:right">{{p.qty * p.sellprice + p.StAmt}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="d-bg">
+                                <th></th>
+                                <th>Total</th>
+                                <th style="text-align:right">{{Quantity}}</th>
+                                <th></th>
+                                <th style="text-align:right">{{Amount | number}}</th>
+                                <th></th>
+                                <th></th>
+                                <th style="text-align:right">{{taxAmt | number}}</th>
+                                <th style="text-align:right">{{TotalAmt | number}}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="5"></th>
+                                <th colspan="3" class="d-bg text-right">Discout on Invoice</th>
+                                <th colspan="" class="d-bg text-right">{{disAmount | number}}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="5"></th>
+                                <th colspan="3" class="d-bg text-right">Net Amount</th>
+                                <th colspan="" class="d-bg text-right">{{netAmount | number}}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="salesGraph" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal_head">
+                <h5 class="modal-title">Sales</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="text-right">
+                    <i (click)="convetToPDF('salesss')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
+                </div>
+                <div class="text-center" id="salesss">
+                    <p class="pb-2">SALES</p>
+                    <canvas height="100%" baseChart [datasets]="barChartDataNaturewise"
+                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                        [legend]="barChartLegend" [chartType]="barChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="salesandcost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal_head">
+                <h5 class="modal-title">Share and Cost</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="text-right">
+                    <i (click)="convetToPDF('saleandCost')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
+                </div>
+                <div id="saleandCost">
+                    <div class="text-center mt-2">
+                        <span class="div-styl mr-2"></span> SALES <span class="ml-4 mr-2 div-styl2"></span> COST
+                    </div>
+                    <div class="card-body">
+                        <canvas height="100%" baseChart [datasets]="barChartshareAndCost" [labels]="salesAndCostLabels"
+                            [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                            [chartType]="barChartType">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="costpercent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal_head">
+                <h5 class="modal-title">Cost %</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="text-right">
+                    <i (click)="convetToPDF('percentcost')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
+                </div>
+                <div id="percentcost" class="text-center">
+                    <p class="pb-2">COST %</p>
+                    <canvas height="100%" baseChart [datasets]="barChartCost" [labels]="costWiseLabels"
+                        [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                        [chartType]="barChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="costpercent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal_head">
+                <h5 class="modal-title">Sales</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="text-right">
+                    <i (click)="convetToPDF('percentcost')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
+                </div>
+                <div id="percentcost" class="text-center">
+                    <p class="pb-2">COST %</p>
+                    <canvas height="100%" baseChart [datasets]="barChartCost" [labels]="costWiseLabels"
+                        [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                        [chartType]="barChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="saleinsahres" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal_head">
+                <h5 class="modal-title">Share in Sales</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="text-right">
+                    <i (click)="convetToPDF('sharesale')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
+                </div>
+                <div id="sharesale" class="text-center">
+                    <p class="pb-2">SHARE % IN SALE</p>
+                    <canvas height="100%" baseChart [datasets]="barChartshareInSales" [labels]="shareinSalesLabels"
+                        [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                        [chartType]="barChartType">
+                    </canvas>
+                </div>
             </div>
         </div>
     </div>

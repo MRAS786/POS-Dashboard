@@ -45,14 +45,23 @@
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
             <div class="card">
-                <div class="modal-header text-center pb-0">
-                    <p>HOURLY REPORT NOP</p>
+                <div class="card-header pb-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>HOURLY REPORT NOP</p>
+                        </div>
+                        <div class="col-md-6 text-right"><i (click)="convetToPDF('hrly')" title="Generate PDF"
+                                class="fa fa-arrow-circle-o-down"></i></div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <canvas [height]="80" baseChart [datasets]="barChartDataNaturewise"
+                    <div id="hrly" class="text-center">
+                        <p class="pb-3">HOURLY REPORT NOP</p>
+                        <canvas [height]="80" baseChart [datasets]="barChartDataNaturewise"
                         [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
                         [legend]="barChartLegend" [chartType]="barChartType">
                     </canvas>
+                    </div>
                 </div>
             </div>
         </div>

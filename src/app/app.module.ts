@@ -32,11 +32,13 @@ import { UserMenuComponent } from './theme/components/user-menu/user-menu.compon
 import { NotFoundComponent } from './pages/errors/not-found/not-found.component';
 import { FlagsMenuComponent } from './theme/components/flags-menu/flags-menu.component';
 import {NgbModule, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { JwtModule } from "@auth0/angular-jwt";
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { ToastrModule} from 'ngx-toastr';
 import { AppGlobal } from './services/app.global';
 import { ApiService } from './services/api.service';
 import { GvarService } from './services/gvar.service';
+
 @NgModule({  
   imports: [
     BrowserModule,
@@ -59,7 +61,7 @@ import { GvarService } from './services/gvar.service';
     }),
     BrowserAnimationsModule,
     NgbModule,
-    
+
   ],
   declarations: [
     AppComponent,

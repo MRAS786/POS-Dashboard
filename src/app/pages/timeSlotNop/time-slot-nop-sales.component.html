@@ -32,7 +32,8 @@
                     </form>
                 </div>
                 <div class="card-footer text-right">
-                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i class="fa fa-spinner"></i>
+                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i
+                            class="fa fa-spinner"></i>
                         Load Data</button>
 
                     <button class="btn btn-dark" (click)="resetForm()"><i class="fa fa-refresh"></i>
@@ -45,14 +46,23 @@
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
             <div class="card">
-                <div class="modal-header text-center pb-0">
-                    <p>HOURLY REPORT</p>
+                <div class="card-header pb-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>HOURLY REPORT</p>
+                        </div>
+                        <div class="col-md-6 text-right"><i (click)="convetToPDF('hrly')" title="Generate PDF"
+                                class="fa fa-arrow-circle-o-down"></i></div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <canvas [height]="80" baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
+                    <div id="hrly" class="text-center">
+                        <p class="pb-3">HOURLY REPORT</p>
+                        <canvas [height]="80" baseChart [datasets]="barChartDataNaturewise"
+                            [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                            [legend]="barChartLegend" [chartType]="barChartType">
+                        </canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,4 +96,3 @@
         </div>
     </div>
 </div>
-

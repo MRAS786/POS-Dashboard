@@ -1,5 +1,5 @@
 <div class="container-fluid p-0">
-   <div class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -32,7 +32,8 @@
                     </form>
                 </div>
                 <div class="card-footer text-right">
-                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i class="fa fa-spinner"></i>
+                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i
+                            class="fa fa-spinner"></i>
                         Load Data</button>
 
                     <button class="btn btn-dark" (click)="resetForm()"><i class="fa fa-refresh"></i>
@@ -46,21 +47,33 @@
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12 mb-2">
             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                <button type="button" class="btn btn-dark pl-4 pr-4" (click)="timeFrame($event)" value="daily">Daily</button>
-                <button type="button" class="btn btn-success" (click)="timeFrame($event)" value="monthly">Monthly</button>
-                <button type="button" class="btn btn-dark pl-4 pr-4" (click)="timeFrame($event)" value="yearly">Yearly</button>
-              </div>
+                <button type="button" class="btn btn-dark pl-4 pr-4" (click)="timeFrame($event)"
+                    value="daily">Daily</button>
+                <button type="button" class="btn btn-success" (click)="timeFrame($event)"
+                    value="monthly">Monthly</button>
+                <button type="button" class="btn btn-dark pl-4 pr-4" (click)="timeFrame($event)"
+                    value="yearly">Yearly</button>
+            </div>
         </div>
         <div class="col-md-12">
             <div class="card">
-                <div class="modal-header text-center pb-0">
-                    <p>{{reporTitle}}</p>
+                <div class="card-header pb-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>{{reporTitle}}</p>
+                        </div>
+                        <div class="col-md-6 text-right"><i (click)="convetToPDF('sales')" title="Generate PDF"
+                                class="fa fa-arrow-circle-o-down"></i></div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <canvas [height]="100" [enable3D]="true" baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
+                    <div id="sales" class="text-center">
+                         <p class="pb-3">{{reporTitle}}</p>
+                        <canvas [height]="100" [enable3D]="true" baseChart [datasets]="barChartDataNaturewise"
+                            [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                            [legend]="barChartLegend" [chartType]="barChartType">
+                        </canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -87,7 +100,9 @@
                             <tbody>
                                 <tr *ngFor="let p of reportListDateWise let i=index;">
                                     <td class="text-center">{{i+1}}</td>
-                                    <td class="text-center styl-new" (click)="getInvoiceDetail(invoiceDetails, p.invoiceno)" title="View Invoice Detail">{{p.invoiceno }}</td>
+                                    <td class="text-center styl-new"
+                                        (click)="getInvoiceDetail(invoiceDetails, p.invoiceno)"
+                                        title="View Invoice Detail">{{p.invoiceno }}</td>
                                     <td class="text-center">{{p.Persons}}</td>
                                     <td class="text-right">{{p.Value | number}}</td>
                                     <td class="text-right">{{p.DisAmount | number}}</td>
@@ -116,62 +131,62 @@
     <div class="card-body">
         <div class="text-right">
             <button class="btn-dark p-2" [useExistingCss]="true" printSectionId="printInvoiceDetail" ngxPrint><i
-                class="fa fa-print mr-1"></i> Print</button>
+                    class="fa fa-print mr-1"></i> Print</button>
         </div>
         <div class="table-responsive" id="printInvoiceDetail">
             <table class="table table-hover table-striped dt-responsive table-bordered" cellspacing="0" width="100%">
                 <thead>
-                  <tr class="d-bg">
-                    <th colspan="4">Invoice Number : {{invoiceNumber}} </th>
-                  </tr>
-                  <tr class="d-bg">
-                    <th>Sr.</th>
-                    <th>Item</th>
-                    <th class="text-right">Quantity</th>
-                    <th class="text-right">Rate</th>
-                    <th class="text-right">Amount</th>
-                    <th class="text-right">Discount</th>
-                    <th class="text-right">Tax %</th>
-                    <th class="text-right">Tax Amt</th>
-                    <th class="text-right">Total Amount</th>
-                  </tr>
+                    <tr class="d-bg">
+                        <th colspan="4">Invoice Number : {{invoiceNumber}} </th>
+                    </tr>
+                    <tr class="d-bg">
+                        <th>Sr.</th>
+                        <th>Item</th>
+                        <th class="text-right">Quantity</th>
+                        <th class="text-right">Rate</th>
+                        <th class="text-right">Amount</th>
+                        <th class="text-right">Discount</th>
+                        <th class="text-right">Tax %</th>
+                        <th class="text-right">Tax Amt</th>
+                        <th class="text-right">Total Amount</th>
+                    </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let p of invoiceDetailResponse let ndx = index">
-                    <td>{{ ndx + 1 }}</td>
-                    <td>{{p.Pname}}</td>
-                    <td style="text-align:right">{{p.qty}}</td>
-                    <td style="text-align:right">{{p.sellprice | number}}</td>
-                    <td style="text-align:right">{{p.qty * p.sellprice}}</td>
-                    <td style="text-align:right">{{p.DisAmt | number}}</td>
-                    <td style="text-align:right">{{p.stax | number}}</td>
-                    <td style="text-align:right">{{p.StAmt | number}}</td>
-                    <td style="text-align:right">{{p.qty * p.sellprice + p.StAmt}}</td>
-                  </tr>
+                    <tr *ngFor="let p of invoiceDetailResponse let ndx = index">
+                        <td>{{ ndx + 1 }}</td>
+                        <td>{{p.Pname}}</td>
+                        <td style="text-align:right">{{p.qty}}</td>
+                        <td style="text-align:right">{{p.sellprice | number}}</td>
+                        <td style="text-align:right">{{p.qty * p.sellprice}}</td>
+                        <td style="text-align:right">{{p.DisAmt | number}}</td>
+                        <td style="text-align:right">{{p.stax | number}}</td>
+                        <td style="text-align:right">{{p.StAmt | number}}</td>
+                        <td style="text-align:right">{{p.qty * p.sellprice + p.StAmt}}</td>
+                    </tr>
                 </tbody>
                 <tfoot>
-                  <tr class="d-bg">
-                      <th></th>
-                      <th>Total</th>
-                      <th  style="text-align:right">{{Quantity}}</th>
-                      <th></th>
-                      <th style="text-align:right">{{Amount | number}}</th>
-                      <th></th>
-                      <th ></th>
-                      <th  style="text-align:right">{{taxAmt | number}}</th>
-                      <th  style="text-align:right">{{TotalAmt | number}}</th>
-                  </tr>
-                  <tr>
-                    <th colspan="5"></th>
-                    <th colspan="3" class="d-bg text-right">Discout on Invoice</th>
-                    <th colspan="" class="d-bg text-right">{{disAmount | number}}</th>
-                  </tr>
-                  <tr>
-                    <th colspan="5"></th>
-                    <th colspan="3" class="d-bg text-right">Net Amount</th>
-                    <th colspan="" class="d-bg text-right">{{netAmount | number}}</th>
-                  </tr>
-              </tfoot>
+                    <tr class="d-bg">
+                        <th></th>
+                        <th>Total</th>
+                        <th style="text-align:right">{{Quantity}}</th>
+                        <th></th>
+                        <th style="text-align:right">{{Amount | number}}</th>
+                        <th></th>
+                        <th></th>
+                        <th style="text-align:right">{{taxAmt | number}}</th>
+                        <th style="text-align:right">{{TotalAmt | number}}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="5"></th>
+                        <th colspan="3" class="d-bg text-right">Discout on Invoice</th>
+                        <th colspan="" class="d-bg text-right">{{disAmount | number}}</th>
+                    </tr>
+                    <tr>
+                        <th colspan="5"></th>
+                        <th colspan="3" class="d-bg text-right">Net Amount</th>
+                        <th colspan="" class="d-bg text-right">{{netAmount | number}}</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

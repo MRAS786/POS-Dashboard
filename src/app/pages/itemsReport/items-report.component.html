@@ -19,11 +19,10 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Items</label>
-                                    <ng-multiselect-dropdown [placeholder]="'Select Items'"
-                                        [data]="getItemList" [ngModelOptions]="{standalone: true}"
-                                        [(ngModel)]="selectedItems" [settings]="dropdownSettings2"
-                                        (onSelect)="onSelectItems($event)" (onSelectAll)="onSelectAllItems($event)"
-                                        (onDeSelect)="ondeSelectItems($event)">
+                                    <ng-multiselect-dropdown [placeholder]="'Select Items'" [data]="getItemList"
+                                        [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedItems"
+                                        [settings]="dropdownSettings2" (onSelect)="onSelectItems($event)"
+                                        (onSelectAll)="onSelectAllItems($event)" (onDeSelect)="ondeSelectItems($event)">
                                     </ng-multiselect-dropdown>
                                 </div>
                             </div>
@@ -57,14 +56,23 @@
     <div class="row mt-4" *ngIf="hideShowDiv">
         <div class="col-md-12">
             <div class="card">
-                <div class="modal-header text-center pb-0">
-                    <p>ITEMS REPORT</p>
+                <div class="card-header pb-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>ITEMS REPORT</p>
+                        </div>
+                        <div class="col-md-6 text-right"><i (click)="convetToPDF('hrly')" title="Generate PDF"
+                                class="fa fa-arrow-circle-o-down"></i></div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <canvas [height]="100" baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
+                    <div id="hrly" class="text-center">
+                        <p class="pb-3">ITEMS REPORT</p>
+                        <canvas [height]="100" baseChart [datasets]="barChartDataNaturewise"
+                            [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
+                            [legend]="barChartLegend" [chartType]="barChartType">
+                        </canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,7 +99,9 @@
                             <tbody>
                                 <tr *ngFor="let p of reportListDateWise let ndx=index;">
                                     <td>{{ndx+1}}</td>
-                                    <td class="styl-new" data-toggle="modal" data-target="#salesDetails" (click)="getSalesDetail(p.itemcode)" title="View Sales Detail">{{p.itemcode}}</td>
+                                    <td class="styl-new" data-toggle="modal" data-target="#salesDetails"
+                                        (click)="getSalesDetail(p.itemcode)" title="View Sales Detail">{{p.itemcode}}
+                                    </td>
                                     <td>{{p.SName}}</td>
                                     <td>{{p.qty}}</td>
                                     <td class="text-right">{{p.sellprice}}</td>
@@ -106,13 +116,14 @@
     </div>
 </div>
 
-<div class="modal fade" id="salesDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="salesDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Sales Detail</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -143,7 +154,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
             </div>
         </div>
     </div>

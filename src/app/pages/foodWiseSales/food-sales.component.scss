@@ -36,29 +36,43 @@
     color: #1E90FF;
 }
 
-.styl-new{
+.styl-new {
     cursor: pointer;
 }
-.styl-new:hover{
+
+.styl-new:hover {
     background-color: #c75336;
     color: #ffffff;
 }
-.d-bg{
+
+.d-bg {
     background-color: #c75336;
-    color: #000;
+    color: #fff;
 }
 
-.div-styl{
+.div-styl {
     background-color: #5446eb !important;
     border-radius: 0px !important;
     padding: 0px 5px 0px 12px;
     height: 16px;
     width: 16px;
 }
-.div-styl2{
+
+.div-styl2 {
     background-color: #e07924 !important;
     border-radius: 0px !important;
     padding: 0px 5px 0px 12px;
     height: 16px;
     width: 16px;
+}
+
+.fa-arrow-circle-o-down {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.pdfsttng {
+    height: 50px;
+    background-color: #c75336;
+    color: #fff;
 }

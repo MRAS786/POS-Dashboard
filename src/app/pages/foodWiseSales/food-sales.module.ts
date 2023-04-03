@@ -22,7 +22,7 @@ export const routes: Routes = [
     NgMultiSelectDropDownModule.forRoot(),   
     ChartsModule,
     NgxPrintModule,
-    NgxExtendedPdfViewerModule
+    NgxExtendedPdfViewerModule,
   ],
   declarations: [
     FoodSalesComponent

@@ -338,7 +338,10 @@ $icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap";
   background: linear-gradient(to top right, #000000 60%, #c75336 100%);
    color: #fff;
  }
- 
+ .card-header {
+  background: linear-gradient(to top right, #000000 60%, #c75336 100%);
+  color: #fff;
+ }
  .whitee {
    color: #fff;
    font-weight: bold;

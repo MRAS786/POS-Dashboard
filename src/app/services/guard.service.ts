@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Auth implements CanActivate {
-  constructor(private router: Router) {
+  token: string;
+  userId: any;
+  authenticate: any;
+  constructor(private router: Router, public toastr: ToastrService) {
   }
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -16,4 +21,5 @@ export class Auth implements CanActivate {
     }
     return this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
   }
+
 }
