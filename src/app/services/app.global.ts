@@ -14,8 +14,8 @@ export class AppGlobal {
 
     public readonly GET_SALE_DATE_WISE = "/Master/getsaleDateWise";
     public readonly GET_ASSIGNED_LOCATIONS = "/Master/getAssignedLocations";
-    public readonly GET_DATE_WISE_DETAILS = "/Master/getsaleDateWiseDetail";
-    public readonly GET_RECIPT_DETAILS_INVOICE = "/Master/getReciptDetail?invoiceno=";
+    public readonly GET_DATE_WISE_DETAILS = "/Master/getDateWiseDetail";
+    public readonly GET_RECIPT_DETAILS_INVOICE = "/Master/getReciptDetail";
 
     public readonly GET_FOOD_WISE_REPORT = "/Master/getFoodWiseReport";
     public readonly GET_HOURY_WISE_REPORT = "/Master/gethoulyData";
@@ -31,4 +31,5 @@ export class AppGlobal {
     public readonly GET_CATEGORY_LIST = "/Master/categorList";
 
     public readonly GET_ITEM_LIST = "/Master/itemList";
+    public readonly GET_SALES_LOCATION_WISE = "/Master/getsalelocationWise";
 }

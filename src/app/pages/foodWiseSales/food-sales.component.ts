@@ -20,12 +20,14 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { BarInterface, grandSaleRequestModel } from './food-sales.model';
 import * as Chart from 'chart.js';
+
 @Component({
   selector: 'food-sales',
   templateUrl: './food-sales.component.html',
   styleUrls: ['./food-sales.component.scss']
 })
 export class FoodSalesComponent implements OnInit {
+
   netAmount: number;
   Quantity: number;
   TaxAmt: number;

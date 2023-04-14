@@ -253,7 +253,7 @@
                             <tr *ngFor="let p of monthlyReportList let i=index;">
                                 <td class="text-center">{{i+1}}</td>
                                 <td class="text-center styl-new" data-toggle="modal" data-target="#invoiceDetails"
-                                    (click)="getInvoiceDetail(p.invoiceno)" title="View Invoice Detail">{{p.invoiceno }}
+                                    (click)="getInvoiceDetail(p)" title="View Invoice Detail">{{p.invoiceno }}
                                 </td>
                                 <td class="text-center">{{p.Persons}}</td>
                                 <td class="text-right">{{p.Value | number}}</td>

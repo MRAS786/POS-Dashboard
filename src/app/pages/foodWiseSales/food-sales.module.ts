@@ -23,6 +23,7 @@ export const routes: Routes = [
     ChartsModule,
     NgxPrintModule,
     NgxExtendedPdfViewerModule,
+    
   ],
   declarations: [
     FoodSalesComponent

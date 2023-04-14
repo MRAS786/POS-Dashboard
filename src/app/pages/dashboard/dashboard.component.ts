@@ -43,6 +43,7 @@ export class DashboardComponent implements OnInit {
   taxAmt:number;
   invoiceNumber:string;
   invoiceDetailResponse: any = [];
+  locId: any;
   constructor(
     private domSanitizer: DomSanitizer,
     private toastr: ToastrService,
@@ -93,6 +94,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getMonthlySales(locationID){
+    this.locId = locationID;
     this.API.getdata(this.config.MONTHALY_SALES_BY_LOCATION + locationID).subscribe({
       next: (data) => {
         if (data != null) {
@@ -124,11 +126,16 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  getInvoiceDetail(invoiceno){
-    this.API.getdata(this.config.GET_RECIPT_DETAILS_INVOICE + invoiceno).subscribe({
+  getInvoiceDetail(data){
+    this.invoiceNumber = data.invoiceno;
+    let body = {
+      invoiceno: data.invoiceno,
+      locationID: this.locId 
+    }
+    this.API.PostData(this.config.GET_RECIPT_DETAILS_INVOICE , body).subscribe({
       next: (data) => {
         if (data != null) {
-          this.invoiceNumber = invoiceno;
+          
           this.invoiceDetailResponse = data;
           this.Quantity = this.invoiceDetailResponse.reduce((sum, current) => sum + current.qty, 0);
           var sellprice = this.invoiceDetailResponse.reduce((sum, current) => sum + current.sellprice, 0);

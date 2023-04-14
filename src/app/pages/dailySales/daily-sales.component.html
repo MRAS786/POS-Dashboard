@@ -89,8 +89,7 @@
                             <thead>
                                 <tr class="d-bg">
                                     <th class="text-center">Sr.</th>
-                                    <th class="text-center">Invoice Number</th>
-                                    <th class="text-center">No. of Persons</th>
+                                    <th class="text-center">Dates</th>
                                     <th class="text-right">Value</th>
                                     <th class="text-right">Discount Amount</th>
                                     <th class="text-right">Sale Tax</th>
@@ -101,9 +100,8 @@
                                 <tr *ngFor="let p of reportListDateWise let i=index;">
                                     <td class="text-center">{{i+1}}</td>
                                     <td class="text-center styl-new"
-                                        (click)="getInvoiceDetail(invoiceDetails, p.invoiceno)"
-                                        title="View Invoice Detail">{{p.invoiceno }}</td>
-                                    <td class="text-center">{{p.Persons}}</td>
+                                        (click)="getSaleWiseData(locationDetails, p)"
+                                        title="View Invoice Detail">{{p.dates | date }}</td>
                                     <td class="text-right">{{p.Value | number}}</td>
                                     <td class="text-right">{{p.DisAmount | number}}</td>
                                     <td class="text-right">{{p.StAmt | number}}</td>
@@ -118,6 +116,45 @@
     </div>
 </div>
 
+
+
+<ng-template #locationDetails let-modal>
+    <div class="modal-header modal_head">
+        <h5 class="modal-title">Detail</h5>
+        <button type="button" class="close cross" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none">
+            <span aria-hidden="true" class="whitee">&times;</span>
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="text-right">
+            <button class="btn-dark p-2" [useExistingCss]="true" printSectionId="printInvoiceDetail" ngxPrint><i
+                    class="fa fa-print mr-1"></i> Print</button>
+        </div>
+        <div class="table-responsive" id="printInvoiceDetail">
+            <table class="table table-hover table-striped dt-responsive table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr class="d-bg">
+                        <th>Sr.</th>
+                        <th>Location</th>
+                        <th class="text-right">Rate</th>
+                        <th class="text-right">Discount</th>
+                        <th class="text-right">Total Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let p of invoiceDetailResponse let ndx = index">
+                        <td>{{ ndx + 1 }}</td>
+                        <td>{{p.locationName}}</td>
+                        <td style="text-align:right">{{p.tr_rate | number}}</td>
+                        <td style="text-align:right">{{p.DisAmount | number}}</td>
+                        <td style="text-align:right">{{p.TotSale | number}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng-template>
 
 <!--Invice Details Pop up -->
 <ng-template #invoiceDetails let-modal>

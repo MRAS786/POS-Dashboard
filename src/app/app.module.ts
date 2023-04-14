@@ -38,6 +38,7 @@ import { ToastrModule} from 'ngx-toastr';
 import { AppGlobal } from './services/app.global';
 import { ApiService } from './services/api.service';
 import { GvarService } from './services/gvar.service';
+import { BnNgIdleService } from 'bn-ng-idle';
 
 @NgModule({  
   imports: [
@@ -77,8 +78,7 @@ import { GvarService } from './services/gvar.service';
     NotFoundComponent,
     FlagsMenuComponent
   ],
-  providers: [ AppGlobal,ApiService,GvarService,
-    AppSettings,
+  providers: [ AppGlobal,ApiService,GvarService,AppSettings,BnNgIdleService,
     { provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG }
   ],
   bootstrap: [ AppComponent ]
