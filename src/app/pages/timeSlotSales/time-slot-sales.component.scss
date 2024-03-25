@@ -36,18 +36,33 @@
     color: #1E90FF;
 }
 
-.styl-new{
+.styl-new {
     cursor: pointer;
 }
-.styl-new:hover{
+
+.styl-new:hover {
     background-color: #c75336;
     color: #ffffff;
 }
-.d-bg{
+
+.d-bg {
     background-color: #c75336;
     color: #fff;
 }
+
 .fa-arrow-circle-o-down {
     font-size: 20px;
     cursor: pointer;
+}
+
+.btn-dark {
+    box-shadow: none !important;
+    outline: none !important;
+    border: 0px !important;
+}
+
+.active {
+    background-color: green !important;
+    color: #fff;
+    border: 0px !important;
 }

@@ -46,6 +46,10 @@
     background-color: #c75336;
     color: #fff;
 }
+.d-bg2{
+    background-color: #000;
+    color: #fff;
+}
 .styl-new{
     cursor: pointer;
 }
@@ -79,4 +83,28 @@
 }
 .bg-color-5 {
     background: linear-gradient(to right, #669900 0%, #ff9933 100%);
+}
+
+.example2 {
+    border: 1px solid #888888 !important;
+    padding: 5px !important;
+    box-shadow: 2px 2px #888888 !important;
+    background-color: #fff;
+
+}
+
+thead th{
+     font-size: 12px;
+}
+.txt-style{
+    border: 1px solid #dee2e6;
+    border-bottom: 0;
+    padding: 8px;
+    background-color: #fff;
+    color: #c75336;
+}
+
+.resp{
+    position: relative;
+    top: -8px !important;
 }

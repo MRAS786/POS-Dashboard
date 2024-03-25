@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit {
   datatableElement: QueryList<DataTableDirective>;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
+  dtTrigger1: Subject<any> = new Subject();
   url: any;
   accessToken: any;
   UserId: any;
@@ -73,16 +74,19 @@ export class DashboardComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     this.dtTrigger.next(0);
+    this.dtTrigger1.next(0);
   }
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+    this.dtTrigger1.unsubscribe();
   }
   getAssignedLocations(){
     this.API.getdata(this.config.GET_DASHBOARD_DATA + this.UserId).subscribe({
       next: (data) => {
         if (data != null) {
             this.getLocationsList = data;
+            this.rerender();
         }
       },
       error: (error) => {
@@ -111,6 +115,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getDailySales(locationID){
+    this.locId = locationID;
     this.API.getdata(this.config.DAILY_SALES_BY_LOCATION + locationID).subscribe({
       next: (data) => {
         if (data != null) {
@@ -166,6 +171,7 @@ export class DashboardComponent implements OnInit {
     });
     setTimeout(() => {
       this.dtTrigger.next(0);
+      this.dtTrigger1.next(0);
     });
   }
 }

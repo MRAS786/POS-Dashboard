@@ -1,94 +1,95 @@
-<div class="container-fluid p-0">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <form [formGroup]="searchForm" role="form">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Locations</label><span class="imp">*</span>
-                                    <ng-multiselect-dropdown [placeholder]="'Select Locations'"
-                                        [data]="getLocationsList" [ngModelOptions]="{standalone: true}"
-                                        [(ngModel)]="selectedLocations" [settings]="dropdownSettings"
-                                        (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)"
-                                        (onDeSelect)="ondeSelect($event)">
-                                    </ng-multiselect-dropdown>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Date From</label><span class="imp">*</span>
-                                    <input type="date" class="form-control" formControlName="mFromDate">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Date To</label><span class="imp">*</span>
-                                    <input type="date" class="form-control" formControlName="mToDate">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+<div class="card">
+    <form [formGroup]="searchForm" role="form">
+        <div class="p-2 bg-light">
+            <div class="row">
+                <div class="col-3">
+                    <select id="defaultOptions" class="form-control"
+                        (change)="setDefaultDateRange($event.target.value)">
+                        <!-- <option [selected]="true" value="">Select Date</option> -->
+                        <option [selected]="true" value="today">Today</option>
+                        <option value="last7Days">Last 7 Days</option>
+                        <option value="last30Days">Last 30 Days</option>
+                        <option value="thisMonth">This Month</option>
+                        <option value="lastMonth">Last Month</option>
+                        <option value="custom">Select Custom Dates</option>
+                    </select>
                 </div>
-                <div class="card-footer text-right">
-                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i class="fa fa-spinner"></i>
+                <div class="col-9 text-right">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-dark active" (click)="onClickLocation(0, 'All')" style="width: 100px;">
+                            <input type="radio" name="options" id="option4" autocomplete="off" checked> All
+                        </label>
+                        <label *ngFor="let p of getLocationsList"
+                            (click)="onClickLocation(p.locationID, p.locationName)" class="btn btn-dark"
+                            style="width: 100px;">
+                            <input type="radio" name="options" id="option5" autocomplete="off"> {{p.locationName}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="hideShow">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label>Date From</label><span class="imp">*</span>
+                        <input type="date" class="form-control" formControlName="mFromDate">
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label>Date To</label><span class="imp">*</span>
+                        <input type="date" class="form-control" formControlName="mToDate">
+                    </div>
+                </div>
+                <div class="col-2 mt-4">
+                    <button class="btn btn-success mr-2" (click)="setDefaultDateRange('custom')"><i
+                            class="fa fa-spinner"></i>
                         Load Data</button>
-
-                    <button class="btn btn-dark" (click)="resetForm()"><i class="fa fa-refresh"></i>
-                        Clear Data</button>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="row mt-4" *ngIf="hideShowDiv">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header pb-0">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p>HOURLY REPORT NOP</p>
+    </form>
+    <div class="card-body">
+        <div class="row mt-4">
+            <div class="col-xl-12 mb-4">
+                <div widget class="card border-secondary box-shadow">
+                    <div class="transparent p-3 border-0 bg-white text-muted">
+                        <h6 class="mb-0">HOURLY REPORT <span class="text-primary">({{locName}})</span></h6>
+                    </div>
+                    <div class="card-body widget-body pr-5">
+                        <div class="w-100 h-300p">
+                            <ngx-charts-bar-vertical [scheme]="'picnic'" [results]="hourlyResponse"
+                                [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="false"
+                                [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="true"
+                                [yAxisLabel]="true" [showDataLabel]="showDataLabel">
+                            </ngx-charts-bar-vertical>
                         </div>
-                        <div class="col-md-6 text-right"><i (click)="convetToPDF('hrly')" title="Generate PDF"
-                                class="fa fa-arrow-circle-o-down"></i></div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="hrly" class="text-center">
-                        <p class="pb-3">HOURLY REPORT NOP</p>
-                        <canvas [height]="80" baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="row mt-4" *ngIf="hideShowDiv">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                            class="table table-hover table-striped dt-responsive table-bordered" width="100%">
-                            <thead>
-                                <tr class="d-bg">
-                                    <th class="text-center">Sr.</th>
-                                    <th>Time Slot</th>
-                                    <th class="text-right">Sale Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let p of listAllData let ndx=index;">
-                                    <td class="text-center">{{ndx+1}}</td>
-                                    <td>{{p.TimeSlot }}</td>
-                                    <td class="text-right">{{p.Amt| number}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table datatable datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                                class="table table-hover table-striped table-bordered" width="100%">
+                                <thead>
+                                    <tr class="d-bg">
+                                        <th class="text-center">Sr.</th>
+                                        <th>Time Slot</th>
+                                        <th class="text-right">Sale Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of listAllData let ndx=index;">
+                                        <td class="text-center">{{ndx+1}}</td>
+                                        <td>{{p.name}}</td>
+                                        <td class="text-right">{{p.value}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

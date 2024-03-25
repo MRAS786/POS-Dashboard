@@ -1,3 +1,153 @@
+<div class="card">
+    <form [formGroup]="searchForm" role="form">
+        <div class="p-2 bg-light">
+            <div class="row">
+                <div class="col-3">
+                    <select id="defaultOptions" class="form-control"
+                        (change)="setDefaultDateRange($event.target.value)">
+                        <!-- <option [selected]="true" value="">Select Date</option> -->
+                        <option [selected]="true" value="today">Today</option>
+                        <option value="last7Days">Last 7 Days</option>
+                        <option value="last30Days">Last 30 Days</option>
+                        <option value="thisMonth">This Month</option>
+                        <option value="lastMonth">Last Month</option>
+                        <option value="custom">Select Custom Dates</option>
+                    </select>
+                    <div class="form-group mt-2">
+                        <ng-multiselect-dropdown [placeholder]="'Select Category'" [data]="getCategoryList"
+                            [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedCategories"
+                            [settings]="dropdownSettings2" (onSelect)="onItemSelectCat($event)"
+                            (onSelectAll)="onSelectAllCat($event)" (onDeSelect)="ondeSelectCat($event)">
+                        </ng-multiselect-dropdown>
+                    </div>
+                </div>
+                <div class="col-9 text-right">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-dark active" (click)="onClickLocation(0, 'All')" style="width: 100px;">
+                            <input type="radio" name="options" id="option4" autocomplete="off" checked> All
+                        </label>
+                        <label *ngFor="let p of getLocationsList"
+                            (click)="onClickLocation(p.locationID, p.locationName)" class="btn btn-dark"
+                            style="width: 100px;">
+                            <input type="radio" name="options" id="option5" autocomplete="off"> {{p.locationName}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="hideShow">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label>Date From</label><span class="imp">*</span>
+                        <input type="date" class="form-control" formControlName="mFromDate">
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label>Date To</label><span class="imp">*</span>
+                        <input type="date" class="form-control" formControlName="mToDate">
+                    </div>
+                </div>
+                <div class="col-2 mt-4">
+                    <button class="btn btn-success mr-2" (click)="setDefaultDateRange('custom')"><i
+                            class="fa fa-spinner"></i>
+                        Load Data</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="card-body">
+        <div class="row mt-4">
+            <div class="col-xl-12 mb-4">
+                <div widget class="card border-secondary box-shadow">
+                    <div class="transparent p-3 border-0 bg-white text-muted">
+                        <h6 class="mb-0">Daily Sales</h6>
+                    </div>
+                    <div class="card-body widget-body pr-5">
+                        <div class="w-100 h-300p">
+                            <ngx-charts-bar-vertical [scheme]="'picnic'" [results]="listDailyDetails"
+                                [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="false"
+                                [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="true"
+                                [yAxisLabel]="true" [showDataLabel]="showDataLabel" (select)="onSelect($event)">
+                            </ngx-charts-bar-vertical>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12 mb-4">
+                <div widget class="card border-secondary box-shadow">
+                    <div class="transparent p-3 border-0 text-muted">
+                        <h6 class="mb-0">Monthly Sales</h6>
+                    </div>
+                    <div class="card-body widget-body pr-5">
+                        <div class="w-100 h-300p">
+                            <ngx-charts-bar-vertical [scheme]="'picnic'" [results]="listMonthlyDetails"
+                                [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="false"
+                                [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="true"
+                                [yAxisLabel]="true" [showDataLabel]="showDataLabel" (select)="onSelect($event)">
+                            </ngx-charts-bar-vertical>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-12 mb-4">
+                <div widget class="card border-secondary box-shadow">
+                    <div class="transparent p-3 border-0 text-muted">
+                        <h6 class="mb-0">Yearly Sales</h6>
+                    </div>
+                    <div class="card-body widget-body pr-5">
+                        <div class="w-100 h-300p">
+                            <ngx-charts-bar-vertical [scheme]="'picnic'" [results]="listYearDetails"
+                                [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="false"
+                                [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="true"
+                                [yAxisLabel]="true" [showDataLabel]="showDataLabel" (select)="onSelect($event)">
+                            </ngx-charts-bar-vertical>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-12 mb-4">
+                <div widget class="card border-secondary box-shadow">
+                    <div class="transparent p-3 border-0 bg-white text-muted">
+                        <h6 class="mb-0">Cost %</h6>
+                    </div>
+                    <div class="card-body widget-body pr-5">
+                        <div class="w-100 h-300p">
+                            <ngx-charts-bar-vertical [scheme]="'picnic'" [results]="listDailyCost" [gradient]="gradient"
+                                [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="false"
+                                [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="true"
+                                [yAxisLabel]="true" [showDataLabel]="showDataLabel" (select)="onSelect($event)">
+                            </ngx-charts-bar-vertical>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-12 mb-4">
+                <div widget class="card border-secondary box-shadow">
+                    <div class="transparent p-3 border-0 bg-white text-muted">
+                        <h6 class="mb-0">SALE AND COST</h6>
+                    </div>
+                    <div class="card-body widget-body pr-5">
+                        <div class="w-100 h-300p">
+                            <ngx-charts-bar-vertical-stacked [barPadding]="20" [view]="view4" [scheme]="'picnic'"
+                                [results]="listSaleCost" [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis"
+                                [legend]="showLegend" [legendTitle]="'SALE AND COST'" [showXAxisLabel]="showXAxisLabel"
+                                [showYAxisLabel]="showYAxisLabel" [tooltipDisabled]="tooltipDisabled"
+                                [showDataLabel]="showDataLabel" [noBarWhenZero]="noBarWhenZero"
+                                [schemeType]="schemeType" [showGridLines]="showGridLines">
+                            </ngx-charts-bar-vertical-stacked>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container-fluid p-0">
     <div class="row">
         <div class="col-md-12">
@@ -8,12 +158,11 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Locations</label><span class="imp">*</span>
-                                    <ng-multiselect-dropdown [placeholder]="'Select Locations'"
-                                        [data]="getLocationsList" [ngModelOptions]="{standalone: true}"
-                                        [(ngModel)]="selectedLocations" [settings]="dropdownSettings"
-                                        (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)"
-                                        (onDeSelect)="ondeSelect($event)">
-                                    </ng-multiselect-dropdown>
+                                    <select class="form-control" formControlName="locationID">
+                                        <option [selected]="true" value="0">Select Location</option>
+                                        <option *ngFor="let p of getLocationsList" [value]="p.locationID">
+                                            {{p.locationName}}</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -42,8 +191,7 @@
                     </form>
                 </div>
                 <div class="card-footer text-right">
-                    <button [disabled]="!searchForm.valid" class="btn btn-success mr-2" (click)="searchSales()"><i
-                            class="fa fa-spinner"></i>
+                    <button class="btn btn-success mr-2" (click)="loadAllCharts()"><i class="fa fa-spinner"></i>
                         Load Data</button>
 
                     <button class="btn btn-dark" (click)="resetForm()"><i class="fa fa-refresh"></i>
@@ -52,143 +200,7 @@
             </div>
         </div>
     </div>
-
-    <div class="row mt-4" *ngIf="hideShowDiv">
-        <div class="col-md-12 text-center">
-            <button type="button" class="btn btn-info p-2" (click)="convetToPDFAll('generateAllPDF')"><i
-                    class="fa fa-print"></i> Generate All
-                PDF</button>
-        </div>
-    </div>
-    <div id="generateAllPDF">
-        <div class="row mt-4" *ngIf="hideShowDiv">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p>SALES</p>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <i data-toggle="modal" data-target="#salesGraph" class="fa fa-bar-chart mr-2"
-                                    title="View Graph" style="font-size: 20px;cursor: pointer;"></i>
-                                <i (click)="convetToPDF('sales')" title="Generate PDF"
-                                    class="fa fa-arrow-circle-o-down"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <div id="sales" class="text-center">
-                            <p class="pb-3">SALES</p>
-                            <canvas baseChart [datasets]="barChartDataNaturewise" [labels]="barChartLabelsNaturewise"
-                                [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
-                                [chartType]="barChartType">
-                            </canvas>
-                        </div>
-
-                        <div id="chart">
-                            <apx-chart
-                              [series]="chartOptions.series"
-                              [chart]="chartOptions.chart"
-                              [dataLabels]="chartOptions.dataLabels"
-                              [plotOptions]="chartOptions.plotOptions"
-                              [yaxis]="chartOptions.yaxis"
-                              [xaxis]="chartOptions.xaxis"
-                              [stroke]="chartOptions.stroke"
-                              [grid]="chartOptions.grid"
-                              [fill]="chartOptions.fill"
-                              [annotations]="chartOptions.annotations"
-                            ></apx-chart>
-                          </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p>SALE AND COST</p>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <i data-toggle="modal" data-target="#salesandcost" class="fa fa-bar-chart mr-2"
-                                    title="View Graph" style="font-size: 20px;cursor: pointer;"></i>
-                                <i (click)="convetToPDF('saleAndCost')" title="Generate PDF"
-                                    class="fa fa-arrow-circle-o-down"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="saleAndCost">
-                        <div class="text-center mt-2">
-                            <span class="div-styl mr-2"></span> SALES <span class="ml-4 mr-2 div-styl2"></span> COST
-                        </div>
-                        <div class="card-body">
-                            <canvas baseChart [datasets]="barChartshareAndCost" [labels]="salesAndCostLabels"
-                                [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
-                                [chartType]="barChartType">
-                            </canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4" *ngIf="hideShowDiv">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p>COST %</p>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <i data-toggle="modal" data-target="#costpercent" class="fa fa-bar-chart mr-2"
-                                title="View Graph" style="font-size: 20px;cursor: pointer;"></i>
-                                <i (click)="convetToPDF('cost')" title="Generate PDF"
-                                    class="fa fa-arrow-circle-o-down"></i></div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="cost" class="text-center">
-                            <p class="pb-3">COST %</p>
-                            <canvas baseChart [datasets]="barChartCost" [labels]="costWiseLabels"
-                                [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
-                                [chartType]="barChartType">
-                            </canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p>SHARE % IN SALE</p>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <i data-toggle="modal" data-target="#saleinsahres" class="fa fa-bar-chart mr-2"
-                                    title="View Graph" style="font-size: 20px;cursor: pointer;"></i>
-                                <i (click)="convetToPDF('shareInsale')"
-                                    title="Generate PDF" class="fa fa-arrow-circle-o-down"></i></div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="shareInsale" class="text-center">
-                            <p class="pb-3">SHARE % IN SALE</p>
-                            <canvas baseChart [datasets]="barChartshareInSales" [labels]="shareinSalesLabels"
-                                [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
-                                [chartType]="barChartType">
-                            </canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4" *ngIf="hideShowDiv">
+    <div class="row mt-4">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -256,8 +268,7 @@
                             <tr *ngFor="let p of itemDetailResponse let ndx=index;">
                                 <td>{{ndx+1}}</td>
                                 <td>{{p.itemcode}}</td>
-                                <td class="styl-new" data-toggle="modal" data-target="#salesDetails"
-                                    (click)="getSalesDetail(p.itemcode)" title="View Sales Detail">{{p.SName}}</td>
+                                <td>{{p.SName}}</td>
                                 <td>{{p.qty}}</td>
                                 <td class="text-right">{{p.sellprice | number}}</td>
                                 <td class="text-right">{{p.costAmt}}</td>
@@ -393,143 +404,6 @@
                             </tr>
                         </tfoot>
                     </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<div class="modal fade" id="salesGraph" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header modal_head">
-                <h5 class="modal-title">Sales</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="card-body">
-                <div class="text-right">
-                    <i (click)="convetToPDF('salesss')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
-                </div>
-                <div class="text-center" id="salesss">
-                    <p class="pb-2">SALES</p>
-                    <canvas height="100%" baseChart [datasets]="barChartDataNaturewise"
-                        [labels]="barChartLabelsNaturewise" [options]="barChartOptions" [plugins]="barChartPlugins"
-                        [legend]="barChartLegend" [chartType]="barChartType">
-                    </canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="salesandcost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header modal_head">
-                <h5 class="modal-title">Share and Cost</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="card-body">
-                <div class="text-right">
-                    <i (click)="convetToPDF('saleandCost')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
-                </div>
-                <div id="saleandCost">
-                    <div class="text-center mt-2">
-                        <span class="div-styl mr-2"></span> SALES <span class="ml-4 mr-2 div-styl2"></span> COST
-                    </div>
-                    <div class="card-body">
-                        <canvas height="100%" baseChart [datasets]="barChartshareAndCost" [labels]="salesAndCostLabels"
-                            [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
-                            [chartType]="barChartType">
-                        </canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="costpercent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header modal_head">
-                <h5 class="modal-title">Cost %</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="card-body">
-                <div class="text-right">
-                    <i (click)="convetToPDF('percentcost')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
-                </div>
-                <div id="percentcost" class="text-center">
-                    <p class="pb-2">COST %</p>
-                    <canvas height="100%" baseChart [datasets]="barChartCost" [labels]="costWiseLabels"
-                        [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
-                        [chartType]="barChartType">
-                    </canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="costpercent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header modal_head">
-                <h5 class="modal-title">Sales</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="card-body">
-                <div class="text-right">
-                    <i (click)="convetToPDF('percentcost')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
-                </div>
-                <div id="percentcost" class="text-center">
-                    <p class="pb-2">COST %</p>
-                    <canvas height="100%" baseChart [datasets]="barChartCost" [labels]="costWiseLabels"
-                        [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
-                        [chartType]="barChartType">
-                    </canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="saleinsahres" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header modal_head">
-                <h5 class="modal-title">Share in Sales</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="card-body">
-                <div class="text-right">
-                    <i (click)="convetToPDF('sharesale')" class="fa fa-arrow-circle-o-down mr-1" title="Download PDF"></i>
-                </div>
-                <div id="sharesale" class="text-center">
-                    <p class="pb-2">SHARE % IN SALE</p>
-                    <canvas height="100%" baseChart [datasets]="barChartshareInSales" [labels]="shareinSalesLabels"
-                        [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
-                        [chartType]="barChartType">
-                    </canvas>
                 </div>
             </div>
         </div>

@@ -5,9 +5,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataTablesModule } from 'angular-datatables';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ChartsModule } from 'ng2-charts';
-import {NgxPrintModule} from 'ngx-print';
+import { NgxPrintModule } from 'ngx-print';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { FoodSalesComponent } from './food-sales.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 export const routes: Routes = [
   { path: '', component: FoodSalesComponent, pathMatch: 'full' }
 ];
@@ -16,14 +17,15 @@ export const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
+    NgxChartsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
     DataTablesModule,
-    NgMultiSelectDropDownModule.forRoot(),   
+    NgMultiSelectDropDownModule.forRoot(),
     ChartsModule,
     NgxPrintModule,
     NgxExtendedPdfViewerModule,
-    
+
   ],
   declarations: [
     FoodSalesComponent

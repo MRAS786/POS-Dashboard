@@ -1,0 +1,85 @@
+<div class="fluid-container">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                    class="table table-hover table-striped table-bordered nowrap" cellspacing="0">
+                    <thead>
+                        <tr class="d-bg">
+                            <th class="text-center">Location ID</th>
+                            <th>Location</th>
+                            <th class="text-center">Short Name</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of listUsers; let i = index">
+                            <td class="text-center">{{ p.locationID }}</td>
+                            <td>{{ p.locationName }}</td>
+                            <td class="text-center">{{ p.shortName }}</td>
+                            <td class="text-center">
+                                <span *ngIf="p.isActive == true" class="text-success">Active</span>
+                                <span *ngIf="p.isActive == false" class="text-danger">In-Active</span>
+                            </td>
+                            <td class="text-center">
+                                <i class="fa fa-pencil fa_edit" (click)="onEditLocation(locationsModal,p)"
+                                    aria-hidden="true"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!--Add Button-->
+<button class="bttn ng-star-inserted" title="Add Locations" tabindex="0" (click)="openAddModal(locationsModal)"><i
+        class="fa fa-plus" style="margin-left:1px"></i></button>
+
+
+<ng-template #locationsModal let-modal>
+    <div class="modal-header modal_head">
+        <h5 class="modal-title">Add Locations</h5>
+        <button type="button" class="close cross" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none">
+            <span aria-hidden="true" class="whitee">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="locationForm">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="">Location Name</label><span class="imp">*</span>
+                        <input type="text" [maxLength]="50" class="form-control" placeholder="Location name.."
+                            formControlName="locationName">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Short Name</label><span class="imp">*</span>
+                        <input type="text" [maxLength]="10" class="form-control" placeholder="Short name.."
+                            formControlName="shortName">
+                    </div>
+                    <div class="form-check form-check-inline mt-2">
+                        <input class="form-check-input" type="checkbox" formControlName="isActive"
+                            id="flexCheckDefault2">
+                        <label class="form-check-label ml-1" for="flexCheckDefault2">
+                            Is Active?
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" (click)="saveLocations()" [disabled]="!locationForm.valid">Save</button>
+        <button type="button" class="btn btn-danger" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none"> Cancel
+        </button>
+    </div>
+</ng-template>

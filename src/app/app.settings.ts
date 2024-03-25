@@ -7,15 +7,15 @@ export class AppSettings {
         'CK',
         'Angular Admin Template with Bootstrap 4',
         {
-            menu: 'vertical', //horizontal , vertical
+            menu: 'horizontal', //horizontal , vertical
             menuType: 'default', //default, compact, mini
             showMenu: true,
             navbarIsFixed: true,
-            footerIsFixed: false,
+            footerIsFixed: true,
             sidebarIsFixed: true,
             showSideChat: false,
             sideChatIsHoverable: true,
-            skin:'dark'  //light , dark, blue, green, combined, purple, orange, brown, grey, pink          
+            skin: 'dark'  //light , dark, blue, green, combined, purple, orange, brown, grey, pink          
         }
     )
 }

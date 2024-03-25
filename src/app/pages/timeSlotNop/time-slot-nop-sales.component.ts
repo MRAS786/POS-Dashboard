@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { AppSettings } from 'src/app/app.settings';
 import { Settings } from 'src/app/app.settings.model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -24,85 +24,42 @@ import { DatePipe } from '@angular/common';
   templateUrl: './time-slot-nop-sales.component.html',
   styleUrls: ['./time-slot-nop-sales.component.scss']
 })
-export class TimeslotNOPComponent implements OnInit {
-  netAmount:number;
-  Quantity:number;
-  TaxAmt:number;
-  disAmount:number;
-  TotalAmt:number;
-  Amount:number;
-  taxAmt:number;
-  invoiceNumber:string;
-  modalRef: NgbModalRef;
+export class TimeslotNOPComponent implements OnInit, OnDestroy {
   @ViewChildren(DataTableDirective)
-  dtElements: QueryList<DataTableDirective>;
   datatableElement: QueryList<DataTableDirective>;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject();
   dataTable: any;
-  url: any;
-  accessToken: any;
-  UserId: any;
+
+  totalDays: any;
+  FromDate: any;
+  ToDate: any;
+  hideShow: boolean = false;
+  locName: any;
+
+  public showXAxis = true;
+  public showYAxis = true;
+  public gradient = false;
+  public showLegend = true;
+  public showXAxisLabel = false;
+  public showYAxisLabel = false;
+  public tooltipDisabled = false;
+  public showDataLabel = true;
+  public wrapTicks = true;
+  public noBarWhenZero = true;
+  public showGridLines = true;
+  public showLabels = true;
+  public explodeSlices = true;
+  public doughnut = false;
+  legend: boolean = true;
+
+  modalRef: NgbModalRef;
+
   searchForm: FormGroup;
-  hideShowDiv: boolean = false;
-  dropdownSettings: IDropdownSettings = {};
-  grandSaleRequestModel: grandSaleRequestModel;
+
   getLocationsList: any = [];
-  selectedLocations:any = [];
-  invoiceDetailResponse: any = [];
-  reportListDateWise: any = [];
   hourlyResponseNOP: any = [];
-  complaintCount = [];
   listAllData = [];
-  grandTotal: number = 0;
-  public barChartType: ChartType = 'bar';
-  public barChartTypeFeedBack: ChartType = 'bar';
-  public barChartLegend = false;
-  public barChartPlugins = [];
-  public barChartLabelsNaturewise: Label[];
-  pieChartPlugins = [pluginDataLabels];
-  public barChartDataNaturewise: ChartDataSets[] = [
-    { data: [12, 68, 6] }
-  ];
-  public barChartOptions: ChartOptions = {
-    responsive: true,
-    tooltips: {
-      callbacks: {
-        label: function (tooltipItem, data) {
-          return "Rs " + Number(tooltipItem.yLabel).toFixed(0).replace(/./g, function (c, i, a) {
-            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
-          });
-        }
-      }
-    },
-    plugins: {
-      datalabels: {
-        anchor: 'center',
-        align: 'center',
-        color: 'black',
-        padding: 0,
-        formatter: function(value) {
-          return Number(value).toFixed(0).replace(/./g, function (c, i, a) {
-            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
-          });
-         }
-      },
-   
-    },
-    scales: {
-      xAxes: [{
-        ticks: {}
-      }],
-      yAxes: [{
-        ticks: {
-          beginAtZero: true,
-          callback: function (value, index, values) {
-            return value.toLocaleString();   // this is all we need
-          }
-        }
-      }]
-    }
-  };
   constructor(
     private domSanitizer: DomSanitizer,
     private toastr: ToastrService,
@@ -112,37 +69,25 @@ export class TimeslotNOPComponent implements OnInit {
     private API: ApiService,
     private datepipe: DatePipe,
     private modalService: NgbModal) {
-      this.dropdownSettings = {
-        singleSelection: false,
-        idField: 'locationID',
-        textField: 'locationName',
-        selectAllText: 'Select All',
-        unSelectAllText: 'UnSelect All',
-        itemsShowLimit: 3,
-        allowSearchFilter: true
-      }
-    this.accessToken = localStorage.getItem('access_token');
-    this.UserId = localStorage.getItem('UserId');
-    this.grandSaleRequestModel = new grandSaleRequestModel();
-    this.getLocationsList = [];
-    this.selectedLocations = [];
     this.hourlyResponseNOP = [];
-    this.complaintCount = [];
-    this.reportListDateWise = [];
-    this.invoiceDetailResponse = [];
     this.listAllData = [];
   }
   ngAfterViewInit(): void {
     this.dtTrigger.next(0);
   }
-
   ngOnDestroy(): void {
-    // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
   ngOnInit() {
     this.InitializeForm();
     this.getAssignedLocations();
+
+    this.searchForm.get('mFromDate').patchValue(this.formatDate(new Date()));
+    this.searchForm.get('mToDate').patchValue(this.formatDate(new Date()));
+
+    this.setDefaultDateRange("today");
+    this.onClickLocation(0, "All");
+
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 25,
@@ -150,9 +95,8 @@ export class TimeslotNOPComponent implements OnInit {
       dom: 'Blfrtip',
       buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
     };
-    this.searchForm.get('mFromDate').patchValue(this.formatDate(new Date()));
-    this.searchForm.get('mToDate').patchValue(this.formatDate(new Date()));
   }
+
   private formatDate(date) {
     const d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -166,51 +110,46 @@ export class TimeslotNOPComponent implements OnInit {
     this.searchForm = this.fb.group({
       mFromDate: ['', Validators.compose([Validators.required])],
       mToDate: ['', Validators.compose([Validators.required])],
+      locationID: ['']
     });
   }
-  onItemSelect(item: any) {
-    this.grandSaleRequestModel.locationList.push(item);
-  }
-  onSelectAll(items: any) {
-    this.grandSaleRequestModel.locationList = items;
-  }
-  ondeSelect(items: any) {
-    this.grandSaleRequestModel.locationList.splice(this.grandSaleRequestModel.locationList.findIndex(ele => ele.locationID == items.locationID), 1);
-  }
 
-  searchSales(){
-    this.grandSaleRequestModel.mFromDate = this.searchForm.controls.mFromDate.value;
-    this.grandSaleRequestModel.mToDate = this.searchForm.controls.mToDate.value;
-    this.grandSaleRequestModel.locationList = this.selectedLocations;
-    if(this.selectedLocations == ''){
-      this.toastr.error("Select Location", 'Error');
-    }
-    else{
-      this.API.PostData(this.config.GET_HOURY_NOP_WISE_REPORT , this.grandSaleRequestModel).subscribe({
-        next: (data) => {
-          if (data != null) {
-            this.hideShowDiv = true;
-            this.hourlyResponseNOP = data;
-            this.getBarChartHorizental();
-          
-            this.listAllData =  data;
-            this.rerender(); 
-          }
-        },
-        error: (error) => {
-          if (error.error != undefined) {
-            this.toastr.error(error.error.Message, 'Error');
-          }
+  searchSales() {
+    this.API.PostData(this.config.GET_HOURY_NOP_WISE_REPORT, this.searchForm.value).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.hourlyResponseNOP = data;
         }
-      });
-    }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
   }
-
-  getAssignedLocations(){
+  detailData() {
+    this.API.PostData(this.config.GET_DETAIL_REPORT, this.searchForm.value).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.destroyDT(0, true).then((destroyed) => {
+            this.listAllData = data;
+            this.dtTrigger.next(0);
+          });
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+  getAssignedLocations() {
     this.API.getdata(this.config.GET_ASSIGNED_LOCATIONS).subscribe({
       next: (data) => {
         if (data != null) {
-            this.getLocationsList = data;
+          this.getLocationsList = data;
         }
       },
       error: (error) => {
@@ -221,54 +160,142 @@ export class TimeslotNOPComponent implements OnInit {
     });
   }
 
-  resetForm(){
-    this.searchForm.reset();
-    this.hideShowDiv = false;
+
+
+
+  onClickLocation(locationID, locName) {
+    this.locName = locName;
+    this.searchForm.controls.locationID.setValue(locationID);
+    this.searchSales();
+    this.detailData();
+  }
+  setDefaultDateRange(option: string) {
+    const today = new Date();
+    let startDate: string;
+    let endDate: string;
+    if (option == "custom") {
+      this.hideShow = true;
+    }
+    else {
+      this.hideShow = false;
+    }
+    switch (option) {
+      case 'today':
+        startDate = today.toISOString().split('T')[0];
+        endDate = startDate;
+        break;
+      case 'last7Days':
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(today.getDate() - 7);
+        startDate = sevenDaysAgo.toISOString().split('T')[0];
+        endDate = today.toISOString().split('T')[0];
+        break;
+      case 'last30Days':
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        startDate = thirtyDaysAgo.toISOString().split('T')[0];
+        endDate = today.toISOString().split('T')[0];
+        break;
+      case 'thisMonth':
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
+        break;
+      case 'lastMonth':
+        const firstDayLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        startDate = firstDayLastMonth.toISOString().split('T')[0];
+        endDate = new Date(today.getFullYear(), today.getMonth(), 0).toISOString().split('T')[0];
+        break;
+      case 'custom':
+        startDate = this.searchForm.controls.mFromDate.value;
+        endDate = this.searchForm.controls.mToDate.value;
+        break;
+      default:
+        // Default to an empty range
+        startDate = '';
+        endDate = '';
+        break;
+    }
+
+    this.searchForm.patchValue({
+      mFromDate: startDate,
+      mToDate: endDate
+    });
+    this.searchSales();
+    this.detailData();
+    this.FromDate = this.searchForm.controls.mFromDate.value;
+    this.ToDate = this.searchForm.controls.mToDate.value;
+    const timeDifference = new Date(this.searchForm.controls.mToDate.value).getTime() - new Date(this.searchForm.controls.mFromDate.value).getTime();
+    const daysDifference = timeDifference / (1000 * 3600 * 24);
+    this.totalDays = daysDifference + 1;
   }
 
-  getBarChartHorizental() {
-    this.grandTotal = 0;
-    this.hourlyResponseNOP.forEach(e => {
-      this.grandTotal = this.grandTotal + e.NOP;
-    });
-    this.complaintCount = this.hourlyResponseNOP.map((item) => {
-      return item.NOP;
-    });
-    this.barChartDataNaturewise = [{ data: this.complaintCount, 
-     backgroundColor: ['#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], 
-     hoverBackgroundColor: ['#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b','#a1bbf7', '#afdaed', '#ede31f', '#c9c9bd', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b,#5446eb', '#2492e0', '#e07924', '#78716b', '#5446eb', '#2492e0', '#e07924', '#78716b', '#78716b', '#5446eb', '#2492e0', '#78716b'], fill: true }];
-    var complaintDept = [];
-    complaintDept = this.hourlyResponseNOP.map((item) => {
-      return item.TimeSlot;
-    });
-    this.barChartLabelsNaturewise = complaintDept;
-  }
 
-  public convetToPDF(elementID) {
-    var data = document.getElementById(elementID);
-    html2canvas(data).then(canvas => {
-      // Few necessary setting options
-      var imgWidth = 208;
-      var pageHeight = 295;
-      var imgHeight = canvas.height * imgWidth / canvas.width;
-      var heightLeft = imgHeight;
-      const contentDataURL = canvas.toDataURL('image/png')
-      let pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
-      var position = 0;
-      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-      pdf.save('new-file.pdf'); // Generated PDF
-    });
-  }
-  rerender(): void {
-    this.dtElements.forEach((dtElement: DataTableDirective) => {
-      if (dtElement.dtInstance)
-        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy();
-        });
-    });
-    setTimeout(() => {
-      this.dtTrigger.next(0);
-    });
+  destroyDT = (tableIndex, clearData): Promise<boolean> => {
+    return new Promise((resolve) => {
+      this.datatableElement.forEach((dtElement: DataTableDirective, index) => {
+        if (index == tableIndex) {
+          if (dtElement.dtInstance) {
+            if (tableIndex == 0) {
+              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                if (clearData) {
+                  dtInstance.clear();
+                }
+                dtInstance.destroy();
+                resolve(true);
+              });
+            }
+            else if (tableIndex == 1) {
+              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                if (clearData) {
+                  dtInstance.clear();
+                }
+                dtInstance.destroy();
+                resolve(true);
+              });
+            } else if (tableIndex == 2) {
+              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                if (clearData) {
+                  dtInstance.clear();
+                }
+                dtInstance.destroy();
+                resolve(true);
+              });
+            }
+            else if (tableIndex == 3) {
+              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                if (clearData) {
+                  dtInstance.clear();
+                }
+                dtInstance.destroy();
+                resolve(true);
+              });
 
-  }
+            }
+            else if (tableIndex == 4) {
+              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                if (clearData) {
+                  dtInstance.clear();
+                }
+                dtInstance.destroy();
+                resolve(true);
+              });
+            }
+            else if (tableIndex == 5) {
+              dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                if (clearData) {
+                  dtInstance.clear();
+                }
+                dtInstance.destroy();
+                resolve(true);
+              });
+
+            }
+          }
+          else {
+            resolve(true);
+          }
+        }
+      });
+    });
+  };
 }

@@ -36,18 +36,185 @@
     color: #1E90FF;
 }
 
-.styl-new{
+.styl-new {
     cursor: pointer;
 }
-.styl-new:hover{
+
+.styl-new:hover {
     background-color: #c75336;
     color: #ffffff;
 }
-.d-bg{
+
+.d-bg {
     background-color: #c75336;
     color: #fff;
 }
+
 .fa-arrow-circle-o-down {
     font-size: 20px;
     cursor: pointer;
+}
+
+:host ::ng-deep .chart-legend .legend-labels {
+    //background: aliceblue;
+    border: 1px solid gray;
+}
+
+:host ::ng-deep .chart-legend .legend-title {
+    white-space: nowrap;
+    overflow: hidden;
+    margin-left: 0px !important;
+    margin-bottom: 5px;
+    font-size: 13px !important;
+    font-weight: 700;
+}
+
+:host ::ng-deep .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-value {
+    font-size: 18px !important;
+    margin-top: -6px;
+    margin-left: 11px;
+}
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-label {
+    font-size: 12px !important;
+    opacity: .7;
+    margin-left: 11px;
+    margin-top: -6px;
+}
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-percent {
+    font-size: 16px !important;
+    opacity: .7;
+    margin-left: 11px;
+}
+
+.advanced-pie-legend .total-label {
+    font-size: 20px !important;
+    margin-bottom: 12px !important;
+}
+
+:host ::ng-deep .advanced-pie-legend .total-value {
+    font-size: 25px !important;
+    margin-bottom: 0px !important;
+}
+
+:host ::ng-deep .textDataLabel {
+    font-size: 12px !important;
+}
+
+:host ::ng-deep .ngx-charts .label {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    margin-top: 5px !important;
+}
+
+:host ::ng-deep .advanced-pie-legend .legend-items-container .legend-items {
+    padding-bottom: 10px;
+}
+
+:host ::ng-deep .chart-legend .legend-labels {
+    line-height: 85%;
+    list-style: none;
+    text-align: left;
+    float: left;
+    width: 100%;
+    border-radius: 3px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: nowrap;
+    background: rgba(0, 0, 0, .05);
+}
+
+
+
+.card-counter {
+    box-shadow: 2px 2px 10px #DADADA;
+    margin: 5px;
+    padding: 20px 10px;
+    background-color: #fff;
+    height: 100px;
+    border-radius: 5px;
+    transition: .3s linear all;
+}
+
+.card-counter:hover {
+    box-shadow: 4px 4px 20px #DADADA;
+    transition: .3s linear all;
+}
+
+.card-counter.primary {
+    background-color: #007bff;
+    color: #FFF;
+}
+
+.card-counter.danger {
+    background-color: #ef5350;
+    color: #FFF;
+}
+
+.card-counter.success {
+    background-color: #66bb6a;
+    color: #FFF;
+}
+
+.card-counter.info {
+    background-color: #26c6da;
+    color: #FFF;
+}
+
+.card-counter i {
+    font-size: 5em;
+    opacity: 0.2;
+}
+
+.card-counter .count-numbers {
+    position: absolute;
+    right: 35px;
+    top: 20px;
+    font-size: 32px;
+    display: block;
+}
+
+.card-counter .count-name {
+    position: absolute;
+    right: 35px;
+    top: 65px;
+    font-style: italic;
+    text-transform: capitalize;
+    opacity: 0.5;
+    display: block;
+    font-size: 18px;
+}
+
+.btn-dark {
+    box-shadow: none !important;
+    outline: none !important;
+    border: 0px !important;
+}
+
+fieldset {
+    display: block;
+    margin-inline-start: 2px;
+    margin-inline-end: 2px;
+    padding-block-start: 0.35em;
+    padding-inline-start: 0.75em;
+    padding-inline-end: 1.75em;
+    padding-block-end: 1.625em;
+    min-inline-size: min-content;
+    border-width: 1px;
+    border-style: groove;
+    border-color: #e9ecef;
+    border-image: initial;
+}
+
+legend {
+    display: block;
+    width: 100%;
+    max-width: 18%;
+    padding: 0;
+    margin-bottom: 0.5rem;
+    font-size: 16px;
+    line-height: inherit;
+    color: inherit;
+    white-space: normal;
 }
