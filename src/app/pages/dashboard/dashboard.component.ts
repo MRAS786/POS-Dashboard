@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit {
     this.dtTrigger1.unsubscribe();
   }
   getAssignedLocations(){
-    this.API.getdata(this.config.GET_DASHBOARD_DATA + this.UserId).subscribe({
+    this.API.getdata(this.config.GET_DASHBOARD_DATA).subscribe({
       next: (data) => {
         if (data != null) {
             this.getLocationsList = data;

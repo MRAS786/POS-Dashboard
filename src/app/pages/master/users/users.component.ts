@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { AppGlobal } from 'src/app/services/app.global';
 import { GvarService } from 'src/app/services/gvar.service';
-import { assignLocations } from './users.model';
+import { userrequestModel } from './users.model';
 
 @Component({
   selector: 'app-users',
@@ -27,8 +27,9 @@ export class UsersComponent implements OnInit {
   onEditShowHide: boolean = false;
   getEmployeeList: any = [];
   getLocationsList: any = [];
-  assignLocations: assignLocations;
+  userrequestModel: userrequestModel;
   selectedLocations:any = [];
+  listAllGroups: any = [];
   dropdownSettings: IDropdownSettings = {};
   constructor(
     private toastr: ToastrService,
@@ -49,7 +50,8 @@ export class UsersComponent implements OnInit {
     }
     this.getEmployeeList = [];
     this.getLocationsList = [];
-    this.assignLocations = new assignLocations();
+    this.listAllGroups = [];
+    this.userrequestModel = new userrequestModel();
   }
 
   ngOnInit(): void {
@@ -65,14 +67,17 @@ export class UsersComponent implements OnInit {
   }
   InitializeForm() {
     this.usersForm = this.fb.group({
-      userID: [],
-      UserName: ['', Validators.compose([Validators.required])],
-      LoginName: ['', Validators.compose([Validators.required])],
-      Password: ['', Validators.compose([Validators.required])],
-      Email: ['', Validators.compose([Validators.required])],
-      ContactNo: ['', Validators.compose([Validators.required])],
-      Address: [''],
-      isActive: ['']
+      empID: [],
+      loginName: ['', Validators.compose([Validators.required])],
+      EmployeeName: ['', Validators.compose([Validators.required])],
+      empPassword: ['', Validators.compose([Validators.required])],
+      retypePass: [''],
+      DesignationTitle: ['', Validators.compose([Validators.required])],
+      contactNo: ['', Validators.compose([Validators.required])],
+      Gender: [''],
+      locationID: [''],
+      groupid: [''],
+      isActive: [''],
     });
 
   }
@@ -81,18 +86,49 @@ export class UsersComponent implements OnInit {
     this.modalRef = this.modalService.open(content, { centered: false, });
     this.onEditShowHide = false;
     this.usersForm.reset();
+    this.getLocations();
+    this.getGroupsRole();
+    this.usersForm.controls.empPassword.enable();
   }
-
+  getGroupsRole() {
+    this.API.getdata(this.config.GET_GROUP).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.listAllGroups = data;
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.warning(error.error.Message, 'Alert');
+        }
+      }
+    });
+  }
+  onChangeLoc(locationID){
+    this.usersForm.controls.locationID.setValue(Number(locationID));
+  }
+  onChangeGroup(groupid){
+    this.usersForm.controls.groupid.setValue(Number(groupid));
+  }
   saveEmployee() {
-    if (this.usersForm.value.userID == null) {
-      this.usersForm.value.userID = 0;
+    if (this.usersForm.value.empID == null) {
+      this.usersForm.controls.empID.setValue(0);
     }
-    this.API.PostData(this.config.SAVE_EMPLOYEE, this.usersForm.value).subscribe({
+    this.userrequestModel.empID = Number(this.usersForm.controls.empID.value);
+    this.userrequestModel.EmployeeName = this.usersForm.controls.EmployeeName.value;
+    this.userrequestModel.DesignationTitle = this.usersForm.controls.DesignationTitle.value;
+    this.userrequestModel.loginName = this.usersForm.controls.loginName.value;
+    this.userrequestModel.empPassword = this.usersForm.controls.empPassword.value;
+    this.userrequestModel.contactNo = this.usersForm.controls.contactNo.value;
+    this.userrequestModel.Gender = this.usersForm.controls.Gender.value;
+    this.userrequestModel.groupid = this.usersForm.controls.groupid.value;
+    this.userrequestModel.locationID = Number(this.usersForm.controls.locationID.value);
+    this.userrequestModel.isActive = this.usersForm.controls.isActive.value;
+    this.API.PostData(this.config.SAVE_EMPLOYEE, this.userrequestModel).subscribe({
       next: (data) => {
         if (data != null) {
           if (data.isSaved == true) {
             this.toastr.success('Saved Successfully', 'Success');
-            this.usersForm.controls.userID.setValue(data.ID);
             this.modalRef.close();
             this.getEmployee();
           }
@@ -113,8 +149,7 @@ export class UsersComponent implements OnInit {
   editEmployee(content, data) {
     this.modalRef = this.modalService.open(content, { centered: false});
     this.onEditShowHide = true;
-    this.usersForm.patchValue(data);
-    
+    this.getUserInfo(data.empID);
   }
 
   getEmployee(){
@@ -150,24 +185,23 @@ export class UsersComponent implements OnInit {
       }
     });
   }
-  assignLocationpopup(content, data){
-    this.modalRef = this.modalService.open(content, { centered: false});
-    this.assignLocations.userID = data.userID;
-    this.getassignLocationsByID(data.userID);
-    this.getLocations();
+  onItemSelectStations(item: any) {
+    this.userrequestModel.userBranches.push(item);
   }
-  onItemSelect(item: any) {
-    this.assignLocations.locationList.push(item);
+  onItemDeSelectStations(item: any) {
+    this.userrequestModel.userBranches
+      .splice(this.userrequestModel.userBranches
+        .findIndex(ele => ele.locationID == item.locationID), 1);
   }
-  onSelectAll(items: any) {
-    this.assignLocations.locationList = items;
+  onItemDeSelectAllStations(item: any) {
+    this.userrequestModel.userBranches = [];
   }
-  ondeSelect(items: any) {
-    this.assignLocations.locationList.splice(this.assignLocations.locationList.findIndex(ele => ele.locationID == items.locationID), 1);
+  onSelectAllStations(items: any) {
+    this.userrequestModel.userBranches = items;
   }
   assignLocation(){
-    this.assignLocations.locationList = this.selectedLocations;
-    this.API.PostData(this.config.ASSIGN_LOCATIONS, this.assignLocations).subscribe({
+    this.userrequestModel.userBranches = this.selectedLocations;
+    this.API.PostData(this.config.ASSIGN_LOCATIONS, this.userrequestModel).subscribe({
       next: (data) => {
         if (data != null) {
           if (data.isSaved == true) {
@@ -202,6 +236,28 @@ export class UsersComponent implements OnInit {
     });
 
   }
+
+  getUserInfo(empID) {
+    this.API.getdata(this.config.GET_USER_INFO + empID).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.getLocations();
+          this.usersForm.patchValue(data);
+          this.selectedLocations = data.userBranches;
+          this.userrequestModel.userBranches = this.selectedLocations;
+          this.usersForm.controls.empPassword.disable();
+          
+          this.getGroupsRole();
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.warning(error.error.Message, 'Alert');
+        }
+      }
+    });
+  }
+
   destroyDT = (tableIndex, clearData): Promise<boolean> => {
     return new Promise((resolve) => {
       this.datatableElement.forEach((dtElement: DataTableDirective, index) => {

@@ -19,6 +19,7 @@ export const routes: Routes = [
             { path: 'itemsreport', loadChildren: () => import('./itemsReport/items-report.module').then(m => m.ItemsReportModule), data: { breadcrumb: 'Items Report' } },
             { path: 'master', loadChildren: () => import('./master/master.module').then(m => m.MasterModule), data: { breadcrumb: 'Master' } },
             { path: 'itusers', loadChildren: () => import('./ITUsers/itusers.module').then(m => m.ITUsersModule), data: { breadcrumb: 'Users' } },
+            { path: 'dynamicmenu', loadChildren: () => import('./dynamic-menu/dynamic-menu.module').then(m => m.DynamicMenuModule), data: { breadcrumb: 'Dynamic Menu' } },
 
         ]
     }

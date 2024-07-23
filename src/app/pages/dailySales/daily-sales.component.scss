@@ -218,3 +218,31 @@ legend {
     color: inherit;
     white-space: normal;
 }
+.nav-item .nav-link {
+    color: #606060;
+    background-color: transparent;
+    cursor: default;
+    border: 1px solid #c75336 !important;
+    border-radius: 20px !important;
+}
+
+.cursor-pointer:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: #c75336 !important;
+    color: #fff;
+    border: 1px solid #c75336 !important;
+}
+
+
+:host ::ng-deep .chart-legend {
+    display: inline-block;
+    padding: 0;
+    width: auto !important;
+    position: relative;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}

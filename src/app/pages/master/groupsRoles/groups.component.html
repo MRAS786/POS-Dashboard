@@ -1,0 +1,121 @@
+<section class="main-content-wrapper">
+    <div class="box-wrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive bg-white">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                        class="table table-bordered table-striped table-hover nowrap">
+                        <thead>
+                            <tr>
+                                <th class="text-center">SNo.</th>
+                                <th>Groups Name</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let p of listAllGroups let ndx=index;">
+                                <td class="text-center">{{ndx+1}}</td>
+                                <td>{{p.groupName}}</td>
+                                <td class="text-center">
+                                    <i (click)="editGroups(addGroups,p)" class="fa fa-pencil fa_edit"
+                                        title="Edit Record" aria-hidden="true"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--Add Button-->
+<!-- <button class="bttn" tabindex="0" (click)="addNewGroups(addGroups)"><i class="fa fa-plus text-center"
+        style="margin-left:1px;font-size: 30px;"></i></button> -->
+
+
+<ng-template #addGroups let-modal>
+    <div class="modal-header modal_head">
+        <h4 *ngIf="addMode == false" class="modal-title">Add Roles</h4>
+        <h4 *ngIf="addMode == true" class="modal-title">Update Roles</h4>
+        <button type="button" class="close cross" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            style="outline:none">
+            <span aria-hidden="true" class="whitee">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body bg-light">
+        <form [formGroup]="groupsForm">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Group Name<span class="imp">*</span></label>
+                        <input autocomplete="off" type="text" formControlName="GroupName" class="form-control"
+                            placeholder="Enter zone name.." value=""
+                            [ngClass]="{ 'is-invalid': submitted && f.GroupName.errors }" />
+                        <div *ngIf="submitted && f.GroupName.errors" class="invalid-feedback">
+                            <div *ngIf="f.GroupName.errors.required">Group Name is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Main Menu</th>
+                                    <th>Sub Menu</th>
+                                    <th class="text-center">Can View</th>
+                                    <th class="text-center">Can Add</th>
+                                    <th class="text-center">Can Edit</th>
+                                    <th class="text-center">Can Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let p of listAllScreens; let i=index">
+                                <tr>
+                                    <td>{{p.title}}</td>
+                                    <td></td>
+                                    <td class="text-center"><input type="checkbox" [checked]="p.canView"
+                                            (change)="p.canView = !p.canView"></td>
+                                            <td class="text-center"><input type="checkbox" [checked]="p.canAdd"
+                                                (change)="p.canAdd = !p.canAdd"></td>
+                                        <td class="text-center"><input type="checkbox" [checked]="p.canEdit"
+                                                (change)="p.canEdit = !p.canEdit"></td>
+                                        <td class="text-center"><input type="checkbox" [checked]="p.canDelete"
+                                                (change)="p.canDelete = !p.canDelete"></td>
+
+                                </tr>
+                                <tr *ngFor="let d of p.subMenu">
+                                    <td></td>
+                                    <td>{{d.title}}</td>
+                                    <td class="text-center"><input type="checkbox" [checked]="d.canView"
+                                            (change)="d.canView = !d.canView"></td>
+                                    <td class="text-center"><input type="checkbox" [checked]="d.canAdd"
+                                            (change)="d.canAdd = !d.canAdd"></td>
+                                    <td class="text-center"><input type="checkbox" [checked]="d.canEdit"
+                                            (change)="d.canEdit = !d.canEdit"></td>
+                                    <td class="text-center"><input type="checkbox" [checked]="d.canDelete"
+                                            (change)="d.canDelete = !d.canDelete"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer p-0 pt-2 text-right">
+                <button *ngIf="addMode == false" (click)="menuSelected();saveGroupRoles()" type="button" name="submit"
+                    value="submit" class="btn btn-success">
+                    Submit </button>
+                <button *ngIf="addMode == true" (click)="menuSelected();saveGroupRoles()" type="button" name="submit"
+                    value="submit" class="btn btn-success">
+                    Update </button>
+                <button type="button" class="btn btn-dark" (click)="modal.close('Close click')">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, HostListener } from '@angular/core';
+import { GvarService } from 'src/app/services/gvar.service';
 import { AppSettings } from '../../../app.settings';
 import { Settings } from '../../../app.settings.model';
 import { MenuService } from '../menu/menu.service';
@@ -13,9 +14,9 @@ import { MenuService } from '../menu/menu.service';
 export class SidebarComponent implements OnInit {  
   public settings: Settings;
   public menuItems:Array<any>;
-  constructor(public appSettings:AppSettings, public menuService:MenuService) {
+  constructor(public appSettings:AppSettings, public menuService:MenuService, public GV: GvarService,) {
       this.settings = this.appSettings.settings;
-      this.menuItems = this.menuService.getVerticalMenuItems();
+      this.menuItems = this.GV.getMenuItems();
   }
 
   ngOnInit() {     

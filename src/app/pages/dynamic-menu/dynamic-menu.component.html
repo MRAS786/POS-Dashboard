@@ -1,0 +1,172 @@
+<div class="container-fluid p-0">
+    <div class="card border-0 box-shadow rounded-0">
+        <div class="card-header bg-light text-white mb-0">
+            <h4 class="mb-0">Menu List</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="table-responsive p-0">
+                        <table class="table table-hover table-bordered nowrap">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>Menu Name</th>
+                                    <th>Sub Menu</th>
+                                    <th class="text-center">Sequence</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let p of listAllMenus; let i = index">
+                                <tr>
+                                    <td class="text-center">{{i + 1}}</td>
+                                    <td>{{p.title}}</td>
+                                    <td></td>
+                                    <td class="text-center">{{p.sequence}}</td>
+                                    <td class="text-center">
+                                        <span class="c-pill c-pill--danger pb-2" *ngIf="p.isActive == false">In
+                                            Active</span>
+                                        <span class="c-pill c-pill--success pb-2"
+                                            *ngIf="p.isActive == true">Active</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <i #backTop (click)="editMain(p);_onClick()" class="fa fa-edit fa_edit"
+                                            title="Edit Menu"></i>
+                                        <!-- <i class="fa fa-trash fa_trash" title="Remove Menu"></i> -->
+                                    </td>
+                                </tr>
+                                <tr *ngFor="let d of p.MenuDetail;let ndx = index" style="background-color: aliceblue;">
+                                    <td class="text-center">{{i + 1}}.{{ndx + 1}}</td>
+                                    <td></td>
+                                    <td>{{d.title}}</td>
+                                    <td class="text-center">{{d.sequence}}</td>
+                                    <td class="text-center">
+                                        <span class="c-pill c-pill--danger pb-2" *ngIf="d.isActive == false">In
+                                            Active</span>
+                                        <span class="c-pill c-pill--success pb-2"
+                                            *ngIf="d.isActive == true">Active</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <i #backTop (click)="editSubMenu(d);_onClick()" class="fa fa-edit fa_edit"
+                                            title="Edit Menu"></i>
+                                        <!-- <i class="fa fa-trash fa_trash" title="Remove Menu"></i> -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card border-0 box-shadow rounded-0">
+                        <div class="bg-info p-3" *ngIf="hideShow">
+                            <h4 class="text-white mb-0">Add New Menu</h4>
+                        </div>
+                        <div class="p-3 bg-info" *ngIf="!hideShow">
+                            <h4 class="text-white">Update Menu</h4>
+                        </div>
+                        <div class="card-body pt-0">
+                            <form [formGroup]="form" class="text-left mt-4">
+                                <div class="form-group">
+                                    <label>Menu title</label><span class="imp">*</span>
+                                    <input formControlName="title" class="form-control validation-field" type="text">
+                                    <small class="text-danger"
+                                        *ngIf="form.get('title').touched && form.get('title').hasError('required')">Menu
+                                        title
+                                        is required</small>
+                                    <small class="text-danger"
+                                        *ngIf="form.get('title').touched && form.get('title').hasError('minlength')">Menu
+                                        title
+                                        isn't long enough, minimum of 3 characters</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Icon</label>
+                                    <!-- <select class="form-control fa-select" formControlName="icon">
+                                        <option [selected]="form.controls.icon.value == null" value="">-- Select
+                                            Icon --
+                                        </option>
+                                        <option *ngFor="let icon of icons" [selected]="icon.name == icon"
+                                            [value]="icon.name">
+                                            <span [innerHTML]="icon.unicode"></span> {{icon.name}}
+                                        </option>
+                                    </select> -->
+                                    <input type="text" [maxLength]="20" formControlName="icon" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>RouterLink</label>
+                                    <input formControlName="routerLink" class="form-control validation-field"
+                                        type="text" placement="right" [ngbTooltip]="'e.g. /mailbox'">
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input formControlName="hasSubMenu" type="checkbox"
+                                            class="custom-control-input checkbox-dark-gray" id="checkboxHasSubMenu">
+                                        <label class="custom-control-label" for="checkboxHasSubMenu">Has sub
+                                            menu</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Href</label>
+                                    <input formControlName="href" class="form-control validation-field" type="text"
+                                        placement="right" [ngbTooltip]="'e.g. http://themeseason.com'">
+                                </div>
+                                <div class="form-group">
+                                    <label>Target:</label>
+                                    <label *ngFor="let target of targets; let i = index;"
+                                        class="custom-control custom-radio custom-control-inline ml-1">
+                                        <input [attr.id]="'target-'+i" formControlName="target" type="radio"
+                                            name="target" class="custom-control-input radio-dark-gray" [value]="target">
+                                        <label [attr.for]="'target-'+i" class="custom-control-label">{{target}}</label>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Parent menu</label>
+                                    <select class="form-control" formControlName="parentId"
+                                        (change)="onChange($event.target.value)">
+                                        <option [selected]="form.controls.parentId.value == 0" value="0">--
+                                            Select Parent Menu
+                                            --</option>
+                                        <option *ngFor="let item of listParentMenu"
+                                            [selected]="item.id == form.controls.parentId.value" [value]="item.id">
+                                            {{ item.title | translate }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Menu Sequence</label><span class="imp">*</span>
+                                    <input formControlName="sequence" class="form-control validation-field"
+                                        type="number" min="1">
+                                    <small class="text-danger"
+                                        *ngIf="form.get('sequence').touched && form.get('sequence').hasError('required')">Menu
+                                        Sequence Required</small>
+                                    <small class="text-danger"
+                                        *ngIf="form.get('sequence').touched && form.get('sequence').hasError('minlength')">Menu
+                                        Sequence Required.</small>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" class="i-checks check" formControlName="isActive"
+                                        style="position: relative; top: 3px;">
+                                    <label class="pl-2">Is Active?</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" class="i-checks check" formControlName="showinMenu"
+                                        style="position: relative; top: 3px;">
+                                    <label class="pl-2">Show in Menu?</label>
+                                </div>
+                                <div class="card-footer text-center mb-0">
+                                    <button (click)="onSubmit()" class="btn btn-rounded btn-success" type="submit"><i
+                                            class="fa fa-plus mr-2"></i>
+                                        <span *ngIf="hideShow">Add</span>
+                                        <span *ngIf="!hideShow">Update</span>
+                                    </button>
+                                    <button (click)="resetForm()" class="btn btn-rounded btn-danger ml-2"
+                                        type="button"><i class="fa fa-refresh mr-2"></i>Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>

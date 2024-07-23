@@ -7,33 +7,24 @@
                     <thead>
                         <tr>
                             <th class="text-center">Sr.</th>
-                            <th>Login name</th>
                             <th>User name</th>
-                            <th>Email</th>
-                            <th>Contact No</th>
+                            <th>Designation</th>
                             <th>Is Active</th>
-                            <th>Address</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let p of getEmployeeList let i=index;">
                             <td class="text-center">{{i+1}}</td>
-                            <td>{{p.UserName}}</td>
-                            <td>{{p.LoginName}}</td>
-                            <td>{{p.Email}}</td>
-                            <td>{{p.ContactNo}}</td>
+                            <td>{{p.EmployeeName}}</td>
+                            <td>{{p.DesignationTitle}}</td>
                             <td>
                                 <span *ngIf="p.isActive == true" style="color: green; font-weight:bold">Active</span>
                                 <span *ngIf="p.isActive == false" style="color: red; font-weight:bold">In Active</span>
                             </td>
-                            <td>{{p.Address}}</td>
                             <td class="text-center">
                                 <i (click)="editEmployee(addUsers,p)" data-toggle="tooltip" data-placement="bottom"
                                     title="Edit Record" tabindex="0" class="fa fa-pencil fa_edit"></i>
-                                <i (click)="assignLocationpopup(assignLoc,p)" data-toggle="tooltip"
-                                    data-placement="bottom" title="Assign Locations" tabindex="0"
-                                    class="fa fa-map-marker fa_check" style="padding: 5px 9px;"></i>
                             </td>
                         </tr>
                     </tbody>
@@ -68,19 +59,19 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Login name</label><span class="imp">*</span>
-                        <input type="text" placeholder="Enter user name..." formControlName="UserName"
+                        <input type="text" placeholder="Enter login name..." formControlName="loginName"
                             class="form-control validation-field">
                         <small class="text-danger"
-                            *ngIf="usersForm.controls.UserName.touched && usersForm.controls.UserName.hasError('required')">Required</small>
+                            *ngIf="usersForm.controls.loginName.touched && usersForm.controls.loginName.hasError('required')">Required</small>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>User name</label><span class="imp">*</span>
-                        <input type="text" placeholder="Enter login name..." formControlName="LoginName"
+                        <input type="text" placeholder="Enter username..." formControlName="EmployeeName"
                             class="form-control validation-field">
                         <small class="text-danger"
-                            *ngIf="usersForm.controls.LoginName.touched && usersForm.controls.LoginName.hasError('required')">Required</small>
+                            *ngIf="usersForm.controls.EmployeeName.touched && usersForm.controls.EmployeeName.hasError('required')">Required</small>
                     </div>
                 </div>
             </div>
@@ -88,49 +79,102 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Password</label><span class="imp">*</span>
-                        <input type="password" placeholder="Enter password..." formControlName="Password"
+                        <input type="password" placeholder="Enter password..." formControlName="empPassword"
                             class="form-control validation-field">
                         <small class="text-danger"
-                            *ngIf="usersForm.controls.Password.touched && usersForm.controls.Password.hasError('required')">Required</small>
+                            *ngIf="usersForm.controls.empPassword.touched && usersForm.controls.empPassword.hasError('required')">Required</small>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Email</label><span class="imp">*</span>
-                        <input type="email" placeholder="Enter email..." formControlName="Email"
+                        <label>Contact No.</label><span class="imp">*</span>
+                        <input type="text" placeholder="0000-0000000" formControlName="contactNo"
+                            class="form-control validation-field" [mask]="mobMask">
+                        <small class="text-danger"
+                            *ngIf="usersForm.controls.contactNo.touched && usersForm.controls.contactNo.hasError('required')">Required</small>
+                    </div>
+                </div>
+                <!-- <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Retype Password</label><span class="imp">*</span>
+                        <input type="password" placeholder="Enter Retype Password..."
+                            formControlName="retypePass" class="form-control validation-field">
+                        <small class="text-danger"
+                            *ngIf="usersForm.controls.retypePass.touched && usersForm.controls.retypePass.hasError('required')">Required</small>
+                    </div>
+                </div> -->
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Gender</label><span class="imp">*</span>
+                        <select formControlName="Gender" class="form-control">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Designation Title</label><span class="imp">*</span>
+                        <input type="text" placeholder="Enter DesignationTitle..." formControlName="DesignationTitle"
                             class="form-control validation-field">
                         <small class="text-danger"
-                            *ngIf="usersForm.controls.Email.touched && usersForm.controls.Email.hasError('required')">Required</small>
+                            *ngIf="usersForm.controls.DesignationTitle.touched && usersForm.controls.DesignationTitle.hasError('required')">Required</small>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Contact No.</label><span class="imp">*</span>
-                        <input type="text" placeholder="0000-0000000" formControlName="ContactNo"
-                            class="form-control validation-field" [mask]="mobMask">
-                        <small class="text-danger"
-                            *ngIf="usersForm.controls.ContactNo.touched && usersForm.controls.ContactNo.hasError('required')">Required</small>
+                        <label>Assign Group</label><span class="imp">*</span>
+                        <select formControlName="locationID" class="form-control" (change)="onChangeGroup($event.target.value)">
+                            <option *ngFor="let p of listAllGroups" [value]="p.groupid">{{p.groupName}}
+                            </option>
+                        </select>
                     </div>
                 </div>
-                <div class="col-md-6 mt-3">
-                    <div class="form-check mt-4">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Default Locations</label><span class="imp">*</span>
+                        <select formControlName="locationID" class="form-control" (change)="onChangeLoc($event.target.value)">
+                            <option *ngFor="let p of getLocationsList" [value]="p.locationID">{{p.locationName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Assign Locations</label><span class="imp">*</span>
+                        <ng-multiselect-dropdown [placeholder]="'Select Stations'" [data]="getLocationsList"
+                        style="width: 90%;" [(ngModel)]="selectedLocations" [settings]="dropdownSettings"
+                        (onSelect)="onItemSelectStations($event)" (onSelectAll)="onSelectAllStations($event)"
+                        (onDeSelect)="onItemDeSelectStations($event)"
+                        (onDeSelectAll)="onItemDeSelectAllStations($event)"
+                        [ngModelOptions]="{standalone: true}">
+                    </ng-multiselect-dropdown>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check mt-4 pt-2">
                         <input class="form-check-input" type="checkbox" formControlName="isActive" value=""
                             id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
+                        <label class="form-check-label ml-2" for="flexCheckDefault">
                             Is Active?
                         </label>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <!-- <div class="col-md-8">
                     <div class="form-group">
                         <label>Address</label>
                         <textarea rows="2" formControlName="Address" class="form-control validation-field"></textarea>
                     </div>
-                </div>
+                </div> -->
+        
             </div>
         </form>
     </div>

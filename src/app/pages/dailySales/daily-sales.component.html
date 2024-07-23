@@ -95,24 +95,24 @@
         </div>
     </form>
     <div class="clearfix p-4">
-        <ul class="nav nav-tabs custom top" style="background-color: #ededed;border:1px solid #ededed">
+        <ul class="nav nav-tabs custom top round" style="background-color: #ededed;border:1px solid #ededed;border-radius: 20px;">
             <li class="nav-item" (click)="onClickTabs(1)">
-                <a class="nav-link active" id="incClick" data-toggle="tab" href="#daily">Sales</a>
+                <a class="nav-link active cursor-pointer" id="incClick" data-toggle="tab" href="#daily">Sales</a>
             </li>
             <li class="nav-item" (click)="onClickTabs(2)">
-                <a class="nav-link" data-toggle="tab" href="#tws">Timeslot Wise Sales</a>
+                <a class="nav-link cursor-pointer" data-toggle="tab" href="#tws">Timeslot Wise Sales</a>
             </li>
             <li class="nav-item" (click)="onClickTabs(3)">
-                <a class="nav-link" data-toggle="tab" href="#nop">Timeslot Wise Sales (NOP)</a>
+                <a class="nav-link cursor-pointer" data-toggle="tab" href="#nop">Timeslot Wise Sales (NOP)</a>
             </li>
         </ul>
     </div>
     <div class="tab-content top" style="border:1px solid #ededed">
         <div class="tab-pane active" id="daily">
             <div class="card-body">
-                <div class="row mt-4">
+                <div class="row">
                     <div class="col-xl-12 mb-4">
-                        <div widget class="card border-secondary box-shadow">
+                        <div widget class="card box-shadow">
                             <div class="transparent p-3 border-0 bg-white text-muted">
                                 <h6 class="mb-0">Daily Sales <span class="text-primary">({{locName}})</span></h6>
                             </div>
@@ -131,7 +131,70 @@
                 </div>
                 <div class="row">
                     <div class="col-xl-4 mb-4">
-                        <div widget class="card border-secondary box-shadow">
+                        <div widget class="card box-shadow mb-4 pb-4">
+                            <div class="transparent p-3 border-0 bg-white text-muted">
+                                <h6 class="mb-0">Payment Mode <span class="text-primary">({{locName}})</span></h6>
+                            </div>
+                            <div class="card-body widget-body pb-4 mb-4">
+                                <div class="w-100 h-300p pb-4 mb-4">
+                                    <ngx-charts-pie-chart
+                                    [scheme]="'picnic'"
+                                    [results]="listPaymentMode"
+                                    [gradient]="true"
+                                    [legend]="true"
+                                    [legendPosition]="'below'"
+                                    [labels]="showLabels"
+                                    [doughnut]="false"
+                                    [legendTitle]="'Payment Modes'">
+                                  </ngx-charts-pie-chart>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-8 mb-4">
+                        <div widget class="card box-shadow mb-4 pb-4">
+                            <div class="transparent p-3 border-0 bg-white text-muted">
+                                <h6 class="mb-0">Payment Mode Location Wise <span class="text-primary">({{locName}})</span></h6>
+                            </div>
+                            <div class="card-body widget-body pb-4 mb-4">
+                                <div class="w-100 h-300p pb-4 mb-4">
+                                    <ngx-charts-bar-vertical-2d
+                                    [scheme]="'picnic'"
+                                    [results]="listPaymentModeCombine"
+                                    [gradient]="gradient"
+                                    [xAxis]="showXAxis"
+                                    [yAxis]="showYAxis"
+                                    [legend]="showLegend"
+                                    [legendTitle]="'Payment Modes'"
+                                    [legendPosition]="'below'">
+                                  </ngx-charts-bar-vertical-2d>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12 mb-4">
+                        <div widget class="card box-shadow">
+                            <div class="transparent p-3 border-0 bg-white text-muted">
+                                <h6 class="mb-0">Category Wise Sales <span class="text-primary">({{locName}})</span></h6>
+                            </div>
+                            <div class="card-body widget-body">
+                                <div class="w-100 h-300p">
+                            <ngx-charts-bar-vertical [scheme]="'picnic'" [results]="categoryWiseData"
+                            [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="false"
+                            [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+                            [xAxisLabel]="true" [yAxisLabel]="true" [showDataLabel]="showDataLabel"
+                            (select)="onSelect($event)">
+                        </ngx-charts-bar-vertical>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 mb-4">
+                        <div widget class="card box-shadow">
                             <div class="transparent p-3 border-0 text-muted">
                                 <h6 class="mb-0">Yearly Sales <span class="text-primary">({{locName}})</span></h6>
                             </div>
@@ -144,16 +207,16 @@
                                         [results]="listYearDetails" [gradient]="false" [xAxis]="false" [yAxis]="true"
                                         [legend]="false" [showXAxisLabel]="showXAxisLabel"
                                         [showYAxisLabel]="showYAxisLabel" [showDataLabel]="showDataLabel"
-                                        (select)="onSelect($event)">
+                                        (select)="onSelectYear($event)">
                                     </ngx-charts-bar-horizontal>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-8 mb-4">
-                        <div widget class="card border-secondary box-shadow">
+                        <div widget class="card box-shadow">
                             <div class="transparent p-3 border-0 text-muted">
-                                <h6 class="mb-0">Monthly Sales <span class="text-primary">({{locName}})</span></h6>
+                                <h6 class="mb-0">Monthly Sales <span class="text-primary">({{locName}}-{{yearLable}})</span></h6>
                             </div>
                             <div class="card-body widget-body pr-5">
                                 <div class="w-100 h-300p">
@@ -170,7 +233,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12 mb-4">
-                        <div widget class="card border-secondary box-shadow p-0">
+                        <div widget class="card box-shadow p-0">
                             <div class="bg-light border-primary border-bottom">
                                 <div class="row p-2">
                                     <div class="col border-right border-primary">
@@ -193,7 +256,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <ngx-charts-advanced-pie-chart [animations]="true" [view]="view4" [scheme]="'picnic'"
+                                <ngx-charts-advanced-pie-chart [animations]="true" [view]="view" [scheme]="'picnic'"
                                     [results]="listAllLocationDetails" [gradient]="gradient">
                                 </ngx-charts-advanced-pie-chart>
                             </div>
@@ -245,7 +308,7 @@
             <div class="card-body">
                 <div class="row mt-4">
                     <div class="col-xl-12 mb-4">
-                        <div widget class="card border-secondary box-shadow">
+                        <div widget class="card box-shadow">
                             <div class="transparent p-3 border-0 bg-white text-muted">
                                 <h6 class="mb-0">HOURLY REPORT <span class="text-primary">({{locName}})</span></h6>
                             </div>
@@ -293,7 +356,7 @@
             <div class="card-body">
                 <div class="row mt-4">
                     <div class="col-xl-12 mb-4">
-                        <div widget class="card border-secondary box-shadow">
+                        <div widget class="card box-shadow">
                             <div class="transparent p-3 border-0 bg-white text-muted">
                                 <h6 class="mb-0">HOURLY REPORT <span class="text-primary">({{locName}})</span></h6>
                             </div>

@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
     returnUrl: string;
     isReadOnly = true;
     validForm: boolean = false;
+    menuItems: any;
     constructor(router: Router,
         private toastr: ToastrService,
         private fb: FormBuilder,
@@ -66,6 +67,7 @@ export class LoginComponent implements OnInit {
     }
 
     onSubmit(): void {
+        let menuItems: any = [];
         this.GV.locationID = 1;
         this.clicked = true;
         this.GV.G_IsRunning = false;
@@ -77,9 +79,15 @@ export class LoginComponent implements OnInit {
         this.TokenRequestModel.Password = this.loginForm.get('password').value;
         this.API.LoginUser(this.config.TOKEN_AUTH, this.TokenRequestModel).subscribe({
             next: (data) => {
+
+                for (let i = 0; i < data.vAssignedScreen.length; i++) {
+                    menuItems[i] = data.vAssignedScreen[i];
+                }
+                this.menuItems = this.GV.generateMenuItems(menuItems);
+                this.GV.setMenuItems(menuItems);
                 localStorage.setItem('access_token', data.Access_Token);
-                localStorage.setItem('name', data.UserName);
-                localStorage.setItem('userID', data.UserId);
+                localStorage.setItem('name', data.EmployeeName);
+                localStorage.setItem('userID', data.userid);
                 this.toastr.success('Login Successfully ', 'Success');
                 this.router.navigate(['/view/index']);
             },

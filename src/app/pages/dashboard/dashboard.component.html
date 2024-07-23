@@ -1,21 +1,30 @@
 <div class="container-fluid p-0">
-
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" width="100%"
-                class="table table-hover  table-striped table-bordered nowrap" cellspacing="0">
+                class="table table-hover table-bordered nowrap" cellspacing="0">
                 <thead>
+                    <tr style="background-color: #fff;">
+                        <th class="border-0"></th>
+                        <th class="border-0"></th>
+                        <th style="background-color: beige;" class="text-center border-0 text-dark"
+                            colspan="3">
+                            Today Sales</th>
+                        <th style="background-color: mistyrose;" class="text-center border-0 text-dark"
+                            colspan="3">
+                            Monthly Sales</th>
+                    </tr>
                     <tr class="d-bg2">
                         <!-- <th class="text-center">Sr.</th> -->
                         <th style="width: 20px;">Location</th>
                         <th style="width: 20px;">Date</th>
-                        <th class="text-right">Today Sales</th>
-                        <th class="text-right">Today Orders</th>
-                        <th class="text-right">Today Visitors</th>
-                        <th class="text-right">Monthly Sales</th>
-                        <th class="text-right">Monthly Orders</th>
-                        <th class="text-right">Monthly Visitors</th>
+                        <th class="text-right">Sales</th>
+                        <th class="text-right">Orders</th>
+                        <th class="text-right">Visitors</th>
+                        <th class="text-right">Sales</th>
+                        <th class="text-right">Orders</th>
+                        <th class="text-right">Visitors</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,26 +32,26 @@
                         <!-- <td class="text-center">{{i + 1}}</td> -->
                         <td><b>{{loc.locationName}}</b></td>
                         <td>{{loc.syncDate |date:'dd-MMM-yyyy HH:mm'}}</td>
-                        <td class="text-right styl-new" (click)="getDailySales(loc.locationID)" data-toggle="modal"
+                        <td style="background-color: beige;" class="text-right styl-new" (click)="getDailySales(loc.locationID)" data-toggle="modal"
                             data-target="#dailyDetails">
                             {{loc.dashBoardCount.Sale_Daily | number}}</td>
 
-                        <td class="text-right styl-new" (click)="getDailySales(loc.locationID)" data-toggle="modal"
+                        <td style="background-color: beige;" class="text-right styl-new" (click)="getDailySales(loc.locationID)" data-toggle="modal"
                             data-target="#dailyDetails">
                             {{loc.dashBoardCount.Order_Daily | number}}</td>
 
-                        <td class="text-right styl-new" (click)="getDailySales(loc.locationID)" data-toggle="modal"
+                        <td style="background-color: beige;" class="text-right styl-new" (click)="getDailySales(loc.locationID)" data-toggle="modal"
                             data-target="#dailyDetails">
                             {{loc.dashBoardCount.Persons | number}}</td>
 
 
-                        <td class="text-right styl-new" (click)="getMonthlySales(loc.locationID)"
+                        <td style="background-color: mistyrose;" class="text-right styl-new" (click)="getMonthlySales(loc.locationID)"
                             data-toggle="modal" data-target="#dailyDetails">{{loc.dashBoardCount.Sale_Monthly |
                             number}}</td>
-                        <td class="text-right styl-new" (click)="getMonthlySales(loc.locationID)"
+                        <td style="background-color: mistyrose;" class="text-right styl-new" (click)="getMonthlySales(loc.locationID)"
                             data-toggle="modal" data-target="#dailyDetails">{{loc.dashBoardCount.Order_Monthly |
                             number}}</td>
-                        <td class="text-right styl-new" (click)="getMonthlySales(loc.locationID)"
+                        <td style="background-color: mistyrose;" class="text-right styl-new" (click)="getMonthlySales(loc.locationID)"
                             data-toggle="modal" data-target="#dailyDetails">{{loc.dashBoardCount.MonthlyPersons |
                             number}}</td>
 

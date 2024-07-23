@@ -7,7 +7,7 @@ export class AppSettings {
         'CK',
         'Angular Admin Template with Bootstrap 4',
         {
-            menu: 'horizontal', //horizontal , vertical
+            menu: 'vertical', //horizontal , vertical
             menuType: 'default', //default, compact, mini
             showMenu: true,
             navbarIsFixed: true,

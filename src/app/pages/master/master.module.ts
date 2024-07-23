@@ -7,11 +7,13 @@ import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
 import {NgxMaskModule, IConfig} from 'ngx-mask';
 import { UsersComponent } from './users/users.component';
 import { CategoryComponent } from './category/category.component';
+import { GroupsComponent } from './groupsRoles/groups.component';
 
 
 export const routes: Routes = [
      { path: 'users', component: UsersComponent, pathMatch: 'full', data: { breadcrumb: 'Users', title: 'Users' } },
      { path: 'category', component: CategoryComponent, pathMatch: 'full', data: { breadcrumb: 'Category', title: 'Category' } },
+     { path: 'grouproles', component: GroupsComponent, pathMatch: 'full', data: { breadcrumb: 'Group Roles', title: 'GR' } },
 
 ]
 export const options: Partial<IConfig> = {
@@ -29,7 +31,8 @@ export const options: Partial<IConfig> = {
     ],
     declarations: [
     UsersComponent,
-    CategoryComponent
+    CategoryComponent,
+    GroupsComponent
   ],
     providers:[
         DatePipe 

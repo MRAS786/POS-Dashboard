@@ -35,6 +35,7 @@ export class DailySalesComponent implements OnInit {
   listYearDetails: any = [];
   listMonthlyDetails: any = [];
   listDailyDetails: any = [];
+  listPaymentMode: any = [];
 
   hourlyResponse: any = [];
   listAllData: any = [];
@@ -44,7 +45,7 @@ export class DailySalesComponent implements OnInit {
   listPayMode: any = [];
 
 
-  view: any[] = [1050, 400];
+  view: any[] = [1350, 400];
   view2: any[] = [500, 200];
   view3: any[] = [750, 200];
   view4: any[] = [1000, 200];;
@@ -118,8 +119,10 @@ export class DailySalesComponent implements OnInit {
   monthlyReports: any = [];
   yearlyReports: any = [];
   monthlyReportList: any = [];
-
+  categoryWiseData: any = [];
+  listPaymentModeCombine: any = [];
   locName: any;
+  yearLable: any;
   constructor(
     private domSanitizer: DomSanitizer,
     private toastr: ToastrService,
@@ -159,6 +162,8 @@ export class DailySalesComponent implements OnInit {
     this.listYearDetails = [];
     this.listAllLocationDetails = [];
     this.listPayMode = [];
+    this.categoryWiseData = [];
+    this.listPaymentModeCombine = [];
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   }
@@ -174,6 +179,9 @@ export class DailySalesComponent implements OnInit {
     this.searchForm.get('mFromDate').patchValue(this.formatDate(new Date()));
     this.searchForm.get('mToDate').patchValue(this.formatDate(new Date()));
     this.searchForm.get('Date').patchValue(this.formatDate(new Date()));
+    var year = new Date().getFullYear();
+    this.searchForm.controls.selectedYear.setValue(JSON.stringify(year));
+    this.yearLable = JSON.stringify(year);
 
     this.getAssignedLocations();
     this.getPaymentMode(0);
@@ -215,7 +223,8 @@ export class DailySalesComponent implements OnInit {
       locationID: [''],
       PaymentMode: [''],
       Date: [''],
-      Days: ['']
+      Days: [''],
+      selectedYear:['']
     });
   }
   private formatDate(date) {
@@ -232,10 +241,6 @@ export class DailySalesComponent implements OnInit {
       next: (data) => {
         if (data != null) {
           this.reportListDateWise = data;
-          // this.destroyDT(0, true).then((destroyed) => {
-
-          //   this.dtTrigger.next(0);
-          // });
         }
       },
       error: (error) => {
@@ -247,7 +252,7 @@ export class DailySalesComponent implements OnInit {
 
   }
   getAssignedLocations() {
-    this.API.getdata(this.config.GET_ASSIGNED_LOCATIONS).subscribe({
+    this.API.getdata(this.config.GET_LOCATIONS).subscribe({
       next: (data) => {
         if (data != null) {
           this.getLocationsList = data;
@@ -289,6 +294,7 @@ export class DailySalesComponent implements OnInit {
 
   }
   getSaleWiseData(data) {
+    this.searchForm.controls.mFromDate.setValue(data.dates);
     let body = {
       locationID: this.locID,
       mFromDate: data.dates,
@@ -308,10 +314,10 @@ export class DailySalesComponent implements OnInit {
     });
   }
   getSalesDetails(data) {
-    this.locID = data.locationID;
+    //this.locID = data.locationID;
     let body = {
       locationID: data.locationID,
-      mFromDate: data.dates,
+      mFromDate: this.searchForm.controls.mFromDate.value,
       mToDate: this.searchForm.controls.mToDate.value
     }
     this.API.PostData(this.config.GET_SALES_DETAILS, body).subscribe({
@@ -408,6 +414,9 @@ export class DailySalesComponent implements OnInit {
       this.getChartDailyData();
       this.getChartMonthlyData();
       this.getChartYearData();
+      this.getCategoryWise();
+      this.getPaymentModeData();
+      this.getPaymentModeDataCombine();
     }
     if (this.tabStatus == 2) {
       this.timeSales();
@@ -475,16 +484,19 @@ export class DailySalesComponent implements OnInit {
       mFromDate: startDate,
       mToDate: endDate
     });
-    if (this.tabStatus == 1) {
+    if (this.tabStatus == 1 && option != "SpecificDays") {
       this.searchSales();
       this.getChartDailyData();
       this.getAllChartData();
+      this.getCategoryWise();
+      this.getPaymentModeData();
+      this.getPaymentModeDataCombine();
     }
-    if (this.tabStatus == 2) {
+    if (this.tabStatus == 2 && option != "SpecificDays") {
       this.timeSales();
       this.timeDetailData();
     }
-    if (this.tabStatus == 3) {
+    if (this.tabStatus == 3 && option != "SpecificDays") {
       this.hourlysearchSales();
       this.hourlydetailData();
     }
@@ -585,6 +597,9 @@ export class DailySalesComponent implements OnInit {
       this.getChartDailyData();
       this.getChartMonthlyData();
       this.getChartYearData();
+      this.getCategoryWise();
+      this.getPaymentModeData();
+      this.getPaymentModeDataCombine();
     }
     if (this.tabStatus == 2) {
       this.timeSales();
@@ -615,6 +630,56 @@ export class DailySalesComponent implements OnInit {
       }
     });
   }
+
+  getCategoryWise() {
+    this.API.PostData(this.config.GET_CATEGORY_WISE_DATA, this.searchForm.value).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.categoryWiseData = data;
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+  onSelectYear(event){
+    this.searchForm.controls.selectedYear.setValue(event.name);
+    this.yearLable = event.name;
+    this.getChartMonthlyData();
+  }
+
+  getPaymentModeData() {
+    this.API.PostData(this.config.GET_PAYMENT_MODE_DATA, this.searchForm.value).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.listPaymentMode = data;
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+  getPaymentModeDataCombine() {
+    this.API.PostData(this.config.GET_PAYMENT_MODE_DATA_COMBINE, this.searchForm.value).subscribe({
+      next: (data) => {
+        if (data != null) {
+          this.listPaymentModeCombine = data;
+        }
+      },
+      error: (error) => {
+        if (error.error != undefined) {
+          this.toastr.error(error.error.Message, 'Error');
+        }
+      }
+    });
+  }
+
   destroyDT = (tableIndex, clearData): Promise<boolean> => {
     return new Promise((resolve) => {
       this.datatableElement.forEach((dtElement: DataTableDirective, index) => {
